@@ -1,0 +1,17 @@
+@import 'shared/styles/variables.scss';
+
+ion-split-pane {
+  --side-width: #{$sidebar-width};
+  --side-min-width: #{$sidebar-width};
+  --side-max-width: #{$sidebar-width};
+}
+
+ion-menu {
+  --background: #{$color-secondary};
+  --color: #{$color-primary};
+}
+
+.ion-page {
+  background: $color-background;
+  border: 2px solid red; // Para debug - puedes quitarlo después
+}

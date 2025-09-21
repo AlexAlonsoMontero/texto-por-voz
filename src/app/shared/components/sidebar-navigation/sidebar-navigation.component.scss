@@ -1,0 +1,12 @@
+@import '../../styles/variables.scss';
+
+.sidebar-nav {
+  width: $sidebar-width;
+  height: 100vh;
+  border-right: 3px solid $color-primary;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 2px;
+  flex-shrink: 0;
+}

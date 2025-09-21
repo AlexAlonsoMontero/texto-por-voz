@@ -1,3 +1,10 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane contentId="main-content" when="xs">
+    <ion-menu contentId="main-content" side="start" type="overlay">
+      <app-sidebar-navigation></app-sidebar-navigation>
+    </ion-menu>
+    <div class="ion-page" id="main-content">
+      <ion-router-outlet></ion-router-outlet>
+    </div>
+  </ion-split-pane>
 </ion-app>
