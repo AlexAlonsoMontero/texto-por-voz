@@ -1,0 +1,7 @@
+{
+  "name": "texto-voz",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
