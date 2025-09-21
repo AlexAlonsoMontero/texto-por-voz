@@ -19,7 +19,6 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
   private currentUtterance: SpeechSynthesisUtterance | null = null;
 
   constructor() {
-    console.log(`TTS: Inicializando servicio en plataforma: ${this.isNativePlatform ? 'nativa' : 'web'}`);
 
     if (!this.isNativePlatform && typeof window !== 'undefined') {
       this.webSynth = window.speechSynthesis;
@@ -29,6 +28,10 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
 
   /**
    * Convierte texto a voz usando la implementación apropiada para la plataforma
+   * Método speak(text, options)
+
+
+
    */
   async speak(text: string, options?: SpeechOptions): Promise<void> {
     if (!text?.trim()) {
@@ -40,7 +43,7 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
     console.log(`TTS: Intentando leer: "${cleanText}"`);
 
     try {
-      if (this.isNativePlatform) {
+              if (this.isNativePlatform) {
         await this.speakNative(cleanText, options);
       } else {
         await this.speakWeb(cleanText, options);
