@@ -7,3 +7,18 @@ $sidebar-width: 10vw;
 $color-primary: #ffd600; // Amarillo brillante
 $color-secondary: #222222; // Negro
 $color-background: #ffffff; // Blanco
+
+/* Variables CSS dinámicas para Safe Area (se establecen desde JavaScript) */
+:root {
+  /* Safe Area insets - valores por defecto */
+  --safe-area-top: 0px;
+  --safe-area-bottom: 0px;
+  --safe-area-left: 0px;
+  --safe-area-right: 0px;
+
+  /* Dimensiones disponibles calculadas */
+  --available-height: 100vh;
+  --available-width: 100vw;
+  --content-height: 100vh;
+  --content-width: 100vw;
+}

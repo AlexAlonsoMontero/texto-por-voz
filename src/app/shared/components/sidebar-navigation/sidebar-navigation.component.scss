@@ -2,11 +2,15 @@
 
 .sidebar-nav {
   width: $sidebar-width;
-  height: 100vh;
+  height: 100%; /* Ocupa toda la altura del menú */
+  background: $color-secondary;
   border-right: 3px solid $color-primary;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 2px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 10px;
   flex-shrink: 0;
+  box-sizing: border-box;
 }

@@ -1,17 +1,46 @@
 @import 'shared/styles/variables.scss';
 
+/* Variables dinámicas de Safe Area se aplican desde app.component.ts */
+
+ion-app {
+  /* Asegurar que ocupe toda la pantalla */
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 ion-split-pane {
   --side-width: #{$sidebar-width};
   --side-min-width: #{$sidebar-width};
   --side-max-width: #{$sidebar-width};
+
+  /* Posicionamiento absoluto para control total */
+  position: fixed;
+  top: var(--safe-area-top, 0px);
+  bottom: var(--safe-area-bottom, 0px);
+  left: var(--safe-area-left, 0px);
+  right: var(--safe-area-right, 0px);
+
+  /* Dimensiones automáticas basadas en posición */
+  width: auto;
+  height: auto;
+  box-sizing: border-box;
 }
 
 ion-menu {
   --background: #{$color-secondary};
   --color: #{$color-primary};
+
+  /* El menú hereda la altura del split-pane */
+  height: 100%;
 }
 
 .ion-page {
   background: $color-background;
   border: 2px solid red; // Para debug - puedes quitarlo después
+
+  /* La página ocupa todo el espacio del split-pane */
+  height: 100%;
+  width: 100%;
 }

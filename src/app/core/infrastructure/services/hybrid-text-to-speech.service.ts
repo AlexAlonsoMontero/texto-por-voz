@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import {
-  ITextToSpeechService,
-  SpeechOptions,
-} from '../../domain/interfaces/text-to-speech.interface';
+import { ITextToSpeechService, SpeechOptions } from '../../domain/interfaces/text-to-speech.interface';
 
 /**
  * Implementación híbrida del servicio de Text-to-Speech
@@ -19,7 +16,6 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
   private currentUtterance: SpeechSynthesisUtterance | null = null;
 
   constructor() {
-
     if (!this.isNativePlatform && typeof window !== 'undefined') {
       this.webSynth = window.speechSynthesis;
       console.log('TTS: Web Speech API disponible:', !!this.webSynth);
@@ -43,7 +39,7 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
     console.log(`TTS: Intentando leer: "${cleanText}"`);
 
     try {
-              if (this.isNativePlatform) {
+      if (this.isNativePlatform) {
         await this.speakNative(cleanText, options);
       } else {
         await this.speakWeb(cleanText, options);
