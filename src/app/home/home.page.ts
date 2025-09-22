@@ -5,7 +5,7 @@ import {
   ORIENTATION_SERVICE,
   SAFE_AREA_SERVICE,
 } from '../core/infrastructure/injection-tokens';
-import { ITextToSpeechService } from '../core/domain/interfaces/text-to-speech.interface';
+import { ITextToSpeechService, SpeechPriority } from '../core/domain/interfaces/text-to-speech.interface';
 import { IOrientationService } from '../core/domain/interfaces/orientation.interface';
 import { ISafeAreaService } from '../core/domain/interfaces/safe-area.interface';
 
@@ -18,24 +18,19 @@ import { ISafeAreaService } from '../core/domain/interfaces/safe-area.interface'
 export class HomePage implements OnInit, OnDestroy {
   constructor(
     @Inject(TEXT_TO_SPEECH_SERVICE)
-    private readonly textToSpeechService: ITextToSpeechService,
+    private readonly tts: ITextToSpeechService,
     @Inject(ORIENTATION_SERVICE)
     private readonly orientationService: IOrientationService,
     @Inject(SAFE_AREA_SERVICE)
     private readonly safeAreaService: ISafeAreaService,
   ) {}
 
-  ngOnInit(): void {
-    // Bloquear orientación a landscape (solo nativo)
-    if (this.orientationService.isOrientationLockSupported()) {
-      this.orientationService.lockToLandscape();
-    }
+  async ngOnInit(): Promise<void> {
+    // 1. Configurar orientación landscape
+    await this.setupOrientation();
 
-    if (this.textToSpeechService.isSupported()) {
-      this.speak('Bienvenido a la aplicación de texto por voz');
-    } else {
-      console.warn('TTS no soportado en esta plataforma');
-    }
+    // 2. Mensaje de bienvenida accesible automático
+    await this.announceWelcome();
   }
 
   ngOnDestroy(): void {
@@ -44,13 +39,106 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   /**
-   * Ejemplo de uso básico del servicio TTS
+   * Configura la orientación en landscape
    */
-  async speak(text: string): Promise<void> {
+  private async setupOrientation(): Promise<void> {
     try {
-      await this.textToSpeechService.speak(text);
+      if (this.orientationService.isOrientationLockSupported()) {
+        await this.orientationService.lockToLandscape();
+        console.log('✅ Orientación bloqueada a landscape');
+      }
     } catch (error) {
-      console.error('Error al hablar:', error);
+      console.error('❌ Error configurando orientación:', error);
+    }
+  }
+
+  /**
+   * Anuncia mensaje de bienvenida automático con contexto completo
+   */
+  private async announceWelcome(): Promise<void> {
+    try {
+      // Verificar que TTS esté listo (ya debe estarlo por AppComponent)
+      if (!this.tts.isReady()) {
+        console.warn('⚠️ TTS no está listo, esperando...');
+        // Pequeña espera por si acaso
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+
+      const welcomeMessage = `
+        Bienvenido a la página principal.
+        Aplicación de texto por voz en orientación horizontal.
+        Utiliza las teclas Tab para navegar entre elementos,
+        Enter para seleccionar, y Escape para salir de selectores.
+        Encontrarás botones disponibles para interactuar.
+      `
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      await this.tts.speak(welcomeMessage, {
+        priority: SpeechPriority.HIGH,
+        interrupt: false, // No interrumpir mensaje de AppComponent si aún está sonando
+      });
+
+      console.log('✅ Mensaje de bienvenida de HomePage anunciado');
+    } catch (error) {
+      console.error('❌ Error en mensaje de bienvenida HomePage:', error);
+    }
+  }
+
+  /**
+   * Ejemplo de botón accesible con TTS
+   */
+  async onExampleButtonClick(): Promise<void> {
+    try {
+      await this.tts.speak('Botón de ejemplo presionado. Funcionalidad de prueba activada.', {
+        priority: SpeechPriority.NORMAL,
+        interrupt: true,
+      });
+    } catch (error) {
+      console.error('❌ Error en botón de ejemplo:', error);
+    }
+  }
+
+  /**
+   * Método para probar diferentes prioridades de TTS
+   */
+  async testHighPrioritySpeech(): Promise<void> {
+    try {
+      await this.tts.speak('Mensaje de alta prioridad. Interrumpe cualquier síntesis anterior.', {
+        priority: SpeechPriority.HIGH,
+        interrupt: true,
+      });
+    } catch (error) {
+      console.error('❌ Error en test de alta prioridad:', error);
+    }
+  }
+
+  /**
+   * Método para probar funcionalidad de pausa/reanudación (solo web)
+   */
+  testPauseResume(): void {
+    try {
+      if (this.tts.isSpeaking()) {
+        this.tts.pause();
+        console.log('TTS pausado');
+      } else {
+        this.tts.resume();
+        console.log('TTS reanudado');
+      }
+    } catch (error) {
+      console.error('❌ Error en pausa/reanudación:', error);
+    }
+  }
+
+  /**
+   * Método para detener síntesis actual
+   */
+  stopSpeech(): void {
+    try {
+      this.tts.stop();
+      console.log('TTS detenido');
+    } catch (error) {
+      console.error('❌ Error deteniendo TTS:', error);
     }
   }
 }

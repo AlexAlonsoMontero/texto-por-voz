@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonSplitPane, IonMenu } from '@ionic/angular/standalone';
 import { SidebarNavigationComponent } from './shared/components/sidebar-navigation/sidebar-navigation.component';
-import { SAFE_AREA_SERVICE } from './core/infrastructure/injection-tokens';
+import { SAFE_AREA_SERVICE, TEXT_TO_SPEECH_SERVICE } from './core/infrastructure/injection-tokens';
 import { ISafeAreaService } from './core/domain/interfaces/safe-area.interface';
+import { ITextToSpeechService, SpeechPriority } from './core/domain/interfaces/text-to-speech.interface';
 import { ViewDidEnter } from '@ionic/angular';
 
 @Component({
@@ -12,20 +13,54 @@ import { ViewDidEnter } from '@ionic/angular';
   standalone: true,
   imports: [IonApp, IonRouterOutlet, IonSplitPane, IonMenu, SidebarNavigationComponent],
 })
-export class AppComponent implements OnInit, ViewDidEnter {
+export class AppComponent implements ViewDidEnter {
   constructor(
     @Inject(SAFE_AREA_SERVICE)
     private readonly safeAreaService: ISafeAreaService,
+    @Inject(TEXT_TO_SPEECH_SERVICE)
+    private readonly ttsService: ITextToSpeechService,
   ) {}
 
-  ngOnInit(): void {
-    // Solo aplicar las variables CSS, sin debug
-    this.applySafeAreaMargins();
+  async ngOnInit(): Promise<void> {
+    // 1. Inicializar TTS Service globalmente
+    await this.initializeTTSService();
+
+    // 2. Aplicar safe areas
+    await this.applySafeAreaMargins();
+
+    // 3. Mensaje de bienvenida accesible
+    await this.announceAppReady();
   }
 
   ionViewDidEnter(): void {
     // El DOM de Ionic está completamente renderizado
     this.debugSplitPaneLayout();
+  }
+
+  /**
+   * Inicializa el servicio TTS globalmente una sola vez
+   */
+  private async initializeTTSService(): Promise<void> {
+    try {
+      await this.ttsService.initialize();
+      console.log('✅ TTS Service inicializado globalmente en AppComponent');
+    } catch (error) {
+      console.error('❌ Error inicializando TTS Service:', error);
+    }
+  }
+
+  /**
+   * Anuncia que la aplicación está lista para usar
+   */
+  private async announceAppReady(): Promise<void> {
+    try {
+      await this.ttsService.speak(
+        'Aplicación de texto por voz accesible activada. Navegación horizontal disponible. Utiliza las teclas Tab para navegar entre opciones y Enter para seleccionar.',
+        { priority: SpeechPriority.HIGH },
+      );
+    } catch (error) {
+      console.error('❌ Error en mensaje de bienvenida:', error);
+    }
   }
 
   /**
@@ -61,11 +96,7 @@ export class AppComponent implements OnInit, ViewDidEnter {
   private debugSplitPaneLayout(): void {
     const splitPane = document.querySelector('ion-split-pane') as HTMLElement;
     if (splitPane) {
-      const computedStyle = getComputedStyle(splitPane);
-      console.log('📐 Split-pane calculado:');
-      console.log(`  top: ${computedStyle.top}`);
-      console.log(`  bottom: ${computedStyle.bottom}`);
-      console.log(`  height: ${computedStyle.height}`);
+      console.log('Split Pane encontrado:', splitPane);
     }
   }
 }
