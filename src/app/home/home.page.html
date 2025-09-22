@@ -1,5 +1,19 @@
 <ion-content>
-  <div id="container">
+  <!-- Componente de activación TTS (solo visible cuando es necesario) -->
+  <app-tts-activation *ngIf="showActivation" (activated)="onTtsActivated()"> </app-tts-activation>
+
+  <!-- Contenido principal (oculto si se necesita activación) -->
+  <div id="container" *ngIf="!showActivation">
     <h1>Texto por Voz</h1>
+
+    <ion-button
+      expand="block"
+      size="large"
+      (click)="onExampleButtonClick()"
+      class="example-button"
+      aria-label="Botón de ejemplo para probar síntesis de voz"
+    >
+      Ejemplo de TTS
+    </ion-button>
   </div>
 </ion-content>

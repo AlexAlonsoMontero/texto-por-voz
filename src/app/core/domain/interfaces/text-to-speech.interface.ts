@@ -28,7 +28,7 @@ export enum SpeechPriority {
   NORMAL = 'normal',
   /** Alta prioridad - siempre interrumpe */
   HIGH = 'high',
-  /** Emergencia - interrumpe todo y tiene máxima prioridad */
+  /** Emergencia - interrumpe todos y tiene máxima prioridad */
   EMERGENCY = 'emergency',
 }
 
@@ -100,4 +100,14 @@ export interface ITextToSpeechService {
    * Obtiene el estado actual del servicio TTS
    */
   getStatus(): TTSStatus;
+
+  /**
+   * Verifica si el TTS necesita activación manual del usuario (principalmente en navegadores)
+   */
+  needsActivation(): boolean;
+
+  /**
+   * Activa manualmente el TTS tras interacción del usuario (para navegadores)
+   */
+  activateTTS(): Promise<void>;
 }

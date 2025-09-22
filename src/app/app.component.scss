@@ -1,4 +1,4 @@
-@import 'shared/styles/variables.scss';
+@use 'shared/styles/variables' as vars;
 
 /* Variables dinámicas de Safe Area se aplican desde app.component.ts */
 
@@ -11,9 +11,9 @@ ion-app {
 }
 
 ion-split-pane {
-  --side-width: #{$sidebar-width};
-  --side-min-width: #{$sidebar-width};
-  --side-max-width: #{$sidebar-width};
+  --side-width: #{vars.$sidebar-width};
+  --side-min-width: #{vars.$sidebar-width};
+  --side-max-width: #{vars.$sidebar-width};
 
   /* Posicionamiento absoluto para control total */
   position: fixed;
@@ -29,15 +29,15 @@ ion-split-pane {
 }
 
 ion-menu {
-  --background: #{$color-secondary};
-  --color: #{$color-primary};
+  --background: #{vars.$color-secondary};
+  --color: #{vars.$color-primary};
 
   /* El menú hereda la altura del split-pane */
   height: 100%;
 }
 
 .ion-page {
-  background: $color-background;
+  background: vars.$color-background;
   border: 2px solid red; // Para debug - puedes quitarlo después
 
   /* La página ocupa todo el espacio del split-pane */

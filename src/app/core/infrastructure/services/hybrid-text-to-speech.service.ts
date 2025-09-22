@@ -12,10 +12,11 @@ import {
 })
 export class HybridTextToSpeechService implements ITextToSpeechService {
   private status: TTSStatus = TTSStatus.UNINITIALIZED;
-  private isNativePlatform: boolean = Capacitor.isNativePlatform();
+  private readonly isNativePlatform: boolean = Capacitor.isNativePlatform();
   private currentSpeech: any = null;
   private webSpeechAPI?: SpeechSynthesis;
   private capacitorTTS?: any;
+  private needsUserActivation = false;
 
   constructor() {
     console.log(`TTS Service creado - Plataforma: ${this.isNativePlatform ? 'Nativo' : 'Web'}`);
@@ -155,6 +156,39 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
     return this.status;
   }
 
+  needsActivation(): boolean {
+    return this.needsUserActivation;
+  }
+
+  async activateTTS(): Promise<void> {
+    if (!this.isNativePlatform && this.webSpeechAPI) {
+      try {
+        // Intentar una síntesis muy breve para activar permisos
+        const testUtterance = new SpeechSynthesisUtterance(' ');
+        testUtterance.volume = 0.01; // Volumen muy bajo
+        testUtterance.rate = 10; // Muy rápido para que sea imperceptible
+
+        await new Promise<void>((resolve, reject) => {
+          testUtterance.onend = () => {
+            this.needsUserActivation = false;
+            this.status = TTSStatus.READY;
+            console.log('✅ TTS activado exitosamente en navegador');
+            resolve();
+          };
+
+          testUtterance.onerror = (event) => {
+            reject(new Error(`Error activando TTS: ${event.error}`));
+          };
+
+          this.webSpeechAPI!.speak(testUtterance);
+        });
+      } catch (error) {
+        console.error('Error activando TTS:', error);
+        throw error;
+      }
+    }
+  }
+
   async getAvailableVoices(): Promise<SpeechSynthesisVoice[]> {
     if (!this.isNativePlatform && this.webSpeechAPI) {
       return this.webSpeechAPI.getVoices();
@@ -229,10 +263,18 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
         resolve();
       };
 
-      utterance.onerror = (error) => {
-        this.status = TTSStatus.ERROR;
+      utterance.onerror = (errorEvent) => {
         this.currentSpeech = null;
-        reject(error);
+
+        if (errorEvent.error === 'not-allowed') {
+          this.needsUserActivation = true;
+          this.status = TTSStatus.READY; // Mantener como listo para intentos posteriores
+          console.warn('⚠️ TTS requiere activación del usuario en navegador');
+          reject(new Error('TTS_NEEDS_USER_ACTIVATION'));
+        } else {
+          this.status = TTSStatus.ERROR;
+          reject(new Error(`Web Speech API error: ${errorEvent.error || 'Unknown error'}`));
+        }
       };
 
       this.webSpeechAPI.speak(utterance);

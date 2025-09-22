@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonSplitPane, IonMenu } from '@ionic/angular/standalone';
 import { SidebarNavigationComponent } from './shared/components/sidebar-navigation/sidebar-navigation.component';
 import { SAFE_AREA_SERVICE, TEXT_TO_SPEECH_SERVICE } from './core/infrastructure/injection-tokens';
@@ -13,7 +13,7 @@ import { ViewDidEnter } from '@ionic/angular';
   standalone: true,
   imports: [IonApp, IonRouterOutlet, IonSplitPane, IonMenu, SidebarNavigationComponent],
 })
-export class AppComponent implements ViewDidEnter {
+export class AppComponent implements OnInit, ViewDidEnter {
   constructor(
     @Inject(SAFE_AREA_SERVICE)
     private readonly safeAreaService: ISafeAreaService,
@@ -21,20 +21,35 @@ export class AppComponent implements ViewDidEnter {
     private readonly ttsService: ITextToSpeechService,
   ) {}
 
-  async ngOnInit(): Promise<void> {
-    // 1. Inicializar TTS Service globalmente
-    await this.initializeTTSService();
-
-    // 2. Aplicar safe areas
-    await this.applySafeAreaMargins();
-
-    // 3. Mensaje de bienvenida accesible
-    await this.announceAppReady();
+  ngOnInit(): void {
+    // Inicialización asíncrona sin bloquear el lifecycle de Angular
+    this.initializeAppAsync();
   }
 
   ionViewDidEnter(): void {
     // El DOM de Ionic está completamente renderizado
     this.debugSplitPaneLayout();
+  }
+
+  /**
+   * Inicialización asíncrona de la aplicación con manejo de errores robusto
+   */
+  private async initializeAppAsync(): Promise<void> {
+    try {
+      // 1. Inicializar TTS Service globalmente
+      await this.initializeTTSService();
+
+      // 2. Aplicar safe areas
+      await this.applySafeAreaMargins();
+
+      // 3. Mensaje de bienvenida accesible
+      await this.announceAppReady();
+
+      console.log('✅ AppComponent inicializado completamente');
+    } catch (error) {
+      console.error('❌ Error crítico en AppComponent:', error);
+      this.handleCriticalAppError(error);
+    }
   }
 
   /**
@@ -91,6 +106,27 @@ export class AppComponent implements ViewDidEnter {
     } catch (error) {
       console.error('❌ Error aplicando Safe Area margins:', error);
     }
+  }
+
+  /**
+   * Maneja errores críticos de inicialización de la aplicación
+   */
+  private handleCriticalAppError(error: any): void {
+    console.error('❌ Error crítico en inicialización de la app:', error);
+
+    // Fallback para aplicaciones de accesibilidad crítica
+    setTimeout(async () => {
+      try {
+        if (this.ttsService?.isReady()) {
+          await this.ttsService.speak(
+            'Error crítico al inicializar la aplicación. Algunas funciones pueden no estar disponibles. Reinicia la aplicación si persiste el problema.',
+            { priority: SpeechPriority.EMERGENCY, interrupt: true },
+          );
+        }
+      } catch (ttsError) {
+        console.error('❌ Error crítico total: TTS no disponible', { originalError: error, ttsError });
+      }
+    }, 2000); // Delay para asegurar que el TTS tenga oportunidad de inicializarse
   }
 
   private debugSplitPaneLayout(): void {

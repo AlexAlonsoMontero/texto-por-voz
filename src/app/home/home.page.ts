@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonItem, IonLabel } from '@ionic/angular/standalone';
+import { IonContent, IonButton } from '@ionic/angular/standalone';
+import { CommonModule } from '@angular/common';
 import {
   TEXT_TO_SPEECH_SERVICE,
   ORIENTATION_SERVICE,
@@ -8,14 +9,16 @@ import {
 import { ITextToSpeechService, SpeechPriority } from '../core/domain/interfaces/text-to-speech.interface';
 import { IOrientationService } from '../core/domain/interfaces/orientation.interface';
 import { ISafeAreaService } from '../core/domain/interfaces/safe-area.interface';
+import { TtsActivationComponent } from '../shared/components/tts-activation/tts-activation.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonItem, IonLabel],
+  imports: [CommonModule, IonContent, IonButton, TtsActivationComponent],
 })
 export class HomePage implements OnInit, OnDestroy {
+  showActivation = false;
   constructor(
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly tts: ITextToSpeechService,
@@ -25,17 +28,29 @@ export class HomePage implements OnInit, OnDestroy {
     private readonly safeAreaService: ISafeAreaService,
   ) {}
 
-  async ngOnInit(): Promise<void> {
-    // 1. Configurar orientación landscape
-    await this.setupOrientation();
-
-    // 2. Mensaje de bienvenida accesible automático
-    await this.announceWelcome();
+  ngOnInit(): void {
+    // Ejecutar inicialización asíncrona sin bloquear
+    this.initializePageAsync();
   }
 
   ngOnDestroy(): void {
     // Limpiar monitoreo de orientación
     this.orientationService.stopOrientationMonitoring();
+  }
+
+  /**
+   * Inicialización asíncrona de la página
+   */
+  private async initializePageAsync(): Promise<void> {
+    try {
+      // 1. Configurar orientación landscape
+      await this.setupOrientation();
+
+      // 2. Mensaje de bienvenida accesible automático
+      await this.announceWelcome();
+    } catch (error) {
+      console.error('❌ Error en inicialización de HomePage:', error);
+    }
   }
 
   /**
@@ -60,6 +75,14 @@ export class HomePage implements OnInit, OnDestroy {
       // Verificar que TTS esté listo (ya debe estarlo por AppComponent)
       if (!this.tts.isReady()) {
         console.warn('⚠️ TTS no está listo, esperando...');
+
+        // Verificar si necesita activación del usuario
+        if (this.tts.needsActivation()) {
+          console.log('🔧 TTS requiere activación manual del usuario');
+          this.showActivation = true;
+          return;
+        }
+
         // Pequeña espera por si acaso
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
@@ -82,7 +105,18 @@ export class HomePage implements OnInit, OnDestroy {
       console.log('✅ Mensaje de bienvenida de HomePage anunciado');
     } catch (error) {
       console.error('❌ Error en mensaje de bienvenida HomePage:', error);
+
+      // Si falla por necesidad de activación, mostrar componente
+      if (error instanceof Error && error.message === 'TTS_NEEDS_USER_ACTIVATION') {
+        this.showActivation = true;
+      }
     }
+  }
+
+  onTtsActivated(): void {
+    this.showActivation = false;
+    // Reintentar el mensaje de bienvenida
+    setTimeout(() => this.announceWelcome(), 500);
   }
 
   /**
