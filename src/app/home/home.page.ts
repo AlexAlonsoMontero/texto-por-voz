@@ -1,24 +1,28 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { IonContent, IonButton } from '@ionic/angular/standalone';
+import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import {
   TEXT_TO_SPEECH_SERVICE,
   ORIENTATION_SERVICE,
   SAFE_AREA_SERVICE,
+  PRESS_HOLD_BUTTON_SERVICE,
 } from '../core/infrastructure/injection-tokens';
 import { ITextToSpeechService, SpeechPriority } from '../core/domain/interfaces/text-to-speech.interface';
 import { IOrientationService } from '../core/domain/interfaces/orientation.interface';
 import { ISafeAreaService } from '../core/domain/interfaces/safe-area.interface';
+import { IPressHoldButtonService } from '../core/domain/interfaces/press-hold-button.interface';
 import { TtsActivationComponent } from '../shared/components/tts-activation/tts-activation.component';
+import { PressHoldButtonComponent } from '../shared/components/press-hold-button/press-hold-button.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [CommonModule, IonContent, IonButton, TtsActivationComponent],
+  imports: [CommonModule, IonContent, TtsActivationComponent, PressHoldButtonComponent],
 })
 export class HomePage implements OnInit, OnDestroy {
   showActivation = false;
+
   constructor(
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly tts: ITextToSpeechService,
@@ -26,15 +30,16 @@ export class HomePage implements OnInit, OnDestroy {
     private readonly orientationService: IOrientationService,
     @Inject(SAFE_AREA_SERVICE)
     private readonly safeAreaService: ISafeAreaService,
+    @Inject(PRESS_HOLD_BUTTON_SERVICE)
+    private readonly pressHoldService: IPressHoldButtonService,
   ) {}
 
   ngOnInit(): void {
-    // Ejecutar inicialización asíncrona sin bloquear
     this.initializePageAsync();
+    this.configureButtons();
   }
 
   ngOnDestroy(): void {
-    // Limpiar monitoreo de orientación
     this.orientationService.stopOrientationMonitoring();
   }
 
@@ -174,5 +179,62 @@ export class HomePage implements OnInit, OnDestroy {
     } catch (error) {
       console.error('❌ Error deteniendo TTS:', error);
     }
+  }
+
+  private configureButtons(): void {
+    // Configurar comportamiento global de botones de presión sostenida
+    this.pressHoldService.setGlobalConfig({
+      holdDuration: 3000, // 3 segundos por defecto
+      enableHapticFeedback: true,
+      showProgress: true,
+    });
+  }
+
+  /**
+   * Configura el tiempo de presión para todos los botones
+   */
+  setGlobalHoldDuration(duration: number): void {
+    this.pressHoldService.setGlobalConfig({ holdDuration: duration });
+
+    this.tts.speak(`Tiempo de presión configurado a ${duration / 1000} segundos`, {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+  }
+
+  // Acciones de los botones
+  async onExampleAction(): Promise<void> {
+    await this.tts.speak('Acción de ejemplo ejecutada correctamente.', {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+  }
+
+  async onReadTextAction(): Promise<void> {
+    await this.tts.speak('Leyendo texto de prueba para verificar funcionalidad.', {
+      priority: SpeechPriority.HIGH,
+      interrupt: true,
+    });
+  }
+
+  async onConfigurationAction(): Promise<void> {
+    await this.tts.speak('Abriendo configuración de la aplicación.', {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+  }
+
+  // Eventos de botones de presión sostenida
+  onPressStarted(buttonId: string): void {
+    console.log(`🚀 Presión iniciada en botón: ${buttonId}`);
+  }
+
+  onPressCancelled(buttonId: string): void {
+    console.log(`❌ Presión cancelada en botón: ${buttonId}`);
+
+    this.tts.speak('Presión cancelada', {
+      priority: SpeechPriority.HIGH,
+      interrupt: true,
+    });
   }
 }

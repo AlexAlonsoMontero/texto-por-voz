@@ -1,19 +1,90 @@
-<ion-content>
-  <!-- Componente de activación TTS (solo visible cuando es necesario) -->
-  <app-tts-activation *ngIf="showActivation" (activated)="onTtsActivated()"> </app-tts-activation>
+<ion-content [fullscreen]="true">
+  <div class="home-container">
+    <!-- Componente de activación TTS si es necesario -->
+    <app-tts-activation *ngIf="showActivation" (activated)="onTtsActivated()"> </app-tts-activation>
 
-  <!-- Contenido principal (oculto si se necesita activación) -->
-  <div id="container" *ngIf="!showActivation">
-    <h1>Texto por Voz</h1>
+    <!-- Sección principal -->
+    <section class="main-section" aria-label="Aplicación principal de texto por voz">
+      <h1>Texto por Voz Accesible</h1>
 
-    <ion-button
-      expand="block"
-      size="large"
-      (click)="onExampleButtonClick()"
-      class="example-button"
-      aria-label="Botón de ejemplo para probar síntesis de voz"
-    >
-      Ejemplo de TTS
-    </ion-button>
+      <!-- Botones de presión sostenida -->
+      <div class="buttons-grid">
+        <!-- Botón de ejemplo con presión sostenida -->
+        <app-press-hold-button
+          buttonId="example-btn"
+          [holdDuration]="3000"
+          color="primary"
+          ariaLabel="Botón de ejemplo"
+          (actionExecuted)="onExampleAction()"
+          (pressStarted)="onPressStarted('example-btn')"
+          (pressCancelled)="onPressCancelled('example-btn')"
+        >
+          Ejemplo
+        </app-press-hold-button>
+
+        <!-- Botón de lectura inmediata -->
+        <app-press-hold-button
+          buttonId="read-text-btn"
+          [holdDuration]="2000"
+          color="success"
+          ariaLabel="Leer texto de prueba"
+          (actionExecuted)="onReadTextAction()"
+          (pressStarted)="onPressStarted('read-text-btn')"
+          (pressCancelled)="onPressCancelled('read-text-btn')"
+        >
+          Leer Texto
+        </app-press-hold-button>
+
+        <!-- Botón de configuración -->
+        <app-press-hold-button
+          buttonId="config-btn"
+          [holdDuration]="3000"
+          color="warning"
+          ariaLabel="Abrir configuración"
+          (actionExecuted)="onConfigurationAction()"
+          (pressStarted)="onPressStarted('config-btn')"
+          (pressCancelled)="onPressCancelled('config-btn')"
+        >
+          Configuración
+        </app-press-hold-button>
+      </div>
+    </section>
+
+    <!-- Sección de configuración de tiempos -->
+    <section class="configuration-section" aria-label="Configuración de tiempos de presión">
+      <h2>Configurar Tiempo de Presión</h2>
+
+      <div class="config-buttons">
+        <app-press-hold-button
+          buttonId="config-1s-btn"
+          [holdDuration]="1000"
+          color="tertiary"
+          ariaLabel="Configurar tiempo a 1 segundo"
+          (actionExecuted)="setGlobalHoldDuration(1000)"
+        >
+          1 segundo
+        </app-press-hold-button>
+
+        <app-press-hold-button
+          buttonId="config-2s-btn"
+          [holdDuration]="1000"
+          color="tertiary"
+          ariaLabel="Configurar tiempo a 2 segundos"
+          (actionExecuted)="setGlobalHoldDuration(2000)"
+        >
+          2 segundos
+        </app-press-hold-button>
+
+        <app-press-hold-button
+          buttonId="config-3s-btn"
+          [holdDuration]="1000"
+          color="tertiary"
+          ariaLabel="Configurar tiempo a 3 segundos"
+          (actionExecuted)="setGlobalHoldDuration(3000)"
+        >
+          3 segundos
+        </app-press-hold-button>
+      </div>
+    </section>
   </div>
 </ion-content>
