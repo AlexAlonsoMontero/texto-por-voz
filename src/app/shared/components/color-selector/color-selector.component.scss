@@ -1,0 +1,132 @@
+.color-selector-container {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 10px;
+  background: var(--ion-background-color);
+}
+
+.selector-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--ion-color-dark);
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
+.selector-content {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  gap: 20px;
+  align-items: center;
+  
+  // Optimización para orientación horizontal siguiendo las instrucciones
+  @media (orientation: landscape) {
+    max-width: 100%;
+    justify-items: center;
+  }
+}
+
+.color-preview {
+  width: 80px;
+  height: 80px;
+  border: 3px solid #222222;
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  
+  &.selected {
+    border-color: var(--ion-color-primary);
+    border-width: 4px;
+    transform: scale(1.05);
+  }
+}
+
+.color-label {
+  background: rgba(255, 255, 255, 0.9);
+  color: #222222;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  text-shadow: none;
+}
+
+.color-input {
+  width: 80px;
+  height: 80px;
+  border: 3px solid #222222;
+  border-radius: 10px;
+  cursor: pointer;
+  background: none;
+  
+  // Remover estilos por defecto del navegador
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  &:focus {
+    outline: 4px solid #FFD600;
+    outline-offset: 2px;
+  }
+  
+  // Estilos específicos para WebKit (Chrome, Safari)
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+  }
+  
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 6px;
+  }
+  
+  // Estilos para Firefox
+  &::-moz-color-swatch {
+    border: none;
+    border-radius: 6px;
+  }
+}
+
+.apply-button {
+  --border-radius: 10px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+  font-size: 18px;
+  font-weight: bold;
+  
+  &:focus {
+    outline: 4px solid #FFD600;
+    outline-offset: 2px;
+  }
+}
+
+// Responsive para pantallas más pequeñas
+@media (max-width: 768px) {
+  .selector-content {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .color-preview,
+  .color-input {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+  }
+}
+
+// Cumplimiento con las instrucciones de accesibilidad
+// Botones grandes, contraste alto, navegación por teclado
+.color-input,
+.apply-button {
+  min-height: 48px; // Mínimo requerido por las instrucciones
+}

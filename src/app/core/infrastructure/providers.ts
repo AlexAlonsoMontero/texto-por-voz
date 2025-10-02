@@ -3,11 +3,13 @@ import { HybridTextToSpeechService } from './services/hybrid-text-to-speech.serv
 import { HybridOrientationService } from './services/hybrid-orientation.service';
 import { HybridSafeAreaService } from './services/hybrid-safe-area.service';
 
+import { ThemeService } from './services/theme.service';
 import {
   TEXT_TO_SPEECH_SERVICE,
   ORIENTATION_SERVICE,
   SAFE_AREA_SERVICE,
   PRESS_HOLD_BUTTON_SERVICE,
+  THEME_SERVICE,
 } from './injection-tokens';
 import { PressHoldButtonService } from './press-hold-button.service';
 
@@ -38,5 +40,11 @@ export const CORE_PROVIDERS: Provider[] = [
   {
     provide: PRESS_HOLD_BUTTON_SERVICE,
     useClass: PressHoldButtonService,
+  },
+
+  // Theme Service - Gestión dinámica de colores y theming
+  {
+    provide: THEME_SERVICE,
+    useClass: ThemeService,
   },
 ];

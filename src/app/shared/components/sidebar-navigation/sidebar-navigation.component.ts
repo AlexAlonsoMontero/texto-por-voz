@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonButton, IonIcon } from '@ionic/angular/standalone';
-
+import { NavController } from '@ionic/angular';
 @Component({
   selector: 'app-sidebar-navigation',
   standalone: true,
@@ -9,11 +9,13 @@ import { IonButton, IonIcon } from '@ionic/angular/standalone';
   styleUrls: ['./sidebar-navigation.component.scss'],
 })
 export class SidebarNavigationComponent {
-  onButtonAAClick(): void {
-    console.log('Botón AA clicked');
+  constructor(private readonly navCtrl: NavController) {}
+
+  onButtonHomeClick(): void {
+    this.navCtrl.navigateRoot('/home');
   }
 
-  onButtonBBClick(): void {
-    console.log('Botón BB clicked');
+  onButtonSettingsClick(): void {
+    this.navCtrl.navigateRoot('/settings');
   }
 }

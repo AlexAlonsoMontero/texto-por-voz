@@ -13,4 +13,11 @@
   padding: 10px;
   flex-shrink: 0;
   box-sizing: border-box;
+  .sidebar-btn {
+    width: 100%;
+    height: 10vh;
+    .sidebar-btn-icon {
+      font-size: 5rem;
+    }
+  }
 }

@@ -1,0 +1,71 @@
+.settings-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  // Optimización para orientación horizontal siguiendo las instrucciones
+  @media (orientation: landscape) {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+}
+
+.actions-section {
+  margin-top: 40px;
+  padding: 20px;
+  border-top: 2px solid var(--ion-color-light);
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  
+  // Optimización para tablet horizontal
+  @media (orientation: landscape) {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+
+// Responsive para pantallas más pequeñas
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 15px;
+  }
+  
+  .action-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+// Cumplimiento con las instrucciones de accesibilidad
+// Asegurar contraste alto y navegación clara
+ion-header {
+  --background: var(--ion-background-color);
+  --color: var(--ion-color-dark);
+}
+
+ion-toolbar {
+  --background: var(--ion-background-color);
+  --color: var(--ion-color-dark);
+}
+
+ion-title {
+  font-size: 24px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
+ion-back-button {
+  --color: var(--ion-color-primary);
+  
+  &:focus {
+    outline: 4px solid #FFD600;
+    outline-offset: 2px;
+  }
+}
