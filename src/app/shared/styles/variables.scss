@@ -7,6 +7,7 @@ $sidebar-width: 10vw;
 $color-primary: #ffd600; // Amarillo brillante
 $color-secondary: #222222; // Negro
 $color-background: #ffffff; // Blanco
+$color-text: #222222; // Color de texto (NUEVA) ⬅️
 
 /* Variables CSS dinámicas para Safe Area (se establecen desde JavaScript) */
 :root {
@@ -22,8 +23,13 @@ $color-background: #ffffff; // Blanco
   --content-height: 100vh;
   --content-width: 100vw;
 
+  /* Variables de theming dinámicas */
+  --ion-text-color: #{$color-text};
+  --ion-background-color: #{$color-background};
+  --ion-color-primary: #{$color-primary};
+  --ion-color-secondary: #{$color-secondary};
+
   /* Ionic define variables base como: */
-  --ion-color-primary: #3880ff;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-shade: #3171e0;

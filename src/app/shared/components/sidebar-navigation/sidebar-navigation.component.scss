@@ -3,8 +3,7 @@
 .sidebar-nav {
   width: vars.$sidebar-width;
   height: 100%; /* Ocupa toda la altura del menú */
-  background: vars.$color-secondary;
-  border-right: 3px solid vars.$color-primary;
+  background: var(--ion-background-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -18,6 +17,7 @@
     height: 10vh;
     .sidebar-btn-icon {
       font-size: 5rem;
+      color: var(--ion-text-color);
     }
   }
 }

@@ -29,16 +29,15 @@ ion-split-pane {
 }
 
 ion-menu {
-  --background: #{vars.$color-secondary};
-  --color: #{vars.$color-primary};
+  --background: var(--ion-color-secondary);
+  --color: var(--ion-text-color);
 
   /* El menú hereda la altura del split-pane */
   height: 100%;
 }
 
 .ion-page {
-  background: vars.$color-background;
-  border: 2px solid red; // Para debug - puedes quitarlo después
+  background: var(--ion-background-color);
 
   /* La página ocupa todo el espacio del split-pane */
   height: 100%;

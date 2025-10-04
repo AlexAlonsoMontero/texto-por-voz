@@ -1,63 +1,67 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" (click)="goBack()" aria-label="Volver a la página principal">
-      </ion-back-button>
-    </ion-buttons>
-    <ion-title>Configuración de Colores</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <div class="settings-container">
-    
-    <!-- Selector de color principal -->
-    <app-color-selector
-      title="Color Principal"
-      [currentColor]="getCurrentPrimaryColor()"
-      ariaLabel="Selector de color principal de la aplicación"
-      (colorChanged)="onPrimaryColorSelected($event)">
-    </app-color-selector>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/home" (click)="goBack()" aria-label="Volver a la página principal">
+        </ion-back-button>
+      </ion-buttons>
+      <ion-title>Configuración de Colores</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-    <!-- Selector de color secundario -->
-    <app-color-selector
-      title="Color Secundario"
-      [currentColor]="getCurrentSecondaryColor()"
-      ariaLabel="Selector de color secundario de la aplicación"
-      (colorChanged)="onSecondaryColorSelected($event)">
-    </app-color-selector>
+  <ion-content [fullscreen]="true">
+    <div class="settings-container">
+      <!-- Selector de color principal -->
+      <app-color-selector
+        title="Color Principal"
+        [currentColor]="getCurrentPrimaryColor()"
+        ariaLabel="Selector de color principal de la aplicación"
+        (colorChanged)="onPrimaryColorSelected($event)"
+      >
+      </app-color-selector>
 
-    <!-- Selector de color de fondo -->
-    <app-color-selector
-      title="Color de Fondo"
-      [currentColor]="getCurrentBackgroundColor()"
-      ariaLabel="Selector de color de fondo de la aplicación"
-      (colorChanged)="onBackgroundColorSelected($event)">
-    </app-color-selector>
+      <!-- Selector de color secundario -->
+      <app-color-selector
+        title="Color Secundario"
+        [currentColor]="getCurrentSecondaryColor()"
+        ariaLabel="Selector de color secundario de la aplicación"
+        (colorChanged)="onSecondaryColorSelected($event)"
+      >
+      </app-color-selector>
 
-    <!-- Acciones -->
-    <section class="actions-section" aria-label="Acciones de configuración">
-      <div class="action-grid">
-        <app-press-hold-button
-          buttonId="reset-colors"
-          [holdDuration]="3000"
-          color="tertiary"
-          ariaLabel="Restablecer todos los colores a valores por defecto"
-          (actionExecuted)="resetToDefault()"
-        >
-          Restablecer por Defecto
-        </app-press-hold-button>
+      <!-- Selector de color de fondo -->
+      <app-color-selector
+        title="Color de Fondo"
+        [currentColor]="getCurrentBackgroundColor()"
+        ariaLabel="Selector de color de fondo de la aplicación"
+        (colorChanged)="onBackgroundColorSelected($event)"
+      >
+      </app-color-selector>
 
-        <app-press-hold-button
-          buttonId="back-home"
-          [holdDuration]="2000"
-          color="primary"
-          ariaLabel="Volver a la página principal"
-          (actionExecuted)="goBack()"
-        >
-          Volver al Inicio
-        </app-press-hold-button>
-      </div>
-    </section>
-  </div>
+      <!-- Acciones -->
+      <section class="actions-section" aria-label="Acciones de configuración">
+        <div class="action-grid">
+          <app-press-hold-button
+            buttonId="reset-colors"
+            [holdDuration]="3000"
+            color="tertiary"
+            ariaLabel="Restablecer todos los colores a valores por defecto"
+            (actionExecuted)="resetToDefault()"
+          >
+            Restablecer por Defecto
+          </app-press-hold-button>
+
+          <app-press-hold-button
+            buttonId="back-home"
+            [holdDuration]="2000"
+            color="primary"
+            ariaLabel="Volver a la página principal"
+            (actionExecuted)="goBack()"
+          >
+            Volver al Inicio
+          </app-press-hold-button>
+        </div>
+      </section>
+    </div>
+  </ion-content>
 </ion-content>
