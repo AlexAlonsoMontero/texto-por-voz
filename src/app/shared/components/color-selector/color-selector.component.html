@@ -1,37 +1,28 @@
 <div class="color-selector-container">
   <h3 class="selector-title">{{ title }}</h3>
-  
+
   <div class="selector-content">
     <!-- Muestra de color actual -->
-    <div class="color-preview" 
-         [style.background-color]="currentColor"
-         [attr.aria-label]="'Color actual: ' + getColorName(currentColor)">
+    <div class="color-preview" [style.background-color]="currentColor" [attr.aria-label]="'Color actual'">
       <span class="color-label">Actual</span>
     </div>
 
     <!-- Selector de color nativo -->
-    <input 
+    <input
       type="color"
       class="color-input"
       [value]="selectedColor"
-      [attr.aria-label]="getAccessibilityText()"
-      (change)="onColorChange($event)">
+      [attr.aria-label]="title + ' - Selector de color'"
+      (change)="onColorChange($event)"
+    />
 
     <!-- Muestra de color seleccionado -->
-    <div class="color-preview selected" 
-         [style.background-color]="selectedColor"
-         [attr.aria-label]="'Color seleccionado: ' + getColorName(selectedColor)">
+    <div
+      class="color-preview selected"
+      [style.background-color]="selectedColor"
+      [attr.aria-label]="'Color seleccionado'"
+    >
       <span class="color-label">Nuevo</span>
     </div>
-
-    <!-- Botón de aplicar -->
-    <ion-button 
-      class="apply-button"
-      color="primary"
-      size="large"
-      [attr.aria-label]="'Aplicar color ' + getColorName(selectedColor)"
-      (click)="onApplyColor()">
-      Aplicar Color
-    </ion-button>
   </div>
 </div>
