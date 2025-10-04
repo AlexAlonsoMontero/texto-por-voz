@@ -52,6 +52,9 @@ export class ThemeService implements IThemeService {
 
       // Background
       '--ion-background-color': colors.background,
+
+      // Text
+      '--ion-text-color': colors.text,
     };
   }
 

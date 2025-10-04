@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonSplitPane, IonMenu } from '@ionic/angular/standalone';
 import { SidebarNavigationComponent } from './shared/components/sidebar-navigation/sidebar-navigation.component';
-import { SAFE_AREA_SERVICE, TEXT_TO_SPEECH_SERVICE } from './core/infrastructure/injection-tokens';
+import { SAFE_AREA_SERVICE, TEXT_TO_SPEECH_SERVICE, THEME_SERVICE } from './core/infrastructure/injection-tokens';
 import { ISafeAreaService } from './core/domain/interfaces/safe-area.interface';
 import { ITextToSpeechService, SpeechPriority } from './core/domain/interfaces/text-to-speech.interface';
+import { IThemeService } from './core/domain/interfaces/theme.interface';
 import { ViewDidEnter } from '@ionic/angular';
 
 @Component({
@@ -19,6 +20,8 @@ export class AppComponent implements OnInit, ViewDidEnter {
     private readonly safeAreaService: ISafeAreaService,
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly ttsService: ITextToSpeechService,
+    @Inject(THEME_SERVICE)
+    private readonly themeService: IThemeService,
   ) {}
 
   ngOnInit(): void {
@@ -36,19 +39,36 @@ export class AppComponent implements OnInit, ViewDidEnter {
    */
   private async initializeAppAsync(): Promise<void> {
     try {
-      // 1. Inicializar TTS Service globalmente
+      // 1. Inicializar tema por defecto
+      this.initializeTheme();
+
+      // 2. Inicializar TTS Service globalmente
       await this.initializeTTSService();
 
-      // 2. Aplicar safe areas
+      // 3. Aplicar safe areas
       await this.applySafeAreaMargins();
 
-      // 3. Mensaje de bienvenida accesible
+      // 4. Mensaje de bienvenida accesible
       await this.announceAppReady();
 
       console.log('✅ AppComponent inicializado completamente');
     } catch (error) {
       console.error('❌ Error crítico en AppComponent:', error);
       this.handleCriticalAppError(error);
+    }
+  }
+
+  /**
+   * Inicializa el tema por defecto al arrancar la aplicación
+   */
+  private initializeTheme(): void {
+    try {
+      // Aplicar el tema por defecto para sincronizar las variables CSS
+      const currentTheme = this.themeService.getThemeColors();
+      this.themeService.applyTheme(currentTheme);
+      console.log('✅ Tema inicializado:', currentTheme);
+    } catch (error) {
+      console.error('❌ Error inicializando tema:', error);
     }
   }
 

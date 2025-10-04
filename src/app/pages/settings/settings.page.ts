@@ -1,13 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonBackButton,
-  IonButtons,
-} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonBackButton, IonButtons } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
 import { THEME_SERVICE, TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
 import { IThemeService, ThemeColors } from '../../core/domain/interfaces/theme.interface';
@@ -32,7 +25,6 @@ import { ColorSelectorComponent } from '../../shared/components/color-selector/c
   ],
 })
 export class SettingsPage implements OnInit {
-
   constructor(
     private readonly navCtrl: NavController,
     @Inject(THEME_SERVICE)
@@ -116,6 +108,28 @@ export class SettingsPage implements OnInit {
 
   getCurrentBackgroundColor(): string {
     return this.themeService.getThemeColors().background;
+  }
+
+  getCurrentTextColor(): string {
+    return this.themeService.getThemeColors().text;
+  }
+
+  async onTextColorChange(event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+    const newColor = target.value;
+
+    const currentTheme = this.themeService.getThemeColors();
+    const newTheme: ThemeColors = {
+      ...currentTheme,
+      text: newColor,
+    };
+
+    this.themeService.setThemeColors(newTheme);
+
+    await this.tts.speak(`Color del texto cambiado a ${newColor}`, {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
   }
 
   async resetToDefault(): Promise<void> {

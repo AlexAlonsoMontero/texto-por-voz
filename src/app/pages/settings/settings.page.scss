@@ -11,6 +11,74 @@
   }
 }
 
+.text-color-selector {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 10px;
+  background: var(--ion-background-color);
+}
+
+.selector-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--ion-text-color);
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
+.color-input-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+}
+
+.text-color-input {
+  width: 80px;
+  height: 80px;
+  border: 3px solid #222222;
+  border-radius: 10px;
+  cursor: pointer;
+  background: none;
+
+  // Remover estilos por defecto del navegador
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  &:focus {
+    outline: 4px solid #ffd600;
+    outline-offset: 2px;
+  }
+
+  // Estilos específicos para WebKit (Chrome, Safari)
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 6px;
+  }
+
+  // Estilos para Firefox
+  &::-moz-color-swatch {
+    border: none;
+    border-radius: 6px;
+  }
+}
+
+.color-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--ion-text-color);
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
 .actions-section {
   margin-top: 40px;
   padding: 20px;

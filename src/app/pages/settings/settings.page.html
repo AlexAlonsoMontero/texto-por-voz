@@ -38,6 +38,21 @@
       >
       </app-color-selector>
 
+      <!-- Selector de color de texto -->
+      <div class="text-color-selector">
+        <h3 class="selector-title">Color del Texto</h3>
+        <div class="color-input-container">
+          <input
+            type="color"
+            class="text-color-input"
+            [value]="getCurrentTextColor()"
+            (change)="onTextColorChange($event)"
+            aria-label="Selector de color del texto de la aplicación"
+          />
+          <span class="color-label">Actual: {{ getCurrentTextColor() }}</span>
+        </div>
+      </div>
+
       <!-- Acciones -->
       <section class="actions-section" aria-label="Acciones de configuración">
         <div class="action-grid">

@@ -9,6 +9,7 @@ export interface ThemeColors {
   primary: string;
   secondary: string;
   background: string;
+  text: string;
 }
 
 export interface IonicVariables {
@@ -23,10 +24,12 @@ export interface IonicVariables {
   '--ion-color-secondary-shade': string;
   '--ion-color-secondary-tint': string;
   '--ion-background-color': string;
+  '--ion-text-color': string;
 }
 
 export const DEFAULT_THEME_COLORS: ThemeColors = {
   primary: '#FFD600',
   secondary: '#0057B7',
   background: '#FFFFFF',
+  text: '#222222',
 };
