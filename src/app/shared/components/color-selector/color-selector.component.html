@@ -1,28 +1,64 @@
 <div class="color-selector-container">
   <h3 class="selector-title">{{ title }}</h3>
 
-  <div class="selector-content">
-    <!-- Muestra de color actual -->
-    <div class="color-preview" [style.background-color]="currentColor" [attr.aria-label]="'Color actual'">
+  <!-- Muestra del color actual vs seleccionado -->
+  <div class="color-preview-section">
+    <div
+      class="color-preview current"
+      [style.background-color]="currentColor"
+      [attr.aria-label]="'Color actual: ' + currentColor"
+    >
       <span class="color-label">Actual</span>
     </div>
-
-    <!-- Selector de color nativo -->
-    <input
-      type="color"
-      class="color-input"
-      [value]="selectedColor"
-      [attr.aria-label]="title + ' - Selector de color'"
-      (change)="onColorChange($event)"
-    />
-
-    <!-- Muestra de color seleccionado -->
     <div
       class="color-preview selected"
       [style.background-color]="selectedColor"
-      [attr.aria-label]="'Color seleccionado'"
+      [attr.aria-label]="'Color seleccionado: ' + selectedColor"
     >
       <span class="color-label">Nuevo</span>
+    </div>
+  </div>
+
+  <!-- Grid de colores predefinidos -->
+  <div class="predefined-colors-grid" [attr.aria-label]="'Seleccionar color para ' + title">
+    <button
+      *ngFor="let colorOption of predefinedColors; trackBy: trackByColorValue"
+      type="button"
+      class="color-button"
+      [class.selected]="isSelectedColor(colorOption.value)"
+      [style.background-color]="colorOption.value"
+      [attr.aria-label]="colorOption.name + '. ' + colorOption.description"
+      [attr.aria-pressed]="isSelectedColor(colorOption.value)"
+      (click)="onPredefinedColorSelected(colorOption)"
+      (keydown)="onColorKeyDown($event, colorOption)"
+    >
+      <span class="color-name">{{ colorOption.name }}</span>
+      <span class="color-value">{{ colorOption.value }}</span>
+    </button>
+  </div>
+
+  <!-- Botón para mostrar selector personalizado -->
+  <div class="custom-color-section">
+    <button
+      type="button"
+      class="toggle-custom-button"
+      [class.active]="showCustomInput"
+      aria-label="Alternar selector de color personalizado"
+      (click)="toggleCustomInput()"
+    >
+      {{ showCustomInput ? 'Ocultar' : 'Mostrar' }} Color Personalizado
+    </button>
+
+    <!-- Input de color personalizado (oculto por defecto) -->
+    <div class="custom-input-container" [class.visible]="showCustomInput">
+      <input
+        type="color"
+        class="custom-color-input"
+        [value]="selectedColor"
+        [attr.aria-label]="title + ' - Selector de color personalizado'"
+        (change)="onCustomColorChange($event)"
+      />
+      <span class="custom-color-label">Color personalizado</span>
     </div>
   </div>
 </div>

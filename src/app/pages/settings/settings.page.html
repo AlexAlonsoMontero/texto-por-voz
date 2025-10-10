@@ -11,45 +11,77 @@
 
   <ion-content [fullscreen]="true">
     <div class="settings-container">
-      <!-- Selector de color principal -->
-      <app-color-selector
-        title="Color Principal"
-        [currentColor]="getCurrentPrimaryColor()"
-        ariaLabel="Selector de color principal de la aplicación"
-        (colorChanged)="onPrimaryColorSelected($event)"
-      >
-      </app-color-selector>
+      <!-- Selector de tipo de color -->
+      <section class="color-type-selector" aria-label="Seleccionar qué color modificar">
+        <h2 class="section-title">¿Qué color quieres cambiar?</h2>
+        <div class="color-type-grid">
+          <button
+            *ngFor="let colorType of colorTypes; trackBy: trackByColorType"
+            type="button"
+            class="color-type-button"
+            [class.selected]="selectedColorType?.key === colorType.key"
+            [attr.aria-label]="colorType.name + '. ' + colorType.description"
+            [attr.aria-pressed]="selectedColorType?.key === colorType.key"
+            (click)="selectColorType(colorType)"
+            (keydown)="onColorTypeKeyDown($event, colorType)"
+          >
+            <span class="color-type-icon">{{ colorType.icon }}</span>
+            <span class="color-type-name">{{ colorType.name }}</span>
+            <div
+              class="current-color-preview"
+              [style.background-color]="getCurrentColorForType(colorType.key)"
+              [attr.aria-label]="'Color actual: ' + getCurrentColorForType(colorType.key)"
+            ></div>
+          </button>
+        </div>
+      </section>
 
-      <!-- Selector de color secundario -->
-      <app-color-selector
-        title="Color Secundario"
-        [currentColor]="getCurrentSecondaryColor()"
-        ariaLabel="Selector de color secundario de la aplicación"
-        (colorChanged)="onSecondaryColorSelected($event)"
+      <!-- Paleta de colores integrada -->
+      <div
+        class="integrated-color-palette"
+        *ngIf="selectedColorType"
+        [attr.aria-label]="'Paleta de colores para ' + selectedColorType.name"
       >
-      </app-color-selector>
+        <h3 class="palette-title">Selecciona {{ selectedColorType.name }}</h3>
+        <div class="predefined-colors-grid">
+          <button
+            *ngFor="let colorOption of predefinedColors; trackBy: trackByColorOption"
+            type="button"
+            class="color-button"
+            [class.selected]="isSelectedColor(colorOption.value)"
+            [style.background-color]="colorOption.value"
+            [attr.aria-label]="colorOption.name + '. ' + colorOption.description"
+            [attr.aria-pressed]="isSelectedColor(colorOption.value)"
+            (click)="onColorSelected({color: colorOption.value, name: colorOption.name})"
+            (keydown)="onColorKeyDown($event, colorOption)"
+          >
+            <span class="color-name">{{ colorOption.name }}</span>
+            <span class="color-value">{{ colorOption.value }}</span>
+          </button>
+        </div>
 
-      <!-- Selector de color de fondo -->
-      <app-color-selector
-        title="Color de Fondo"
-        [currentColor]="getCurrentBackgroundColor()"
-        ariaLabel="Selector de color de fondo de la aplicación"
-        (colorChanged)="onBackgroundColorSelected($event)"
-      >
-      </app-color-selector>
+        <!-- Botón para selector personalizado -->
+        <div class="custom-color-section">
+          <button
+            type="button"
+            class="toggle-custom-button"
+            [class.active]="showCustomInput"
+            aria-label="Alternar selector de color personalizado"
+            (click)="toggleCustomInput()"
+          >
+            {{ showCustomInput ? 'Ocultar' : 'Mostrar' }} Color Personalizado
+          </button>
 
-      <!-- Selector de color de texto -->
-      <div class="text-color-selector">
-        <h3 class="selector-title">Color del Texto</h3>
-        <div class="color-input-container">
-          <input
-            type="color"
-            class="text-color-input"
-            [value]="getCurrentTextColor()"
-            (change)="onTextColorChange($event)"
-            aria-label="Selector de color del texto de la aplicación"
-          />
-          <span class="color-label">Actual: {{ getCurrentTextColor() }}</span>
+          <div class="custom-input-container" [class.visible]="showCustomInput">
+            <input
+              type="color"
+              class="custom-color-input"
+              [value]="selectedColor"
+              [attr.aria-label]="selectedColorType.name + ' - Selector de color personalizado'"
+              (change)="onCustomColorChange($event)"
+            />
+            <span class="custom-color-label">Color personalizado</span>
+          </div>
         </div>
       </div>
 

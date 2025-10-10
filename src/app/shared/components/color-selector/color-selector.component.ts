@@ -1,5 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { THEME_SERVICE } from '../../../core/infrastructure/injection-tokens';
+import { IThemeService, ColorOption } from '../../../core/domain/interfaces/theme.interface';
 
 @Component({
   selector: 'app-color-selector',
@@ -16,6 +18,15 @@ export class ColorSelectorComponent implements OnChanges {
   @Output() colorChanged = new EventEmitter<{ color: string; name: string }>();
 
   selectedColor: string = '#FFD600';
+  predefinedColors: ColorOption[] = [];
+  showCustomInput: boolean = false;
+
+  constructor(
+    @Inject(THEME_SERVICE)
+    private readonly themeService: IThemeService,
+  ) {
+    this.predefinedColors = this.themeService.getPredefinedColors();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentColor']) {
@@ -23,15 +34,59 @@ export class ColorSelectorComponent implements OnChanges {
     }
   }
 
-  onColorChange(event: Event): void {
+  /**
+   * Selecciona un color de la paleta predefinida
+   */
+  onPredefinedColorSelected(colorOption: ColorOption): void {
+    this.selectedColor = colorOption.value;
+    this.colorChanged.emit({
+      color: colorOption.value,
+      name: colorOption.name,
+    });
+  }
+
+  /**
+   * Maneja cambios en el input de color personalizado
+   */
+  onCustomColorChange(event: Event): void {
     const target = event.target as HTMLInputElement;
     const newColor = target.value;
     this.selectedColor = newColor;
 
-    // Emitir el evento de cambio
     this.colorChanged.emit({
       color: newColor,
-      name: newColor,
+      name: `Color personalizado ${newColor}`,
     });
+  }
+
+  /**
+   * Alterna la visibilidad del selector de color personalizado
+   */
+  toggleCustomInput(): void {
+    this.showCustomInput = !this.showCustomInput;
+  }
+
+  /**
+   * Verifica si un color está seleccionado actualmente
+   */
+  isSelectedColor(color: string): boolean {
+    return this.selectedColor === color;
+  }
+
+  /**
+   * Maneja la navegación por teclado en los botones de color
+   */
+  onColorKeyDown(event: KeyboardEvent, colorOption: ColorOption): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.onPredefinedColorSelected(colorOption);
+    }
+  }
+
+  /**
+   * TrackBy function para optimizar el renderizado del *ngFor
+   */
+  trackByColorValue(index: number, colorOption: ColorOption): string {
+    return colorOption.value;
   }
 }

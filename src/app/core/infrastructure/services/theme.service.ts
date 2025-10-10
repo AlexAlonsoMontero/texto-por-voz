@@ -4,6 +4,8 @@ import {
   ThemeColors,
   DEFAULT_THEME_COLORS,
   IonicVariables,
+  PREDEFINED_COLORS,
+  ColorOption,
 } from '../../domain/interfaces/theme.interface';
 
 @Injectable({
@@ -29,6 +31,20 @@ export class ThemeService implements IThemeService {
   applyTheme(colors: ThemeColors): void {
     const ionicVariables = this.generateIonicVariables(colors);
     this.setCSSVariables(ionicVariables);
+  }
+
+  /**
+   * Obtiene la paleta de colores predefinidos
+   */
+  getPredefinedColors(): ColorOption[] {
+    return PREDEFINED_COLORS;
+  }
+
+  /**
+   * Busca un color por su nombre en la paleta predefinida
+   */
+  getColorByName(name: string): ColorOption | undefined {
+    return PREDEFINED_COLORS.find((color) => color.name === name);
   }
 
   /**

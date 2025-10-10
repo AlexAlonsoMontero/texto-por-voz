@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonContent, IonHeader, IonToolbar, IonTitle, IonBackButton, IonButtons } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
 import { THEME_SERVICE, TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
-import { IThemeService, ThemeColors } from '../../core/domain/interfaces/theme.interface';
+import { IThemeService, ThemeColors, ColorType, COLOR_TYPES } from '../../core/domain/interfaces/theme.interface';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
 import { ColorSelectorComponent } from '../../shared/components/color-selector/color-selector.component';
@@ -25,6 +25,12 @@ import { ColorSelectorComponent } from '../../shared/components/color-selector/c
   ],
 })
 export class SettingsPage implements OnInit {
+  colorTypes = COLOR_TYPES;
+  selectedColorType: ColorType | null = null;
+  selectedColor: string = '#FFD600';
+  predefinedColors = this.themeService.getPredefinedColors();
+  showCustomInput: boolean = false;
+
   constructor(
     private readonly navCtrl: NavController,
     @Inject(THEME_SERVICE)
@@ -34,14 +40,15 @@ export class SettingsPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Seleccionar el primer tipo de color por defecto
+    this.selectedColorType = COLOR_TYPES[0];
+    this.selectedColor = this.getCurrentColorForType(this.selectedColorType.key);
+
     // Anuncio de bienvenida según las instrucciones
-    this.tts.speak(
-      'Página de configuración de colores activada. Usa los selectores de color para personalizar la aplicación.',
-      {
-        priority: SpeechPriority.HIGH,
-        interrupt: true,
-      },
-    );
+    this.tts.speak('Página de configuración de colores activada. Selecciona qué tipo de color quieres modificar.', {
+      priority: SpeechPriority.HIGH,
+      interrupt: true,
+    });
   }
 
   async goBack(): Promise<void> {
@@ -53,82 +60,108 @@ export class SettingsPage implements OnInit {
     this.navCtrl.navigateRoot('/home');
   }
 
-  async onPrimaryColorSelected(event: { color: string; name: string }): Promise<void> {
-    const currentTheme = this.themeService.getThemeColors();
-    const newTheme: ThemeColors = {
-      ...currentTheme,
-      primary: event.color,
-    };
+  /**
+   * Selecciona qué tipo de color modificar
+   */
+  async selectColorType(colorType: ColorType): Promise<void> {
+    this.selectedColorType = colorType;
+    this.selectedColor = this.getCurrentColorForType(colorType.key);
 
-    this.themeService.setThemeColors(newTheme);
-
-    await this.tts.speak(`Color principal cambiado a ${event.name}`, {
+    await this.tts.speak(`Seleccionado ${colorType.name}. ${colorType.description}`, {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
     });
   }
 
-  async onSecondaryColorSelected(event: { color: string; name: string }): Promise<void> {
+  /**
+   * Obtiene el color actual para un tipo específico
+   */
+  getCurrentColorForType(colorType: keyof ThemeColors): string {
+    const theme = this.themeService.getThemeColors();
+    return theme[colorType];
+  }
+
+  /**
+   * Maneja la selección de un nuevo color
+   */
+  async onColorSelected(event: { color: string; name: string }): Promise<void> {
+    if (!this.selectedColorType) return;
+
+    this.selectedColor = event.color;
+
     const currentTheme = this.themeService.getThemeColors();
     const newTheme: ThemeColors = {
       ...currentTheme,
-      secondary: event.color,
+      [this.selectedColorType.key]: event.color,
     };
 
     this.themeService.setThemeColors(newTheme);
 
-    await this.tts.speak(`Color secundario cambiado a ${event.name}`, {
+    await this.tts.speak(`${this.selectedColorType.name} cambiado a ${event.name}`, {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
     });
   }
 
-  async onBackgroundColorSelected(event: { color: string; name: string }): Promise<void> {
-    const currentTheme = this.themeService.getThemeColors();
-    const newTheme: ThemeColors = {
-      ...currentTheme,
-      background: event.color,
-    };
-
-    this.themeService.setThemeColors(newTheme);
-
-    await this.tts.speak(`Color de fondo cambiado a ${event.name}`, {
-      priority: SpeechPriority.NORMAL,
-      interrupt: true,
-    });
+  /**
+   * Maneja la navegación por teclado en los botones de tipo de color
+   */
+  onColorTypeKeyDown(event: KeyboardEvent, colorType: ColorType): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.selectColorType(colorType);
+    }
   }
 
-  getCurrentPrimaryColor(): string {
-    return this.themeService.getThemeColors().primary;
+  /**
+   * TrackBy function para optimizar el renderizado
+   */
+  trackByColorType(index: number, colorType: ColorType): string {
+    return colorType.key;
   }
 
-  getCurrentSecondaryColor(): string {
-    return this.themeService.getThemeColors().secondary;
+  /**
+   * TrackBy function para la paleta de colores
+   */
+  trackByColorOption(index: number, colorOption: any): string {
+    return colorOption.value;
   }
 
-  getCurrentBackgroundColor(): string {
-    return this.themeService.getThemeColors().background;
+  /**
+   * Verifica si un color está seleccionado actualmente
+   */
+  isSelectedColor(color: string): boolean {
+    if (!this.selectedColorType) return false;
+    return this.getCurrentColorForType(this.selectedColorType.key) === color;
   }
 
-  getCurrentTextColor(): string {
-    return this.themeService.getThemeColors().text;
+  /**
+   * Maneja la navegación por teclado en los botones de color
+   */
+  onColorKeyDown(event: KeyboardEvent, colorOption: any): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.onColorSelected({ color: colorOption.value, name: colorOption.name });
+    }
   }
 
-  async onTextColorChange(event: Event): Promise<void> {
+  /**
+   * Alterna la visibilidad del selector de color personalizado
+   */
+  toggleCustomInput(): void {
+    this.showCustomInput = !this.showCustomInput;
+  }
+
+  /**
+   * Maneja cambios en el input de color personalizado
+   */
+  async onCustomColorChange(event: Event): Promise<void> {
     const target = event.target as HTMLInputElement;
     const newColor = target.value;
 
-    const currentTheme = this.themeService.getThemeColors();
-    const newTheme: ThemeColors = {
-      ...currentTheme,
-      text: newColor,
-    };
-
-    this.themeService.setThemeColors(newTheme);
-
-    await this.tts.speak(`Color del texto cambiado a ${newColor}`, {
-      priority: SpeechPriority.NORMAL,
-      interrupt: true,
+    await this.onColorSelected({
+      color: newColor,
+      name: `Color personalizado ${newColor}`,
     });
   }
 

@@ -3,24 +3,14 @@
   max-width: 1200px;
   margin: 0 auto;
 
-  // Optimización para orientación horizontal siguiendo las instrucciones
   @media (orientation: landscape) {
     display: flex;
     flex-direction: column;
-    gap: 30px;
   }
 }
 
-.text-color-selector {
-  margin-bottom: 30px;
-  padding: 20px;
-  border: 2px solid var(--ion-color-medium);
-  border-radius: 10px;
-  background: var(--ion-background-color);
-}
-
-.selector-title {
-  font-size: 24px;
+.section-title {
+  font-size: 28px;
   font-weight: bold;
   color: var(--ion-text-color);
   margin-bottom: 20px;
@@ -28,32 +18,243 @@
   font-family: Arial, Helvetica, Verdana, sans-serif;
 }
 
-.color-input-container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  justify-content: center;
+/* Selector de tipo de color */
+.color-type-selector {
+  margin-bottom: 40px;
+  padding: 25px;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 15px;
+  background: var(--ion-background-color);
 }
 
-.text-color-input {
+.color-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.color-type-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  padding: 20px;
+  border: 3px solid #222222;
+  border-radius: 15px;
+  background: var(--ion-background-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+  gap: 10px;
+
+  &:hover {
+    transform: scale(1.05);
+    border-width: 4px;
+  }
+
+  &:focus {
+    outline: 4px solid var(--ion-color-primary);
+    outline-offset: 2px;
+  }
+
+  &.selected {
+    border-color: var(--ion-color-primary);
+    border-width: 4px;
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 214, 0, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.color-type-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.color-type-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--ion-text-color);
+  text-align: center;
+}
+
+.current-color-preview {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #222222;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+/* Paleta de colores integrada */
+.integrated-color-palette {
+  margin-top: 3px;
+  padding: 25px;
+  border: 2px solid var(--ion-color-primary);
+  border-radius: 15px;
+  background: var(--ion-background-color);
+}
+
+.palette-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--ion-text-color);
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
+.predefined-colors-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+
+.color-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  border: 3px solid #222222;
+  border-radius: 10px;
+  cursor: pointer;
+  background: none;
+  padding: 8px;
+  position: relative;
+  transition: all 0.2s ease;
+  outline: none;
+
+  &:hover {
+    transform: scale(1.05);
+    border-width: 4px;
+  }
+
+  &:focus {
+    outline: 4px solid var(--ion-color-primary);
+    outline-offset: 2px;
+  }
+
+  &.selected {
+    border-color: var(--ion-color-primary);
+    border-width: 4px;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.color-name {
+  background: rgba(255, 255, 255, 0.95);
+  color: #222222;
+  padding: 4px 6px;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 1.2;
+  border: 1px solid #ccc;
+  margin-bottom: 4px;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.color-value {
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  padding: 2px 4px;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.custom-color-section {
+  border-top: 2px solid var(--ion-color-medium);
+  padding-top: 20px;
+}
+
+.toggle-custom-button {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid var(--ion-color-primary);
+  border-radius: 10px;
+  background: var(--ion-background-color);
+  color: var(--ion-text-color);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+
+  &:hover {
+    background: var(--ion-color-primary);
+    color: white;
+  }
+
+  &:focus {
+    outline: 4px solid var(--ion-color-primary);
+    outline-offset: 2px;
+  }
+
+  &.active {
+    background: var(--ion-color-primary);
+    color: white;
+  }
+}
+
+.custom-input-container {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+
+  &.visible {
+    display: flex;
+  }
+}
+
+.custom-color-input {
   width: 80px;
   height: 80px;
   border: 3px solid #222222;
   border-radius: 10px;
   cursor: pointer;
   background: none;
-
-  // Remover estilos por defecto del navegador
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 
   &:focus {
-    outline: 4px solid #ffd600;
+    outline: 4px solid var(--ion-color-primary);
     outline-offset: 2px;
   }
 
-  // Estilos específicos para WebKit (Chrome, Safari)
   &::-webkit-color-swatch-wrapper {
     padding: 0;
     border: none;
@@ -65,75 +266,94 @@
     border-radius: 6px;
   }
 
-  // Estilos para Firefox
   &::-moz-color-swatch {
     border: none;
     border-radius: 6px;
   }
 }
 
-.color-label {
-  font-size: 18px;
+.custom-color-label {
+  font-size: 16px;
   font-weight: bold;
   color: var(--ion-text-color);
   font-family: Arial, Helvetica, Verdana, sans-serif;
 }
 
+/* Botones de acción */
 .actions-section {
   margin-top: 40px;
-  padding: 20px;
-  border-top: 2px solid var(--ion-color-light);
+  padding: 25px;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 15px;
+  background: var(--ion-background-color);
 }
 
 .action-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr;
   gap: 20px;
-  max-width: 800px;
-  margin: 0 auto;
 
-  // Optimización para tablet horizontal
-  @media (orientation: landscape) {
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-// Responsive para pantallas más pequeñas
+/* Estilos responsive */
 @media (max-width: 768px) {
   .settings-container {
     padding: 15px;
   }
 
-  .action-grid {
+  .color-type-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
+
+  .color-type-button {
+    min-height: 80px;
+    padding: 15px;
+  }
+
+  .color-type-icon {
+    font-size: 28px;
+  }
+
+  .color-type-name {
+    font-size: 14px;
+  }
+
+  .current-color-preview {
+    width: 35px;
+    height: 35px;
+  }
+
+  .predefined-colors-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .color-button {
+    min-height: 80px;
+  }
 }
 
-// Cumplimiento con las instrucciones de accesibilidad
-// Asegurar contraste alto y navegación clara
-ion-header {
-  --background: var(--ion-background-color);
-  --color: var(--ion-text-color);
+/* Cumplimiento con accesibilidad - min-height ya está definido arriba */
+
+/* Focus y estados especiales para accesibilidad */
+button:focus-visible {
+  outline: 4px solid var(--ion-color-primary);
+  outline-offset: 2px;
 }
 
-ion-toolbar {
-  --background: var(--ion-background-color);
-  --color: var(--ion-text-color);
-}
+/* Soporte para usuarios que prefieren reducir animaciones */
+@media (prefers-reduced-motion: reduce) {
+  .color-type-button,
+  .preview-card {
+    transition: none;
+  }
 
-ion-title {
-  font-size: 24px;
-  font-weight: bold;
-  font-family: Arial, Helvetica, Verdana, sans-serif;
-}
-
-ion-back-button {
-  --color: var(--ion-text-color);
-
-  &:focus {
-    outline: 4px solid var(--ion-color-primary);
-    outline-offset: 2px;
+  .color-type-button:hover,
+  .color-type-button.selected {
+    transform: none;
   }
 }
