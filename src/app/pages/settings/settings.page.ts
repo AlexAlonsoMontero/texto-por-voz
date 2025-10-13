@@ -6,7 +6,6 @@ import { THEME_SERVICE, TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure
 import { IThemeService, ThemeColors, ColorType, COLOR_TYPES } from '../../core/domain/interfaces/theme.interface';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
-import { ColorSelectorComponent } from '../../shared/components/color-selector/color-selector.component';
 
 @Component({
   selector: 'app-settings',
@@ -21,7 +20,6 @@ import { ColorSelectorComponent } from '../../shared/components/color-selector/c
     IonBackButton,
     IonButtons,
     PressHoldButtonComponent,
-    ColorSelectorComponent,
   ],
 })
 export class SettingsPage implements OnInit {
