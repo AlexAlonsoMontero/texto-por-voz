@@ -340,6 +340,95 @@
 
 /* Cumplimiento con accesibilidad - min-height ya está definido arriba */
 
+/* Sección de duración de presión de botones */
+.button-duration-section {
+  margin-bottom: 40px;
+  padding: 25px;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 15px;
+  background: var(--ion-background-color);
+}
+
+.section-description {
+  font-size: 18px;
+  color: var(--ion-text-color);
+  text-align: center;
+  margin-bottom: 25px;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
+.duration-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+ion-item {
+  --background: var(--ion-background-color);
+  --border-color: var(--ion-color-medium);
+  --padding-start: 15px;
+  --padding-end: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+ion-range {
+  padding: 20px 10px;
+
+  ion-label[slot='start'],
+  ion-label[slot='end'] {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--ion-text-color);
+  }
+}
+
+.quick-duration-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.quick-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+  padding: 15px;
+  border: 3px solid var(--ion-color-primary);
+  border-radius: 12px;
+  background: var(--ion-background-color);
+  color: var(--ion-text-color);
+  font-size: 24px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+
+  &:focus {
+    outline: 4px solid var(--ion-color-primary);
+    outline-offset: 2px;
+  }
+
+  &.selected {
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+    border-width: 4px;
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
 /* Focus y estados especiales para accesibilidad */
 button:focus-visible {
   outline: 4px solid var(--ion-color-primary);
@@ -349,12 +438,31 @@ button:focus-visible {
 /* Soporte para usuarios que prefieren reducir animaciones */
 @media (prefers-reduced-motion: reduce) {
   .color-type-button,
-  .preview-card {
+  .preview-card,
+  .quick-button {
     transition: none;
   }
 
   .color-type-button:hover,
-  .color-type-button.selected {
+  .color-type-button.selected,
+  .quick-button:hover,
+  .quick-button.selected {
     transform: none;
+  }
+}
+
+/* Responsive para duración de botones */
+@media (max-width: 768px) {
+  .quick-duration-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quick-button {
+    min-height: 60px;
+    font-size: 20px;
+  }
+
+  .section-description {
+    font-size: 16px;
   }
 }

@@ -85,12 +85,81 @@
         </div>
       </div>
 
+      <!-- Control de duración de presión de botones -->
+      <section class="button-duration-section" aria-label="Configuración de duración de presión de botones">
+        <h2 class="section-title">⏱️ Tiempo de Presión de Botones</h2>
+        <p class="section-description">
+          Ajusta cuántos segundos debes mantener presionado un botón antes de que se active
+        </p>
+
+        <div class="duration-controls">
+          <ion-item lines="full">
+            <ion-label position="stacked">
+              <strong>Duración actual: {{ pressHoldDuration / 1000 }} segundos</strong>
+            </ion-label>
+            <ion-range
+              [min]="1"
+              [max]="5"
+              [step]="0.5"
+              [value]="pressHoldDuration / 1000"
+              [pin]="true"
+              [snaps]="true"
+              [ticks]="true"
+              (ionChange)="onDurationChange($event)"
+              aria-label="Ajustar duración de presión de botones en segundos"
+            >
+              <ion-label slot="start">1s</ion-label>
+              <ion-label slot="end">5s</ion-label>
+            </ion-range>
+          </ion-item>
+
+          <!-- Botones de duración rápida -->
+          <div class="quick-duration-buttons">
+            <button
+              type="button"
+              class="quick-button"
+              [class.selected]="pressHoldDuration === 1000"
+              (click)="setQuickDuration(1000)"
+              aria-label="Establecer duración a 1 segundo"
+            >
+              1s
+            </button>
+            <button
+              type="button"
+              class="quick-button"
+              [class.selected]="pressHoldDuration === 2000"
+              (click)="setQuickDuration(2000)"
+              aria-label="Establecer duración a 2 segundos"
+            >
+              2s
+            </button>
+            <button
+              type="button"
+              class="quick-button"
+              [class.selected]="pressHoldDuration === 3000"
+              (click)="setQuickDuration(3000)"
+              aria-label="Establecer duración a 3 segundos"
+            >
+              3s
+            </button>
+            <button
+              type="button"
+              class="quick-button"
+              [class.selected]="pressHoldDuration === 4000"
+              (click)="setQuickDuration(4000)"
+              aria-label="Establecer duración a 4 segundos"
+            >
+              4s
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- Acciones -->
       <section class="actions-section" aria-label="Acciones de configuración">
         <div class="action-grid">
           <app-press-hold-button
             buttonId="reset-colors"
-            [holdDuration]="3000"
             color="tertiary"
             ariaLabel="Restablecer todos los colores a valores por defecto"
             (actionExecuted)="resetToDefault()"
@@ -100,7 +169,6 @@
 
           <app-press-hold-button
             buttonId="back-home"
-            [holdDuration]="2000"
             color="primary"
             ariaLabel="Volver a la página principal"
             (actionExecuted)="goBack()"

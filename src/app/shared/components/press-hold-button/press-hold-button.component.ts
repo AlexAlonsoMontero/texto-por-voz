@@ -1,12 +1,24 @@
-import { Component, Input, Output, EventEmitter, OnDestroy, Inject, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Inject,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonButton } from '@ionic/angular/standalone';
+import { Subscription } from 'rxjs';
 import { PRESS_HOLD_BUTTON_SERVICE } from '../../../core/infrastructure/injection-tokens';
 import {
   IPressHoldButtonService,
   IonicColor,
   DEFAULT_PRESS_HOLD_CONFIG,
 } from '../../../core/domain/interfaces/press-hold-button.interface';
+import { PressHoldConfigService } from '../../../core/application/services/press-hold-config.service';
 
 @Component({
   selector: 'app-press-hold-button',
@@ -15,9 +27,8 @@ import {
   standalone: true,
   imports: [CommonModule, IonButton],
 })
-export class PressHoldButtonComponent implements OnDestroy {
+export class PressHoldButtonComponent implements OnInit, OnDestroy {
   @Input() buttonId!: string;
-  @Input() holdDuration: number = DEFAULT_PRESS_HOLD_CONFIG.holdDuration;
   @Input() color: IonicColor = DEFAULT_PRESS_HOLD_CONFIG.color;
   @Input() disabled: boolean = false;
   @Input() ariaLabel: string = '';
@@ -29,14 +40,27 @@ export class PressHoldButtonComponent implements OnDestroy {
   @ViewChild('progressCircle', { static: false }) progressCircle!: ElementRef<SVGCircleElement>;
 
   private progressAnimationId?: number;
+  private durationSubscription?: Subscription;
+
+  // Duración dinámica controlada por el servicio
+  public holdDuration: number = DEFAULT_PRESS_HOLD_CONFIG.holdDuration;
 
   constructor(
     @Inject(PRESS_HOLD_BUTTON_SERVICE)
     private readonly pressHoldService: IPressHoldButtonService,
+    private readonly configService: PressHoldConfigService,
   ) {}
+
+  ngOnInit(): void {
+    // Suscribirse a cambios en la duración de presión
+    this.durationSubscription = this.configService.duration$.subscribe((duration) => {
+      this.holdDuration = duration;
+    });
+  }
 
   ngOnDestroy(): void {
     this.cancelPress();
+    this.durationSubscription?.unsubscribe();
   }
 
   /**

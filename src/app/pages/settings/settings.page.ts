@@ -1,11 +1,22 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonBackButton, IonButtons } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonBackButton,
+  IonButtons,
+  IonRange,
+  IonLabel,
+  IonItem,
+} from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
 import { THEME_SERVICE, TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
 import { IThemeService, ThemeColors, ColorType, COLOR_TYPES } from '../../core/domain/interfaces/theme.interface';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
+import { PressHoldConfigService } from '../../core/application/services/press-hold-config.service';
 
 @Component({
   selector: 'app-settings',
@@ -19,6 +30,9 @@ import { PressHoldButtonComponent } from '../../shared/components/press-hold-but
     IonTitle,
     IonBackButton,
     IonButtons,
+    IonRange,
+    IonLabel,
+    IonItem,
     PressHoldButtonComponent,
   ],
 })
@@ -29,15 +43,22 @@ export class SettingsPage implements OnInit {
   predefinedColors = this.themeService.getPredefinedColors();
   showCustomInput: boolean = false;
 
+  // Duración de presión de botones (en milisegundos)
+  pressHoldDuration: number = 2000; // Por defecto 2 segundos
+
   constructor(
     private readonly navCtrl: NavController,
     @Inject(THEME_SERVICE)
     private readonly themeService: IThemeService,
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly tts: ITextToSpeechService,
+    private readonly pressHoldConfig: PressHoldConfigService,
   ) {}
 
   ngOnInit(): void {
+    // Cargar duración desde el servicio
+    this.pressHoldDuration = this.pressHoldConfig.getDuration();
+
     // Seleccionar el primer tipo de color por defecto
     this.selectedColorType = COLOR_TYPES[0];
     this.selectedColor = this.getCurrentColorForType(this.selectedColorType.key);
@@ -160,6 +181,34 @@ export class SettingsPage implements OnInit {
     await this.onColorSelected({
       color: newColor,
       name: `Color personalizado ${newColor}`,
+    });
+  }
+
+  /**
+   * Maneja el cambio del slider de duración
+   */
+  async onDurationChange(event: any): Promise<void> {
+    const seconds = event.detail.value;
+    this.pressHoldDuration = seconds * 1000; // Convertir a milisegundos
+    this.pressHoldConfig.setDuration(this.pressHoldDuration);
+
+    await this.tts.speak(`Duración establecida a ${seconds} segundo${seconds !== 1 ? 's' : ''}`, {
+      priority: SpeechPriority.NORMAL,
+      interrupt: false,
+    });
+  }
+
+  /**
+   * Establece una duración rápida predefinida
+   */
+  async setQuickDuration(durationMs: number): Promise<void> {
+    this.pressHoldDuration = durationMs;
+    this.pressHoldConfig.setDuration(durationMs);
+
+    const seconds = durationMs / 1000;
+    await this.tts.speak(`Duración establecida a ${seconds} segundo${seconds !== 1 ? 's' : ''}`, {
+      priority: SpeechPriority.NORMAL,
+      interrupt: false,
     });
   }
 
