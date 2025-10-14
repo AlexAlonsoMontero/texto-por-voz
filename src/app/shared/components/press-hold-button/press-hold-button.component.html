@@ -1,51 +1,47 @@
-<div class="press-hold-container">
-  <!-- Botón principal con eventos de presión -->
-  <ion-button
-    [id]="buttonId"
-    [class]="getButtonClasses()"
-    [disabled]="disabled"
-    [attr.aria-label]="getAccessibilityText()"
-    [attr.aria-pressed]="isPressing()"
-    fill="solid"
-    size="large"
-    (mousedown)="onPressStart($event)"
-    (mouseup)="onPressEnd($event)"
-    (mouseleave)="onPressEnd($event)"
-    (touchstart)="onPressStart($event)"
-    (touchend)="onPressEnd($event)"
-    (touchcancel)="onPressEnd($event)"
-    (keydown.space)="onPressStart($event)"
-    (keyup.space)="onPressEnd($event)"
-    (keydown.enter)="onPressStart($event)"
-    (keyup.enter)="onPressEnd($event)"
-  >
-    <!-- Contenido del botón (texto) -->
-    <span class="button-content">
-      <ng-content></ng-content>
-    </span>
+<!-- Botón nativo de Ionic sin clases personalizadas -->
+<ion-button
+  [id]="buttonId"
+  [color]="color"
+  [disabled]="disabled"
+  [attr.aria-label]="getAccessibilityText()"
+  [attr.aria-pressed]="isPressing()"
+  fill="solid"
+  size="large"
+  expand="block"
+  (mousedown)="onPressStart($event)"
+  (mouseup)="onPressEnd($event)"
+  (mouseleave)="onPressEnd($event)"
+  (touchstart)="onPressStart($event)"
+  (touchend)="onPressEnd($event)"
+  (touchcancel)="onPressEnd($event)"
+  (keydown.space)="onPressStart($event)"
+  (keyup.space)="onPressEnd($event)"
+  (keydown.enter)="onPressStart($event)"
+  (keyup.enter)="onPressEnd($event)"
+>
+  <!-- Contenido directo sin wrappers -->
+  <ng-content></ng-content>
 
-    <!-- Círculo de progreso superpuesto -->
-    <div class="progress-overlay" *ngIf="isPressing()">
-      <svg class="progress-circle" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true">
-        <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="2" class="progress-background" />
-        <circle
-          #progressCircle
-          cx="24"
-          cy="24"
-          r="22"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="4"
-          stroke-linecap="round"
-          class="progress-foreground"
-          transform="rotate(-90 24 24)"
-        />
-      </svg>
-    </div>
-  </ion-button>
-
-  <!-- Texto de estado para lectores de pantalla -->
-  <div class="sr-only" [attr.aria-live]="isPressing() ? 'polite' : null" [attr.aria-atomic]="true">
-    <span *ngIf="isPressing()"> Presionando... {{ getProgress().toFixed(0) }}% completado </span>
+  <!-- Círculo de progreso -->
+  <div class="progress-overlay" *ngIf="isPressing()">
+    <svg class="progress-circle" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+      <circle
+        #progressCircle
+        cx="16"
+        cy="16"
+        r="14"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="3"
+        stroke-linecap="round"
+        class="progress-foreground"
+        transform="rotate(-90 16 16)"
+      />
+    </svg>
   </div>
+</ion-button>
+
+<!-- Accesibilidad -->
+<div class="sr-only" [attr.aria-live]="isPressing() ? 'polite' : null">
+  <span *ngIf="isPressing()">Presionando... {{ getProgress().toFixed(0) }}% completado</span>
 </div>

@@ -1,199 +1,46 @@
-// Siguiendo las instrucciones de accesibilidad con variables Ionic nativas
-.press-hold-container {
-  position: relative;
+// ENFOQUE SIMPLE: Dejar que ion-button funcione de forma nativa
+// Solo añadimos lo MÍNIMO necesario para el componente press-hold
+
+// Contenedor mínimo sin estilos conflictivos
+:host {
   display: inline-block;
 }
 
-// Estilos base del botón siguiendo las instrucciones de accesibilidad
-.press-hold-button {
-  // Propiedades base de accesibilidad
-  border-radius: 10px;
-  font-size: 24px;
-  font-family: Arial, Helvetica, Verdana, sans-serif;
+// El botón usa sus propios estilos nativos de Ionic
+// Solo personalizamos el tamaño de texto para accesibilidad
+ion-button {
+  font-size: 28px;
   font-weight: bold;
-
-  margin: 5px;
-  min-height: 56px;
-  min-width: 120px;
-  cursor: pointer;
-  border: 3px solid;
-  position: relative;
-  overflow: visible;
-  transition: all 0.2s ease-in-out;
-
-  // Estados usando variables CSS de Ionic para cada color
-  &--primary {
-    background-color: var(--ion-color-primary);
-    color: var(--ion-color-primary-contrast);
-    border-color: var(--ion-color-primary-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-primary-shade);
-      border-color: var(--ion-color-warning);
-    }
-  }
-
-  &--secondary {
-    background-color: var(--ion-color-secondary);
-    color: var(--ion-color-secondary-contrast);
-    border-color: var(--ion-color-secondary-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-secondary-shade);
-      border-color: var(--ion-color-warning);
-    }
-  }
-
-  &--tertiary {
-    background-color: var(--ion-color-tertiary);
-    color: var(--ion-color-tertiary-contrast);
-    border-color: var(--ion-color-tertiary-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-tertiary-shade);
-      border-color: var(--ion-color-warning);
-    }
-  }
-
-  &--success {
-    background-color: var(--ion-color-success);
-    color: var(--ion-color-success-contrast);
-    border-color: var(--ion-color-success-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-success-shade);
-      border-color: var(--ion-color-warning);
-    }
-  }
-
-  &--warning {
-    // Color por defecto según instrucciones (amarillo accesible)
-    background-color: var(--ion-color-warning);
-    color: var(--ion-color-warning-contrast);
-    border-color: var(--ion-color-warning-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-warning-shade);
-      border-color: var(--ion-color-primary);
-    }
-  }
-
-  &--danger {
-    background-color: var(--ion-color-danger);
-    color: var(--ion-color-danger-contrast);
-    border-color: var(--ion-color-danger-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-danger-shade);
-      border-color: var(--ion-color-warning);
-    }
-  }
-
-  &--light {
-    background-color: var(--ion-color-light);
-    color: var(--ion-color-light-contrast);
-    border-color: var(--ion-color-light-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-light-shade);
-      border-color: var(--ion-color-primary);
-    }
-  }
-
-  &--medium {
-    background-color: var(--ion-color-medium);
-    color: var(--ion-color-medium-contrast);
-    border-color: var(--ion-color-medium-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-medium-shade);
-      border-color: var(--ion-color-warning);
-    }
-  }
-
-  &--dark {
-    background-color: var(--ion-color-dark);
-    color: var(--ion-color-dark-contrast);
-    border-color: var(--ion-color-dark-contrast);
-
-    &.pressing {
-      background-color: var(--ion-color-dark-shade);
-      border-color: var(--ion-color-warning);
-    }
-  }
-
-  &.pressing {
-    transform: scale(0.98);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
-  // Focus para navegación por teclado (obligatorio según instrucciones)
-  &:focus {
-    outline: 4px solid var(--ion-color-warning);
-    outline-offset: 2px;
-  }
-
-  // Hover solo para dispositivos con mouse
-  @media (hover: hover) {
-    &:hover:not(.pressing):not(.disabled) {
-      transform: scale(1.02);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-  }
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 15px;
+  --padding-bottom: 15px;
 }
 
-// Contenido del botón
-.button-content {
-  display: block;
-  position: relative;
-  z-index: 2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-// Overlay del círculo de progreso
+// Círculo de progreso integrado naturalmente
 .progress-overlay {
   position: absolute;
   top: 50%;
-  right: 12px;
+  right: 8px;
   transform: translateY(-50%);
-  z-index: 3;
   pointer-events: none;
-
-  // Animación de aparición suave
-  animation: fadeIn 0.2s ease-in-out;
 }
 
-// Círculo de progreso SVG
 .progress-circle {
-  width: 48px;
-  height: 48px;
-  transform: rotate(-90deg);
-
-  .progress-background {
-    stroke: rgba(255, 255, 255, 0.3);
-    stroke-width: 2;
-  }
+  width: 32px;
+  height: 32px;
 
   .progress-foreground {
     stroke: currentColor;
-    stroke-width: 4;
+    stroke-width: 3;
     stroke-linecap: round;
-    stroke-dasharray: 138.23; // 2 * PI * 22
-    stroke-dashoffset: 138.23;
+    stroke-dasharray: 87.96;
+    stroke-dashoffset: 87.96;
     transition: stroke-dashoffset 0.1s ease-out;
-    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
   }
 }
 
-// Texto para lectores de pantalla (accesibilidad)
+// Accesibilidad - texto para lectores de pantalla
 .sr-only {
   position: absolute;
   width: 1px;
@@ -206,76 +53,24 @@
   border: 0;
 }
 
-// Animaciones
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-50%) scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
-  }
-}
-
-// Responsividad para orientación horizontal (según instrucciones)
-@media (orientation: landscape) {
-  .press-hold-button {
-    // Ajustes específicos para orientación horizontal
-    margin: 15px;
-    min-width: 140px;
-  }
-}
-
-// Ajustes para pantallas más pequeñas manteniendo accesibilidad
+// Responsive
 @media (max-width: 768px) {
-  .press-hold-button {
-    font-size: 22px;
-    min-height: 52px;
-
-    // Mantener tamaños mínimos para accesibilidad
-    min-width: 110px;
-  }
-
-  .progress-overlay {
-    right: 8px;
+  ion-button {
+    font-size: 24px;
   }
 
   .progress-circle {
-    width: 44px;
-    height: 44px;
-  }
-}
+    width: 28px;
+    height: 28px;
 
-// Modo alto contraste del sistema (accesibilidad adicional)
-@media (prefers-contrast: high) {
-  .press-hold-button {
-    border-width: 4px;
-
-    &:focus {
-      outline-width: 6px;
+    .progress-foreground {
+      stroke-dasharray: 75.4;
+      stroke-dashoffset: 75.4;
     }
   }
 }
 
-// Respeto por preferencias de movimiento reducido
 @media (prefers-reduced-motion: reduce) {
-  .press-hold-button {
-    transition: none;
-
-    &:hover {
-      transform: none;
-    }
-
-    &.pressing {
-      transform: none;
-    }
-  }
-
-  .progress-overlay {
-    animation: none;
-  }
-
   .progress-foreground {
     transition: none;
   }

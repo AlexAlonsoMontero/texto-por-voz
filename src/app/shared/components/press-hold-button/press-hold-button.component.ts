@@ -136,12 +136,8 @@ export class PressHoldButtonComponent implements OnDestroy {
   }
 
   getButtonClasses(): string {
-    const baseClass = 'press-hold-button';
-    const colorClass = `press-hold-button--${this.color}`;
-    const stateClass = this.isPressing() ? 'pressing' : 'normal';
-    const disabledClass = this.disabled ? 'disabled' : '';
-
-    return [baseClass, colorClass, stateClass, disabledClass].filter(Boolean).join(' ');
+    // Sin clases personalizadas - Ionic maneja los estilos nativamente
+    return '';
   }
 
   getAccessibilityText(): string {
