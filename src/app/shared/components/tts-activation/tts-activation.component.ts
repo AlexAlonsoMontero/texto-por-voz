@@ -149,7 +149,6 @@ export class TtsActivationComponent {
       );
 
       this.activated.emit();
-      console.log('✅ TTS activado exitosamente por el usuario');
     } catch (error) {
       console.error('❌ Error activando TTS:', error);
 

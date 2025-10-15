@@ -17,7 +17,6 @@ export class ThemeService implements IThemeService {
   setThemeColors(colors: ThemeColors): void {
     this.currentTheme = { ...colors };
     this.applyTheme(colors);
-    console.log('✅ Tema actualizado:', colors);
   }
 
   getThemeColors(): ThemeColors {

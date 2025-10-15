@@ -76,8 +76,6 @@ export class PressHoldButtonComponent implements OnInit, OnDestroy {
     this.pressHoldService.startPressTimer(this.buttonId, this.holdDuration);
     this.pressStarted.emit();
     this.startProgressAnimation();
-
-    console.log(`✅ Presión iniciada en botón ${this.buttonId} por ${this.holdDuration}ms`);
   }
 
   /**
@@ -92,10 +90,8 @@ export class PressHoldButtonComponent implements OnInit, OnDestroy {
 
     if (progress >= 100) {
       this.actionExecuted.emit();
-      console.log(`✅ Acción ejecutada en botón ${this.buttonId}`);
     } else if (wasPressed) {
       this.pressCancelled.emit();
-      console.log(`❌ Presión cancelada en botón ${this.buttonId} con ${progress.toFixed(1)}% progreso`);
     }
 
     this.cancelPress();

@@ -50,8 +50,6 @@ export class AppComponent implements OnInit, ViewDidEnter {
 
       // 4. Mensaje de bienvenida accesible
       await this.announceAppReady();
-
-      console.log('✅ AppComponent inicializado completamente');
     } catch (error) {
       console.error('❌ Error crítico en AppComponent:', error);
       this.handleCriticalAppError(error);
@@ -66,7 +64,6 @@ export class AppComponent implements OnInit, ViewDidEnter {
       // Aplicar el tema por defecto para sincronizar las variables CSS
       const currentTheme = this.themeService.getThemeColors();
       this.themeService.applyTheme(currentTheme);
-      console.log('✅ Tema inicializado:', currentTheme);
     } catch (error) {
       console.error('❌ Error inicializando tema:', error);
     }
@@ -78,7 +75,6 @@ export class AppComponent implements OnInit, ViewDidEnter {
   private async initializeTTSService(): Promise<void> {
     try {
       await this.ttsService.initialize();
-      console.log('✅ TTS Service inicializado globalmente en AppComponent');
     } catch (error) {
       console.error('❌ Error inicializando TTS Service:', error);
     }

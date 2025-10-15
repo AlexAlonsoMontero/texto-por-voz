@@ -65,7 +65,6 @@ export class HomePage implements OnInit, OnDestroy {
     try {
       if (this.orientationService.isOrientationLockSupported()) {
         await this.orientationService.lockToLandscape();
-        console.log('✅ Orientación bloqueada a landscape');
       }
     } catch (error) {
       console.error('❌ Error configurando orientación:', error);
@@ -83,7 +82,6 @@ export class HomePage implements OnInit, OnDestroy {
 
         // Verificar si necesita activación del usuario
         if (this.tts.needsActivation()) {
-          console.log('🔧 TTS requiere activación manual del usuario');
           this.showActivation = true;
           return;
         }
@@ -106,8 +104,6 @@ export class HomePage implements OnInit, OnDestroy {
         priority: SpeechPriority.HIGH,
         interrupt: false, // No interrumpir mensaje de AppComponent si aún está sonando
       });
-
-      console.log('✅ Mensaje de bienvenida de HomePage anunciado');
     } catch (error) {
       console.error('❌ Error en mensaje de bienvenida HomePage:', error);
 
@@ -159,10 +155,8 @@ export class HomePage implements OnInit, OnDestroy {
     try {
       if (this.tts.isSpeaking()) {
         this.tts.pause();
-        console.log('TTS pausado');
       } else {
         this.tts.resume();
-        console.log('TTS reanudado');
       }
     } catch (error) {
       console.error('❌ Error en pausa/reanudación:', error);
@@ -175,7 +169,6 @@ export class HomePage implements OnInit, OnDestroy {
   stopSpeech(): void {
     try {
       this.tts.stop();
-      console.log('TTS detenido');
     } catch (error) {
       console.error('❌ Error deteniendo TTS:', error);
     }
@@ -225,13 +218,9 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   // Eventos de botones de presión sostenida
-  onPressStarted(buttonId: string): void {
-    console.log(`🚀 Presión iniciada en botón: ${buttonId}`);
-  }
+  onPressStarted(buttonId: string): void {}
 
   onPressCancelled(buttonId: string): void {
-    console.log(`❌ Presión cancelada en botón: ${buttonId}`);
-
     this.tts.speak('Presión cancelada', {
       priority: SpeechPriority.HIGH,
       interrupt: true,

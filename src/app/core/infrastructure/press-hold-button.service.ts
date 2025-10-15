@@ -19,7 +19,6 @@ export class PressHoldButtonService implements IPressHoldButtonService {
 
   setGlobalConfig(config: Partial<PressHoldConfig>): void {
     this.globalConfig = { ...this.globalConfig, ...config };
-    console.log('✅ Configuración global de botones actualizada:', this.globalConfig);
   }
 
   getGlobalConfig(): PressHoldConfig {
@@ -134,7 +133,7 @@ export class PressHoldButtonService implements IPressHoldButtonService {
   }
 
   private emitEvent(event: PressHoldEvent): void {
-    console.log('PressHold Event:', event);
+    // Evento emitido silenciosamente
   }
 
   private async triggerHapticFeedback(type: 'light' | 'medium' | 'heavy' | 'success' = 'light'): Promise<void> {

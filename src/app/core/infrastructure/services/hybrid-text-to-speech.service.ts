@@ -18,18 +18,14 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
   private capacitorTTS?: any;
   private needsUserActivation = false;
 
-  constructor() {
-    console.log(`TTS Service creado - Plataforma: ${this.isNativePlatform ? 'Nativo' : 'Web'}`);
-  }
+  constructor() {}
 
   async initialize(): Promise<void> {
     if (this.status !== TTSStatus.UNINITIALIZED) {
-      console.log('TTS ya inicializado, saltando...');
       return;
     }
 
     this.status = TTSStatus.INITIALIZING;
-    console.log('Inicializando TTS Service...');
 
     try {
       if (this.isNativePlatform) {
@@ -39,17 +35,14 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
       }
 
       this.status = TTSStatus.READY;
-      console.log('TTS Service inicializado correctamente');
     } catch (error) {
       this.status = TTSStatus.ERROR;
-      console.error('Error inicializando TTS Service:', error);
       throw error;
     }
   }
 
   async speak(text: string, options: SpeechOptions = {}): Promise<void> {
     if (this.status === TTSStatus.UNINITIALIZED) {
-      console.log('TTS no inicializado, inicializando automáticamente...');
       await this.initialize();
     }
 
@@ -90,7 +83,6 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
     } catch (error) {
       console.error('Error en síntesis de voz:', error);
       if (this.isNativePlatform) {
-        console.log('Fallback a síntesis web...');
         await this.speakWeb(text, speechOptions);
       }
     }
@@ -172,7 +164,6 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
           testUtterance.onend = () => {
             this.needsUserActivation = false;
             this.status = TTSStatus.READY;
-            console.log('✅ TTS activado exitosamente en navegador');
             resolve();
           };
 
@@ -200,7 +191,6 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
     try {
       const { TextToSpeech } = await import('@capacitor-community/text-to-speech');
       this.capacitorTTS = TextToSpeech;
-      console.log('Capacitor TTS inicializado');
     } catch (error) {
       console.error('Error cargando Capacitor TTS:', error);
       throw new Error('Capacitor TTS no disponible');

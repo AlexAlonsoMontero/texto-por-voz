@@ -18,11 +18,8 @@ export class HybridOrientationService implements IOrientationService {
   private webOrientationHandler: ((event: MediaQueryListEvent) => void) | null = null;
 
   constructor() {
-    console.log(`Orientation: Inicializando servicio en plataforma: ${this.isNativePlatform ? 'nativa' : 'web'}`);
-
     if (!this.isNativePlatform && typeof window !== 'undefined') {
       this.mediaQueryList = window.matchMedia('(orientation: landscape)');
-      console.log('Orientation: Media Query API disponible:', !!this.mediaQueryList);
     }
   }
 
@@ -79,8 +76,6 @@ export class HybridOrientationService implements IOrientationService {
       ...options,
     };
 
-    console.log('Orientation: Iniciando monitoreo con opciones:', defaultOptions);
-
     if (this.isNativePlatform) {
       this.startNativeOrientationMonitoring(defaultOptions);
     } else {
@@ -90,7 +85,6 @@ export class HybridOrientationService implements IOrientationService {
     // Ejecutar callback inicial
     const currentOrientation = this.getCurrentOrientation();
     callback(currentOrientation);
-    console.log(`Orientation: Orientación inicial: ${currentOrientation}`);
   }
 
   /**
@@ -101,7 +95,6 @@ export class HybridOrientationService implements IOrientationService {
       return;
     }
 
-    console.log('Orientation: Deteniendo monitoreo');
     this.isMonitoring = false;
     this.orientationCallback = null;
 
@@ -123,7 +116,6 @@ export class HybridOrientationService implements IOrientationService {
     try {
       const { ScreenOrientation } = await import('@capacitor/screen-orientation');
       await ScreenOrientation.lock({ orientation: 'landscape' });
-      console.log('Orientation: Orientación bloqueada en landscape');
     } catch (error) {
       console.error('Orientation: Error bloqueando orientación:', error);
       throw new Error(`Error bloqueando orientación: ${error}`);
@@ -142,7 +134,6 @@ export class HybridOrientationService implements IOrientationService {
     try {
       const { ScreenOrientation } = await import('@capacitor/screen-orientation');
       await ScreenOrientation.unlock();
-      console.log('Orientation: Orientación desbloqueada');
     } catch (error) {
       console.error('Orientation: Error desbloqueando orientación:', error);
     }
@@ -172,7 +163,6 @@ export class HybridOrientationService implements IOrientationService {
 
       // Escuchar cambios (aunque debería mantenerse en landscape)
       ScreenOrientation.addListener('screenOrientationChange', (result) => {
-        console.log('Orientation: Cambio nativo detectado:', result);
         const orientation = result.type.includes('landscape') ? 'landscape' : 'portrait';
 
         if (this.orientationCallback) {
@@ -201,7 +191,6 @@ export class HybridOrientationService implements IOrientationService {
 
     this.webOrientationHandler = (event: MediaQueryListEvent) => {
       const orientation = event.matches ? 'landscape' : 'portrait';
-      console.log(`Orientation: Cambio web detectado: ${orientation}`);
 
       if (this.orientationCallback) {
         this.orientationCallback(orientation);
@@ -245,7 +234,6 @@ export class HybridOrientationService implements IOrientationService {
     // Si hay TTS disponible, usar para anuncio accesible
     if (options.useTtsAnnouncement) {
       // Aquí podrías inyectar el TTS service para anunciar el mensaje
-      console.log('Orientation: Mensaje TTS:', message);
     }
   }
 }
