@@ -4,6 +4,14 @@
 // Contenedor mínimo sin estilos conflictivos
 :host {
   display: inline-block;
+
+  // Prevenir selección de texto durante presión (mejora UX)
+  &.pressing {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
 }
 
 // El botón usa sus propios estilos nativos de Ionic

@@ -19,6 +19,9 @@ import { IonButton } from '@ionic/angular/standalone';
   styleUrls: ['./press-hold-button.component.scss'],
   standalone: true,
   imports: [CommonModule, IonButton],
+  host: {
+    '[class.pressing]': 'isPressed',
+  },
 })
 export class PressHoldButtonComponent implements OnInit, OnDestroy {
   // ✅ Inputs
@@ -79,6 +82,16 @@ export class PressHoldButtonComponent implements OnInit, OnDestroy {
     }
 
     this.startProgress();
+  }
+
+  @HostListener('contextmenu', ['$event'])
+  onContextMenu(event: MouseEvent): void {
+    // 🔒 Solo prevenir menú contextual si está activamente presionando
+    if (this.isPressed && this.progress > 0) {
+      event.preventDefault();
+      console.log('🚫 [PressHoldButton] Menú contextual bloqueado durante presión activa');
+    }
+    // Si NO está presionando, permitir menú contextual normal (accesibilidad)
   }
 
   @HostListener('mouseup')
