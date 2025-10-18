@@ -1,24 +1,17 @@
 import {
   Component,
-  Input,
-  Output,
+  ElementRef,
   EventEmitter,
+  HostListener,
+  Input,
   OnDestroy,
   OnInit,
-  Inject,
-  ElementRef,
+  Output,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonButton } from '@ionic/angular/standalone';
-import { Subscription } from 'rxjs';
-import { PRESS_HOLD_BUTTON_SERVICE } from '../../../core/infrastructure/injection-tokens';
-import {
-  IPressHoldButtonService,
-  IonicColor,
-  DEFAULT_PRESS_HOLD_CONFIG,
-} from '../../../core/domain/interfaces/press-hold-button.interface';
-import { PressHoldConfigService } from '../../../core/application/services/press-hold-config.service';
 
 @Component({
   selector: 'app-press-hold-button',
@@ -28,142 +21,194 @@ import { PressHoldConfigService } from '../../../core/application/services/press
   imports: [CommonModule, IonButton],
 })
 export class PressHoldButtonComponent implements OnInit, OnDestroy {
+  // ✅ Inputs
   @Input() buttonId!: string;
-  @Input() color: IonicColor = DEFAULT_PRESS_HOLD_CONFIG.color;
-  @Input() disabled: boolean = false;
-  @Input() ariaLabel: string = '';
+  @Input() color: string = 'primary';
+  @Input() holdDuration: number = 3000;
+  @Input() ariaLabel?: string;
+  @Input() actionId: string = ''; // ✅ Debe existir para emitir
+  @Input() disabled: boolean = false; // ✅ Añadido para HTML
 
-  @Output() actionExecuted = new EventEmitter<void>();
-  @Output() pressStarted = new EventEmitter<void>();
-  @Output() pressCancelled = new EventEmitter<void>();
+  // ✅ Output - DEBE emitir string (el actionId)
+  @Output() actionExecuted = new EventEmitter<string>();
 
-  @ViewChild('progressCircle', { static: false }) progressCircle!: ElementRef<SVGCircleElement>;
+  @ViewChild('buttonRef', { static: false }) buttonRef?: ElementRef<HTMLIonButtonElement>;
 
-  private progressAnimationId?: number;
-  private durationSubscription?: Subscription;
+  progress: number = 0;
+  isPressed: boolean = false;
+  isCompleted: boolean = false;
 
-  // Duración dinámica controlada por el servicio
-  public holdDuration: number = DEFAULT_PRESS_HOLD_CONFIG.holdDuration;
+  private pressTimer: any = null;
+  private progressInterval: any = null;
+  private readonly PROGRESS_UPDATE_INTERVAL = 50;
 
-  constructor(
-    @Inject(PRESS_HOLD_BUTTON_SERVICE)
-    private readonly pressHoldService: IPressHoldButtonService,
-    private readonly configService: PressHoldConfigService,
-  ) {}
+  constructor(private readonly renderer: Renderer2) {}
 
   ngOnInit(): void {
-    // Suscribirse a cambios en la duración de presión
-    this.durationSubscription = this.configService.duration$.subscribe((duration) => {
-      this.holdDuration = duration;
+    if (!this.buttonId) {
+      console.error('❌ [PressHoldButton] buttonId es requerido');
+    }
+
+    // Log de inicialización para debug
+    console.log(`🔧 [PressHoldButton] Inicializado:`, {
+      buttonId: this.buttonId,
+      actionId: this.actionId,
+      holdDuration: this.holdDuration,
     });
   }
 
   ngOnDestroy(): void {
-    this.cancelPress();
-    this.durationSubscription?.unsubscribe();
+    this.clearTimers();
   }
 
-  /**
-   * Inicia la presión sostenida del botón
-   */
-  onPressStart(event: Event): void {
-    if (this.disabled) return;
+  @HostListener('mousedown')
+  @HostListener('touchstart')
+  onPressStart(): void {
+    // ✅ Si ya completó, esperar al reset
+    if (this.isCompleted) return;
 
-    event.preventDefault();
-    event.stopPropagation();
+    // ✅ Evitar múltiples inicios si ya está presionado
+    if (this.isPressed) return;
 
-    // API simplificada: solo buttonId y duration
-    this.pressHoldService.startPressTimer(this.buttonId, this.holdDuration);
-    this.pressStarted.emit();
-    this.startProgressAnimation();
-  }
+    console.log(`▶️ [PressHoldButton] Inicio de presión: ${this.buttonId}`);
+    this.isPressed = true;
 
-  /**
-   * Cancela la presión sostenida
-   */
-  onPressEnd(event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const wasPressed = this.isPressing();
-    const progress = this.getProgress();
-
-    if (progress >= 100) {
-      this.actionExecuted.emit();
-    } else if (wasPressed) {
-      this.pressCancelled.emit();
+    // ✅ Verificar que buttonRef existe antes de acceder a nativeElement
+    if (this.buttonRef?.nativeElement) {
+      this.renderer.addClass(this.buttonRef.nativeElement, 'pressed');
     }
 
-    this.cancelPress();
+    this.startProgress();
   }
 
-  private cancelPress(): void {
-    this.pressHoldService.cancelPressTimer(this.buttonId);
-    this.stopProgressAnimation();
-  }
+  @HostListener('mouseup')
+  @HostListener('mouseleave')
+  @HostListener('touchend')
+  @HostListener('touchcancel')
+  onPressEnd(): void {
+    // ✅ Si ya completó la acción, no hacer nada
+    if (this.isCompleted) return;
 
-  isPressing(): boolean {
-    return this.pressHoldService.isPressing(this.buttonId);
-  }
-
-  getProgress(): number {
-    return this.pressHoldService.getProgress(this.buttonId);
-  }
-
-  private startProgressAnimation(): void {
-    this.updateProgressCircle();
-  }
-
-  private stopProgressAnimation(): void {
-    if (this.progressAnimationId) {
-      cancelAnimationFrame(this.progressAnimationId);
-      this.progressAnimationId = undefined;
-    }
-    this.resetProgressCircle();
-  }
-
-  private updateProgressCircle(): void {
-    if (!this.isPressing()) {
-      this.stopProgressAnimation();
+    // ✅ Si el progreso está muy cerca del final (>95%), dejar que complete
+    if (this.progress > 95) {
+      console.log(`⏭️ [PressHoldButton] Progreso >95%, permitiendo completar: ${this.buttonId}`);
       return;
     }
 
-    const progress = this.getProgress();
+    console.log(`⏸️ [PressHoldButton] Fin de presión: ${this.buttonId} - Progreso: ${this.progress}%`);
 
-    if (this.progressCircle?.nativeElement) {
-      const circle = this.progressCircle.nativeElement;
-      const radius = 22;
-      const circumference = 2 * Math.PI * radius;
-      const strokeDasharray = circumference;
-      const strokeDashoffset = circumference - (progress / 100) * circumference;
+    this.isPressed = false;
 
-      circle.style.strokeDasharray = strokeDasharray.toString();
-      circle.style.strokeDashoffset = strokeDashoffset.toString();
+    // ✅ Verificar que buttonRef existe antes de acceder a nativeElement
+    if (this.buttonRef?.nativeElement) {
+      this.renderer.removeClass(this.buttonRef.nativeElement, 'pressed');
     }
 
-    this.progressAnimationId = requestAnimationFrame(() => {
-      this.updateProgressCircle();
-    });
+    this.clearTimers();
+    this.resetProgress();
   }
 
-  private resetProgressCircle(): void {
-    if (this.progressCircle?.nativeElement) {
-      const circle = this.progressCircle.nativeElement;
-      const circumference = 2 * Math.PI * 22;
-      circle.style.strokeDasharray = circumference.toString();
-      circle.style.strokeDashoffset = circumference.toString();
+  private startProgress(): void {
+    const increment = (this.PROGRESS_UPDATE_INTERVAL / this.holdDuration) * 100;
+
+    console.log(
+      `🚀 [PressHoldButton] Iniciando progreso - Incremento: ${increment.toFixed(2)}% cada ${this.PROGRESS_UPDATE_INTERVAL}ms`,
+    );
+
+    this.progressInterval = setInterval(() => {
+      this.progress += increment;
+
+      // Log cada 25% para debug
+      if (Math.floor(this.progress) % 25 === 0) {
+        console.log(`📊 [PressHoldButton] Progreso: ${this.progress.toFixed(1)}%`);
+      }
+
+      if (this.progress >= 95) {
+        console.log(`🎯 [PressHoldButton] Progreso alcanzó 100%, llamando a completeAction()`);
+        this.completeAction();
+      }
+    }, this.PROGRESS_UPDATE_INTERVAL);
+  }
+
+  // ✅ MÉTODO CRÍTICO - Aquí se emite el evento
+  private completeAction(): void {
+    console.log(`✅ [PressHoldButton] Acción completada: ${this.buttonId}`);
+
+    this.progress = 100;
+    this.isCompleted = true;
+
+    // ✅ Verificar que buttonRef existe
+    if (this.buttonRef?.nativeElement) {
+      this.renderer.addClass(this.buttonRef.nativeElement, 'completed');
+    }
+
+    this.clearTimers();
+
+    // 🎯 CRÍTICO: Emitir el actionId si existe
+    if (this.actionId) {
+      console.log(`🚀 [PressHoldButton] Emitiendo actionId: "${this.actionId}"`);
+      this.actionExecuted.emit(this.actionId);
+    } else {
+      console.warn(`⚠️ [PressHoldButton] No hay actionId configurado para ${this.buttonId}`);
+      this.actionExecuted.emit(''); // Emitir string vacío por compatibilidad
+    }
+
+    // Reset después de un pequeño delay para mostrar el estado completado
+    setTimeout(() => this.resetButton(), 500);
+  }
+
+  private resetButton(): void {
+    console.log(`🔄 [PressHoldButton] Reseteando botón: ${this.buttonId}`);
+
+    this.isPressed = false;
+    this.isCompleted = false;
+
+    // ✅ Verificar que buttonRef existe
+    if (this.buttonRef?.nativeElement) {
+      this.renderer.removeClass(this.buttonRef.nativeElement, 'pressed');
+      this.renderer.removeClass(this.buttonRef.nativeElement, 'completed');
+    }
+
+    this.resetProgress();
+  }
+
+  private resetProgress(): void {
+    this.progress = 0;
+  }
+
+  private clearTimers(): void {
+    if (this.pressTimer) {
+      clearTimeout(this.pressTimer);
+      this.pressTimer = null;
+    }
+
+    if (this.progressInterval) {
+      clearInterval(this.progressInterval);
+      this.progressInterval = null;
     }
   }
 
-  getButtonClasses(): string {
-    // Sin clases personalizadas - Ionic maneja los estilos nativamente
-    return '';
+  // ✅ Métodos públicos para el template
+  isPressing(): boolean {
+    return this.isPressed;
+  }
+
+  getProgress(): number {
+    return this.progress;
   }
 
   getAccessibilityText(): string {
     if (this.ariaLabel) {
-      return `${this.ariaLabel}. Mantén presionado durante ${this.holdDuration / 1000} segundos para activar`;
+      return this.ariaLabel;
     }
-    return `Botón de presión sostenida. Mantén presionado durante ${this.holdDuration / 1000} segundos para activar`;
+    return `Botón ${this.buttonId}. Mantener presionado ${this.holdDuration / 1000} segundos para activar`;
+  }
+
+  getCircumference(): number {
+    return 2 * Math.PI * 14; // radio = 14
+  }
+
+  onTestAction(): void {
+    console.log('Acción de prueba ejecutada correctamente.');
   }
 }

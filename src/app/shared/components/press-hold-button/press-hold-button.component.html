@@ -1,5 +1,6 @@
 <!-- Botón nativo de Ionic sin clases personalizadas -->
 <ion-button
+  #buttonRef
   [id]="buttonId"
   [color]="color"
   [disabled]="disabled"
@@ -8,16 +9,6 @@
   fill="solid"
   size="large"
   expand="block"
-  (mousedown)="onPressStart($event)"
-  (mouseup)="onPressEnd($event)"
-  (mouseleave)="onPressEnd($event)"
-  (touchstart)="onPressStart($event)"
-  (touchend)="onPressEnd($event)"
-  (touchcancel)="onPressEnd($event)"
-  (keydown.space)="onPressStart($event)"
-  (keyup.space)="onPressEnd($event)"
-  (keydown.enter)="onPressStart($event)"
-  (keyup.enter)="onPressEnd($event)"
 >
   <!-- Contenido directo sin wrappers -->
   <ng-content></ng-content>
@@ -36,6 +27,8 @@
         stroke-linecap="round"
         class="progress-foreground"
         transform="rotate(-90 16 16)"
+        [attr.stroke-dasharray]="getCircumference()"
+        [attr.stroke-dashoffset]="getCircumference() * (1 - getProgress() / 100)"
       />
     </svg>
   </div>

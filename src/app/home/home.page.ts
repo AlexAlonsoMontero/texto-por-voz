@@ -217,6 +217,13 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
+  async onTestAction(actionId: string): Promise<void> {
+    await this.tts.speak(`Acción de prueba ejecutada correctamente. ID: ${actionId}`, {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+  }
+
   // Eventos de botones de presión sostenida
   onPressStarted(buttonId: string): void {}
 

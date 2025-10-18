@@ -7,76 +7,17 @@
     <section class="main-section" aria-label="Aplicación principal de texto por voz">
       <h1>Texto por Voz Accesible</h1>
 
-      <!-- Botones de presión sostenida -->
-      <div class="buttons-grid">
-        <!-- Botón de ejemplo con presión sostenida -->
+      <!-- Botón de prueba con press-hold -->
+      <div class="button-container">
         <app-press-hold-button
-          buttonId="example-btn"
+          buttonId="test-btn"
+          actionId="test-action"
           color="primary"
-          ariaLabel="Botón de ejemplo"
-          (actionExecuted)="onExampleAction()"
-          (pressStarted)="onPressStarted('example-btn')"
-          (pressCancelled)="onPressCancelled('example-btn')"
+          [holdDuration]="3000"
+          ariaLabel="Botón de prueba. Mantener presionado 3 segundos para activar"
+          (actionExecuted)="onTestAction($event)"
         >
-          Ejemplo
-        </app-press-hold-button>
-
-        <!-- Botón de lectura inmediata -->
-        <app-press-hold-button
-          buttonId="read-text-btn"
-          color="success"
-          ariaLabel="Leer texto de prueba"
-          (actionExecuted)="onReadTextAction()"
-          (pressStarted)="onPressStarted('read-text-btn')"
-          (pressCancelled)="onPressCancelled('read-text-btn')"
-        >
-          Leer Texto
-        </app-press-hold-button>
-
-        <!-- Botón de configuración -->
-        <app-press-hold-button
-          buttonId="config-btn"
-          color="warning"
-          ariaLabel="Abrir configuración"
-          (actionExecuted)="onConfigurationAction()"
-          (pressStarted)="onPressStarted('config-btn')"
-          (pressCancelled)="onPressCancelled('config-btn')"
-        >
-          Configuración
-        </app-press-hold-button>
-      </div>
-    </section>
-
-    <!-- Sección de configuración de tiempos -->
-    <section class="configuration-section" aria-label="Configuración de tiempos de presión">
-      <h2>Configurar Tiempo de Presión</h2>
-
-      <div class="config-buttons">
-        <app-press-hold-button
-          buttonId="config-1s-btn"
-          color="tertiary"
-          ariaLabel="Configurar tiempo a 1 segundo"
-          (actionExecuted)="setGlobalHoldDuration(1000)"
-        >
-          1 segundo
-        </app-press-hold-button>
-
-        <app-press-hold-button
-          buttonId="config-2s-btn"
-          color="tertiary"
-          ariaLabel="Configurar tiempo a 2 segundos"
-          (actionExecuted)="setGlobalHoldDuration(2000)"
-        >
-          2 segundos
-        </app-press-hold-button>
-
-        <app-press-hold-button
-          buttonId="config-3s-btn"
-          color="tertiary"
-          ariaLabel="Configurar tiempo a 3 segundos"
-          (actionExecuted)="setGlobalHoldDuration(3000)"
-        >
-          3 segundos
+          Mantener Presionado
         </app-press-hold-button>
       </div>
     </section>
