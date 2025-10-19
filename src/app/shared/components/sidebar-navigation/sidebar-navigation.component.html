@@ -12,11 +12,24 @@
     <ion-icon name="home" class="sidebar-btn-icon"></ion-icon>
   </app-press-hold-button>
 
+  <!-- Botón Write con icono -->
+  <app-press-hold-button
+    buttonId="sidebar-write-btn"
+    actionId="write-action"
+    color="secondary"
+    [holdDuration]="2000"
+    ariaLabel="Botón de escritura. Mantener presionado 2 segundos para ir a la página de escribir texto"
+    (actionExecuted)="onWriteAction($event)"
+    class="sidebar-btn"
+  >
+    <ion-icon name="create" class="sidebar-btn-icon"></ion-icon>
+  </app-press-hold-button>
+
   <!-- Botón Settings con icono -->
   <app-press-hold-button
     buttonId="sidebar-settings-btn"
     actionId="settings-action"
-    color="secondary"
+    color="primary"
     [holdDuration]="2000"
     ariaLabel="Botón de configuración. Mantener presionado 2 segundos para ir a ajustes"
     (actionExecuted)="onSettingsAction($event)"

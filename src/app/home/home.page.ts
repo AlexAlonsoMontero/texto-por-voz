@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { NavController } from '@ionic/angular';
 import {
   TEXT_TO_SPEECH_SERVICE,
   ORIENTATION_SERVICE,
@@ -24,6 +25,7 @@ export class HomePage implements OnInit, OnDestroy {
   showActivation = false;
 
   constructor(
+    private readonly navCtrl: NavController,
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly tts: ITextToSpeechService,
     @Inject(ORIENTATION_SERVICE)
@@ -217,11 +219,18 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
-  async onTestAction(actionId: string): Promise<void> {
-    await this.tts.speak(`Acción de prueba ejecutada correctamente. ID: ${actionId}`, {
+  /**
+   * Maneja la acción de ir a la página Write
+   */
+  async onGoToWriteAction(actionId: string): Promise<void> {
+    console.log(`✍️ [Home] Acción de ir a Write ejecutada: ${actionId}`);
+
+    await this.tts.speak('Abriendo página de escritura', {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
     });
+
+    this.navCtrl.navigateRoot('/write');
   }
 
   // Eventos de botones de presión sostenida

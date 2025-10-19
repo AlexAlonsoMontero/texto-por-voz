@@ -17,6 +17,10 @@ export class SidebarNavigationComponent {
     this.navCtrl.navigateRoot('/home');
   }
 
+  onButtonWriteClick(): void {
+    this.navCtrl.navigateRoot('/write');
+  }
+
   onButtonSettingsClick(): void {
     this.navCtrl.navigateRoot('/settings');
   }
@@ -27,6 +31,14 @@ export class SidebarNavigationComponent {
   onHomeAction(actionId: string): void {
     console.log(`🏠 [Sidebar] Acción Home ejecutada: ${actionId}`);
     this.onButtonHomeClick();
+  }
+
+  /**
+   * Maneja la acción del botón Write (press-hold)
+   */
+  onWriteAction(actionId: string): void {
+    console.log(`✍️ [Sidebar] Acción Write ejecutada: ${actionId}`);
+    this.onButtonWriteClick();
   }
 
   /**

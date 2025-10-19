@@ -7,17 +7,17 @@
     <section class="main-section" aria-label="Aplicación principal de texto por voz">
       <h1>Texto por Voz Accesible</h1>
 
-      <!-- Botón de prueba con press-hold -->
+      <!-- Botón para ir a Write Page -->
       <div class="button-container">
         <app-press-hold-button
-          buttonId="test-btn"
-          actionId="test-action"
+          buttonId="goto-write-btn"
+          actionId="goto-write-action"
           color="primary"
-          [holdDuration]="3000"
-          ariaLabel="Botón de prueba. Mantener presionado 3 segundos para activar"
-          (actionExecuted)="onTestAction($event)"
+          [holdDuration]="2000"
+          ariaLabel="Botón de escritura. Mantener presionado 2 segundos para ir a la página de escribir texto"
+          (actionExecuted)="onGoToWriteAction($event)"
         >
-          Mantener Presionado
+          ✍️ Escribir Texto
         </app-press-hold-button>
       </div>
     </section>

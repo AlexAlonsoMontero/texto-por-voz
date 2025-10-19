@@ -23,7 +23,7 @@
       height: 12vh;
       min-height: 80px;
       margin: 0;
-      
+
       // Centrar el icono
       display: flex;
       align-items: center;
@@ -34,6 +34,13 @@
     .sidebar-btn-icon {
       font-size: 6rem;
       margin: 0;
+    }
+
+    // Estilo específico para emoji icons
+    .emoji-icon {
+      font-size: 5rem;
+      line-height: 1;
+      display: inline-block;
     }
 
     // Ajustar el círculo de progreso para que no tape el icono
