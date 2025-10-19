@@ -12,13 +12,35 @@
   padding: 10px;
   flex-shrink: 0;
   box-sizing: border-box;
-  .sidebar-btn {
+
+  // Estilos para press-hold-button en sidebar
+  app-press-hold-button.sidebar-btn {
     width: 100%;
-    height: 12vh;
-    min-height: 80px;
+
+    // Ajustar el ion-button interno para sidebar
+    ::ng-deep ion-button {
+      width: 100%;
+      height: 12vh;
+      min-height: 80px;
+      margin: 0;
+      
+      // Centrar el icono
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    // Iconos grandes y centrados
     .sidebar-btn-icon {
       font-size: 6rem;
-      color: var(--ion-text-color);
+      margin: 0;
+    }
+
+    // Ajustar el círculo de progreso para que no tape el icono
+    ::ng-deep .progress-overlay {
+      right: 10px;
+      top: 10px;
+      transform: none;
     }
   }
 }

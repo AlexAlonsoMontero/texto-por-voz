@@ -1,3 +1,21 @@
+// Estilos para el botón de volver en el navbar
+ion-toolbar {
+  ion-buttons {
+    app-press-hold-button {
+      // Ajustar tamaño para navbar
+      ::ng-deep ion-button {
+        font-size: 18px;
+        font-weight: normal;
+        --padding-start: 12px;
+        --padding-end: 12px;
+        --padding-top: 8px;
+        --padding-bottom: 8px;
+        height: 36px;
+      }
+    }
+  }
+}
+
 .settings-container {
   padding: 20px;
   max-width: 1200px;

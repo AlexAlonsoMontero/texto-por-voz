@@ -80,6 +80,14 @@ export class SettingsPage implements OnInit {
   }
 
   /**
+   * Maneja la acción del botón de volver (press-hold)
+   */
+  async onBackAction(actionId: string): Promise<void> {
+    console.log(`🔙 [Settings] Acción de volver ejecutada: ${actionId}`);
+    await this.goBack();
+  }
+
+  /**
    * Selecciona qué tipo de color modificar
    */
   async selectColorType(colorType: ColorType): Promise<void> {

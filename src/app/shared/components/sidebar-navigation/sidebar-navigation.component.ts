@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { IonButton, IonIcon } from '@ionic/angular/standalone';
+import { IonIcon } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
+import { PressHoldButtonComponent } from '../press-hold-button/press-hold-button.component';
+
 @Component({
   selector: 'app-sidebar-navigation',
   standalone: true,
-  imports: [IonButton, IonIcon],
+  imports: [IonIcon, PressHoldButtonComponent],
   templateUrl: './sidebar-navigation.component.html',
   styleUrls: ['./sidebar-navigation.component.scss'],
 })
@@ -17,5 +19,21 @@ export class SidebarNavigationComponent {
 
   onButtonSettingsClick(): void {
     this.navCtrl.navigateRoot('/settings');
+  }
+
+  /**
+   * Maneja la acción del botón Home (press-hold)
+   */
+  onHomeAction(actionId: string): void {
+    console.log(`🏠 [Sidebar] Acción Home ejecutada: ${actionId}`);
+    this.onButtonHomeClick();
+  }
+
+  /**
+   * Maneja la acción del botón Settings (press-hold)
+   */
+  onSettingsAction(actionId: string): void {
+    console.log(`⚙️ [Sidebar] Acción Settings ejecutada: ${actionId}`);
+    this.onButtonSettingsClick();
   }
 }
