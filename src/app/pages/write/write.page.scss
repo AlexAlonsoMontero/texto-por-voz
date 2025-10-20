@@ -60,13 +60,13 @@ ion-toolbar {
     --padding-end: 12px;
     --padding-top: 8px;
     --padding-bottom: 8px;
-    
+
     // Hacer que el input interno ocupe toda la altura
     ::ng-deep {
       .input-wrapper {
         height: 100%;
       }
-      
+
       input {
         height: 100% !important;
         min-height: 100% !important;
