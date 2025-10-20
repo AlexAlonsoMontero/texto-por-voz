@@ -1,5 +1,5 @@
 // ========================================
-// ESTILOS GLOBALES
+// ESTILOS DE LA PÁGINA WRITE
 // ========================================
 
 // Botón de volver en el navbar
@@ -29,169 +29,17 @@ ion-toolbar {
   box-sizing: border-box;
   background: var(--ion-background-color);
   overflow: hidden;
-}
 
-// ========================================
-// PARTE SUPERIOR - 10%
-// ========================================
-.top-section {
-  height: 10vh;
-  min-height: 60px;
-  max-height: 100px;
-  display: flex;
-  align-items: stretch; // Estirar elementos para ocupar toda la altura
-  gap: 8px;
-  padding: 8px;
-  border: 2px solid var(--ion-color-medium);
-  border-radius: 12px;
-  background: var(--ion-background-color);
-  flex-shrink: 0;
-
-  .text-display {
-    flex: 1;
-    height: 100%; // Ocupar todo el alto del contenedor
-    font-size: 28px;
-    font-weight: bold;
-    color: var(--ion-text-color);
-    background: var(--ion-color-light);
-    border: 3px solid var(--ion-color-primary);
-    border-radius: 8px;
-    --padding-start: 12px;
-    --padding-end: 12px;
-    --padding-top: 8px;
-    --padding-bottom: 8px;
-
-    // Hacer que el input interno ocupe toda la altura
-    ::ng-deep {
-      .input-wrapper {
-        height: 100%;
-      }
-
-      input {
-        height: 100% !important;
-        min-height: 100% !important;
-      }
-    }
-  }
-
-  .speak-button {
+  // Los componentes hijos ocupan el espacio distribuido
+  app-text-input-section {
     flex-shrink: 0;
-    width: 90px;
-    height: 100%; // Ocupar todo el alto
-
-    ::ng-deep ion-button {
-      height: 100%;
-      min-height: 50px;
-
-      ion-icon {
-        font-size: 3.5rem;
-      }
-    }
-  }
-}
-
-// ========================================
-// PARTE CENTRAL - 80%
-// ========================================
-.middle-section {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 8px;
-  padding: 8px;
-  overflow: hidden;
-  border: 2px solid var(--ion-color-medium);
-  border-radius: 12px;
-  background: var(--ion-background-color);
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 1fr);
   }
 
-  .letter-button {
-    height: 100%;
-
-    ::ng-deep ion-button {
-      font-size: 48px;
-      font-weight: bold;
-      height: 100%;
-      width: 100%;
-      margin: 0;
-      letter-spacing: 2px;
-    }
-  }
-}
-
-// ========================================
-// PARTE INFERIOR - 10% (Reducida)
-// ========================================
-.bottom-section {
-  height: 11vh; // Reducido de 10vh a 12vh
-  min-height: 50px; // Reducido de 60px a 50px
-  display: flex;
-  justify-content: space-around;
-  align-items: center; // Centrado en lugar de stretch
-  gap: 5px;
-  padding: 5px; // Reducido de 8px a 5px
-  border: 2px solid var(--ion-color-medium);
-  border-radius: 12px;
-  background: var(--ion-background-color);
-  flex-shrink: 0;
-  overflow: hidden;
-
-  .action-button {
+  app-letter-keyboard-section {
     flex: 1;
-    min-width: 0;
-    max-height: 100%; // Limitar altura máxima
-
-    ::ng-deep ion-button {
-      font-size: 20px; // Ajustado
-      font-weight: bold;
-      height: 100%;
-      max-height: 60px; // Altura máxima explícita
-      width: 100%;
-      margin: 0;
-      padding: 2px 6px; // Padding reducido
-
-      ion-icon {
-        font-size: 1.8rem; // Iconos más pequeños
-      }
-    }
   }
 
-  @media (max-width: 768px) {
-    height: 7vh;
-    min-height: 45px;
-    gap: 3px;
-    padding: 3px;
-
-    .action-button {
-      ::ng-deep ion-button {
-        font-size: 16px;
-        max-height: 50px;
-        padding: 2px 4px;
-
-        ion-icon {
-          font-size: 1.5rem;
-        }
-      }
-    }
-  }
-}
-
-// ========================================
-// ACCESIBILIDAD - Alto contraste
-// ========================================
-@media (prefers-contrast: high) {
-  .top-section,
-  .middle-section,
-  .bottom-section {
-    border-width: 4px !important;
-  }
-
-  .text-display {
-    border-width: 4px !important;
+  app-action-buttons-section {
+    flex-shrink: 0;
   }
 }

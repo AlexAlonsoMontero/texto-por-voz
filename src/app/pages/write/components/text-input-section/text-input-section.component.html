@@ -1,0 +1,21 @@
+<section class="top-section" aria-label="Área de texto y reproducción">
+  <ion-input
+    [(ngModel)]="textContent"
+    (ngModelChange)="onTextChange($event)"
+    placeholder="Escribe aquí o usa el teclado..."
+    class="text-display"
+    aria-label="Texto generado por el teclado alfabético"
+  ></ion-input>
+
+  <app-press-hold-button
+    buttonId="speak-btn"
+    actionId="speak-action"
+    color="primary"
+    [holdDuration]="2000"
+    ariaLabel="Botón de reproducir. Mantener presionado 2 segundos para escuchar el texto"
+    (actionExecuted)="onSpeakClick($event)"
+    class="speak-button"
+  >
+    <ion-icon name="volume-high"></ion-icon>
+  </app-press-hold-button>
+</section>

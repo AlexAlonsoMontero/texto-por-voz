@@ -1,0 +1,14 @@
+<section class="middle-section" aria-label="Teclado alfabético por grupos">
+  <app-press-hold-button
+    *ngFor="let group of letterGroups; let i = index"
+    [buttonId]="'letter-group-' + i"
+    [actionId]="'letter-' + group"
+    [color]="i % 2 === 0 ? 'primary' : 'secondary'"
+    [holdDuration]="2000"
+    [ariaLabel]="'Botón de letras ' + group + '. Mantener presionado 2 segundos para seleccionar'"
+    (actionExecuted)="onLetterGroupClick($event, group)"
+    class="letter-button"
+  >
+    {{ group }}
+  </app-press-hold-button>
+</section>

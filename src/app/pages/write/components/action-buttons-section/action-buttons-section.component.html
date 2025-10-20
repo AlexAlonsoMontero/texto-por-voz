@@ -1,0 +1,53 @@
+<section class="bottom-section" aria-label="Acciones de edición y teclados especiales">
+  <!-- Espacio -->
+  <app-press-hold-button
+    buttonId="space-btn"
+    actionId="space-action"
+    color="primary"
+    [holdDuration]="2000"
+    ariaLabel="Botón de espacio. Mantener presionado 2 segundos para añadir espacio"
+    (actionExecuted)="onSpaceClick($event)"
+    class="action-button"
+  >
+    ⎵
+  </app-press-hold-button>
+
+  <!-- Borrar -->
+  <app-press-hold-button
+    buttonId="backspace-btn"
+    actionId="backspace-action"
+    color="danger"
+    [holdDuration]="2000"
+    ariaLabel="Botón de borrar. Mantener presionado 2 segundos para borrar último carácter"
+    (actionExecuted)="onBackspaceClick($event)"
+    class="action-button"
+  >
+    <ion-icon name="backspace"></ion-icon>
+  </app-press-hold-button>
+
+  <!-- Limpiar -->
+  <app-press-hold-button
+    buttonId="clear-btn"
+    actionId="clear-action"
+    color="warning"
+    [holdDuration]="2000"
+    ariaLabel="Botón de limpiar. Mantener presionado 2 segundos para borrar todo el texto"
+    (actionExecuted)="onClearClick($event)"
+    class="action-button"
+  >
+    <ion-icon name="trash"></ion-icon>
+  </app-press-hold-button>
+
+  <!-- Puntuación -->
+  <app-press-hold-button
+    buttonId="punctuation-btn"
+    actionId="punctuation-action"
+    color="secondary"
+    [holdDuration]="2000"
+    ariaLabel="Botón de puntuación. Mantener presionado 2 segundos para abrir signos de puntuación"
+    (actionExecuted)="onPunctuationClick($event)"
+    class="action-button"
+  >
+    .,?!
+  </app-press-hold-button>
+</section>

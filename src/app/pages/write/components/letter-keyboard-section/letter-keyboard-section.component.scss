@@ -1,0 +1,40 @@
+// ========================================
+// PARTE CENTRAL - Teclado de Letras
+// ========================================
+:host {
+  display: flex;
+  flex: 1; // Ocupar todo el espacio disponible
+  height: 100%; // Altura completa
+}
+
+.middle-section {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+  padding: 8px;
+  overflow: hidden;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 12px;
+  background: var(--ion-background-color);
+  width: 100%; // Ancho completo
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+
+  .letter-button {
+    height: 100%;
+
+    ::ng-deep ion-button {
+      font-size: 48px;
+      font-weight: bold;
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      letter-spacing: 2px;
+    }
+  }
+}

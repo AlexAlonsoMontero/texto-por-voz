@@ -1,11 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonInput, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonButtons } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
 import { TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
+import { TextInputSectionComponent } from './components/text-input-section/text-input-section.component';
+import { LetterKeyboardSectionComponent } from './components/letter-keyboard-section/letter-keyboard-section.component';
+import { ActionButtonsSectionComponent } from './components/action-buttons-section/action-buttons-section.component';
 
 @Component({
   selector: 'app-write',
@@ -13,15 +15,15 @@ import { PressHoldButtonComponent } from '../../shared/components/press-hold-but
   styleUrls: ['./write.page.scss'],
   imports: [
     CommonModule,
-    FormsModule,
     IonContent,
     IonHeader,
     IonToolbar,
     IonTitle,
     IonButtons,
-    IonInput,
-    IonIcon,
     PressHoldButtonComponent,
+    TextInputSectionComponent,
+    LetterKeyboardSectionComponent,
+    ActionButtonsSectionComponent,
   ],
 })
 export class WritePage implements OnInit {

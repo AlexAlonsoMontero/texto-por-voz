@@ -1,0 +1,62 @@
+// ========================================
+// PARTE SUPERIOR - Sección de Input
+// ========================================
+:host {
+  display: block;
+  flex-shrink: 0; // No encogerse
+}
+
+.top-section {
+  height: 10vh;
+  min-height: 60px;
+  max-height: 100px;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  padding: 8px;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 12px;
+  background: var(--ion-background-color);
+  flex-shrink: 0;
+
+  .text-display {
+    flex: 1;
+    height: 100%;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--ion-text-color);
+    background: var(--ion-color-light);
+    border: 3px solid var(--ion-color-primary);
+    border-radius: 8px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+
+    ::ng-deep {
+      .input-wrapper {
+        height: 100%;
+      }
+
+      input {
+        height: 100% !important;
+        min-height: 100% !important;
+      }
+    }
+  }
+
+  .speak-button {
+    flex-shrink: 0;
+    width: 90px;
+    height: 100%;
+
+    ::ng-deep ion-button {
+      height: 100%;
+      min-height: 50px;
+
+      ion-icon {
+        font-size: 3.5rem;
+      }
+    }
+  }
+}
