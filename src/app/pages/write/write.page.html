@@ -18,10 +18,97 @@
   </ion-header>
 
   <div class="write-container">
-    <!-- Contenido vacío por ahora -->
-    <section class="main-section" aria-label="Página de escritura">
-      <h1>Página de Escritura</h1>
-      <p>Contenido por implementar</p>
+    <!-- PARTE SUPERIOR - 10% -->
+    <section class="top-section" aria-label="Área de texto y reproducción">
+      <ion-input
+        [(ngModel)]="textContent"
+        placeholder="Escribe aquí o usa el teclado..."
+        class="text-display"
+        aria-label="Texto generado por el teclado alfabético"
+      ></ion-input>
+
+      <app-press-hold-button
+        buttonId="speak-btn"
+        actionId="speak-action"
+        color="primary"
+        [holdDuration]="2000"
+        ariaLabel="Botón de reproducir. Mantener presionado 2 segundos para escuchar el texto"
+        (actionExecuted)="onSpeakAction($event)"
+        class="speak-button"
+      >
+        <ion-icon name="volume-high"></ion-icon>
+      </app-press-hold-button>
+    </section>
+
+    <!-- PARTE CENTRAL - 80% -->
+    <section class="middle-section" aria-label="Teclado alfabético por grupos">
+      <app-press-hold-button
+        *ngFor="let group of letterGroups; let i = index"
+        [buttonId]="'letter-group-' + i"
+        [actionId]="'letter-' + group"
+        [color]="i % 2 === 0 ? 'primary' : 'secondary'"
+        [holdDuration]="2000"
+        [ariaLabel]="'Botón de letras ' + group + '. Mantener presionado 2 segundos para seleccionar'"
+        (actionExecuted)="onLetterGroupAction($event, group)"
+        class="letter-button"
+      >
+        {{ group }}
+      </app-press-hold-button>
+    </section>
+
+    <!-- PARTE INFERIOR - 10% -->
+    <section class="bottom-section" aria-label="Acciones de edición y teclados especiales">
+      <!-- Espacio -->
+      <app-press-hold-button
+        buttonId="space-btn"
+        actionId="space-action"
+        color="primary"
+        [holdDuration]="2000"
+        ariaLabel="Botón de espacio. Mantener presionado 2 segundos para añadir espacio"
+        (actionExecuted)="onSpaceAction($event)"
+        class="action-button"
+      >
+        ⎵
+      </app-press-hold-button>
+
+      <!-- Borrar -->
+      <app-press-hold-button
+        buttonId="backspace-btn"
+        actionId="backspace-action"
+        color="danger"
+        [holdDuration]="2000"
+        ariaLabel="Botón de borrar. Mantener presionado 2 segundos para borrar último carácter"
+        (actionExecuted)="onBackspaceAction($event)"
+        class="action-button"
+      >
+        <ion-icon name="backspace"></ion-icon>
+      </app-press-hold-button>
+
+      <!-- Limpiar -->
+      <app-press-hold-button
+        buttonId="clear-btn"
+        actionId="clear-action"
+        color="warning"
+        [holdDuration]="2000"
+        ariaLabel="Botón de limpiar. Mantener presionado 2 segundos para borrar todo el texto"
+        (actionExecuted)="onClearAction($event)"
+        class="action-button"
+      >
+        <ion-icon name="trash"></ion-icon>
+      </app-press-hold-button>
+
+      <!-- Puntuación -->
+      <app-press-hold-button
+        buttonId="punctuation-btn"
+        actionId="punctuation-action"
+        color="secondary"
+        [holdDuration]="2000"
+        ariaLabel="Botón de puntuación. Mantener presionado 2 segundos para abrir signos de puntuación"
+        (actionExecuted)="onPunctuationAction($event)"
+        class="action-button"
+      >
+        .,?!
+      </app-press-hold-button>
     </section>
   </div>
 </ion-content>

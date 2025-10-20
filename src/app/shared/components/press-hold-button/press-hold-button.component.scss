@@ -4,6 +4,7 @@
 // Contenedor mínimo sin estilos conflictivos
 :host {
   display: inline-block;
+  height: 100%; // Respetar altura del contenedor padre
 
   // Prevenir selección de texto durante presión (mejora UX)
   &.pressing {
@@ -19,6 +20,7 @@
 ion-button {
   font-size: 28px;
   font-weight: bold;
+  height: 100%; // Ocupar altura del host
   --padding-start: 20px;
   --padding-end: 20px;
   --padding-top: 15px;

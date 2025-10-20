@@ -2,7 +2,19 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { home, settings, create, pencil, document, documentText, reader, book } from 'ionicons/icons';
+import {
+  home,
+  settings,
+  create,
+  pencil,
+  document,
+  documentText,
+  reader,
+  book,
+  volumeHigh,
+  backspace,
+  trash,
+} from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
@@ -17,6 +29,9 @@ addIcons({
   'document-text': documentText,
   reader,
   book,
+  'volume-high': volumeHigh,
+  backspace,
+  trash,
 });
 
 bootstrapApplication(AppComponent, {
