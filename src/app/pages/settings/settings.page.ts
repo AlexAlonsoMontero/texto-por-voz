@@ -20,6 +20,7 @@ import { PressHoldButtonComponent } from '../../shared/components/press-hold-but
 import { PressHoldConfigService } from '../../core/application/services/press-hold-config.service';
 import { WriteViewConfigService } from '../../core/infrastructure/services/write-view-config.service';
 import { WriteViewMode } from '../../core/domain/interfaces/write-view.interface';
+import { CarouselConfigService } from '../../core/infrastructure/services/carousel-config.service';
 
 @Component({
   selector: 'app-settings',
@@ -52,6 +53,8 @@ export class SettingsPage implements OnInit {
 
   // Modo de vista de escritura
   writeViewMode: WriteViewMode = 'panel';
+  // Delay de carrusel (ms)
+  carouselDelayMs: number = 1000;
 
   constructor(
     private readonly navCtrl: NavController,
@@ -61,6 +64,7 @@ export class SettingsPage implements OnInit {
     private readonly tts: ITextToSpeechService,
     private readonly pressHoldConfig: PressHoldConfigService,
     private readonly writeViewConfig: WriteViewConfigService,
+    private readonly carouselConfig: CarouselConfigService,
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +73,8 @@ export class SettingsPage implements OnInit {
 
     // Cargar modo de vista de escritura
     void this.loadWriteViewMode();
+    // Cargar delay de carrusel
+    void this.loadCarouselDelay();
 
     // Seleccionar el primer tipo de color por defecto
     this.selectedColorType = COLOR_TYPES[0];
@@ -86,6 +92,13 @@ export class SettingsPage implements OnInit {
    */
   private async loadWriteViewMode(): Promise<void> {
     this.writeViewMode = await this.writeViewConfig.getViewMode();
+  }
+
+  /**
+   * Carga el delay de carrusel actual
+   */
+  private async loadCarouselDelay(): Promise<void> {
+    this.carouselDelayMs = await this.carouselConfig.getDelayMs();
   }
 
   async goBack(): Promise<void> {
@@ -257,6 +270,21 @@ export class SettingsPage implements OnInit {
 
     const modeName = newMode === 'panel' ? 'Panel (Rejilla)' : 'Carrusel (Deslizar)';
     await this.tts.speak(`Vista de escritura cambiada a ${modeName}`, {
+      priority: SpeechPriority.NORMAL,
+      interrupt: false,
+    });
+  }
+
+  /**
+   * Maneja el cambio del tiempo de transición del carrusel
+   */
+  async onCarouselDelayChange(event: any): Promise<void> {
+    const seconds = event.detail.value as number; // valor en segundos
+    const ms = Math.max(0.5, seconds) * 1000; // mínimo 0.5s
+    this.carouselDelayMs = ms;
+    await this.carouselConfig.setDelayMs(ms);
+
+    await this.tts.speak(`Transición del carrusel establecida a ${seconds} segundo${seconds === 1 ? '' : 's'}`, {
       priority: SpeechPriority.NORMAL,
       interrupt: false,
     });

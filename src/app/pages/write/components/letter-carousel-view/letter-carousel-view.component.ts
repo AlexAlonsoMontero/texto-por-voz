@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, CUSTOM_ELEMENTS_SCHE
 import { CommonModule } from '@angular/common';
 import { IonButton } from '@ionic/angular/standalone';
 import { PressHoldButtonComponent } from '../../../../shared/components/press-hold-button/press-hold-button.component';
+import { CarouselConfigService } from '../../../../core/infrastructure/services/carousel-config.service';
 
 /**
  * Componente para mostrar letras individuales en formato carrusel (slider)
@@ -22,6 +23,7 @@ export class LetterCarouselViewComponent {
   @ViewChild('swiper', { static: false }) swiper?: any;
 
   currentIndex = 0;
+  carouselDelayMs = 1000;
 
   slideOpts = {
     initialSlide: 0,
@@ -30,6 +32,10 @@ export class LetterCarouselViewComponent {
     centeredSlides: true,
     slidesPerView: 1,
   };
+
+  constructor(private readonly carouselConfig: CarouselConfigService) {
+    this.carouselConfig.delay$.subscribe((ms) => (this.carouselDelayMs = ms));
+  }
 
   onLetterHoldStart(actionId: string): void {
     this.letterHoldStart.emit(actionId);

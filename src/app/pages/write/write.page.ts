@@ -91,6 +91,9 @@ export class WritePage implements OnInit, OnDestroy {
       this.viewMode = mode;
     });
 
+    // Forzar carga inicial desde almacenamiento para no quedar en 'panel' por defecto
+    void this.ensureViewModeLoaded();
+
     // Anuncio de bienvenida
     void this.tts.speak('Página de escritura activada. Utiliza los botones alfabéticos para escribir texto.', {
       priority: SpeechPriority.HIGH,
@@ -100,6 +103,19 @@ export class WritePage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.viewModeSubscription?.unsubscribe();
+  }
+
+  /**
+   * Asegura cargar el modo de vista persistido al iniciar la página
+   */
+  private async ensureViewModeLoaded(): Promise<void> {
+    try {
+      const mode = await this.writeViewConfig.getViewMode();
+      this.viewMode = mode;
+    } catch (e) {
+      console.error('[WritePage] Error cargando modo de vista, usando panel por defecto', e);
+      this.viewMode = 'panel';
+    }
   }
 
   /**

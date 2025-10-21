@@ -30,6 +30,9 @@
     [slidesPerView]="1"
     [centeredSlides]="true"
     [loop]="false"
+    autoplay="true"
+    [attr.autoplay-delay]="carouselDelayMs"
+    autoplay-disable-on-interaction="false"
     (slidechange)="onSlideChange(swiper)"
     class="groups-swiper"
   >

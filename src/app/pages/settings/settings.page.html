@@ -193,6 +193,36 @@
         </div>
       </section>
 
+      <!-- Configuración de tiempo de transición del Carrusel -->
+      <section
+        *ngIf="writeViewMode === 'carousel'"
+        class="carousel-delay-section"
+        aria-label="Tiempo de transición del carrusel"
+      >
+        <h2 class="section-title">🌀 Transición del Carrusel</h2>
+        <p class="section-description">Ajusta cada cuánto cambia el botón automáticamente</p>
+
+        <ion-item lines="full">
+          <ion-label position="stacked">
+            <strong>Tiempo actual: {{ (carouselDelayMs / 1000) | number:'1.1-1' }} s</strong>
+          </ion-label>
+          <ion-range
+            [min]="0.5"
+            [max]="5"
+            [step]="0.5"
+            [value]="carouselDelayMs / 1000"
+            [pin]="true"
+            [snaps]="true"
+            [ticks]="true"
+            (ionChange)="onCarouselDelayChange($event)"
+            aria-label="Ajustar tiempo de transición del carrusel en segundos"
+          >
+            <ion-label slot="start">0,5s</ion-label>
+            <ion-label slot="end">5s</ion-label>
+          </ion-range>
+        </ion-item>
+      </section>
+
       <!-- Acciones -->
       <section class="actions-section" aria-label="Acciones de configuración">
         <div class="action-grid">
