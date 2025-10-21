@@ -163,6 +163,36 @@
         </div>
       </section>
 
+      <!-- Selector de Vista de Escritura -->
+      <section class="write-view-section" aria-label="Configuración de vista de escritura">
+        <h2 class="section-title">📝 Vista de Escritura</h2>
+        <p class="section-description">Elige cómo visualizar los grupos de letras en la página de escritura</p>
+
+        <ion-item>
+          <ion-label position="stacked">
+            <strong>Modo de visualización</strong>
+          </ion-label>
+          <ion-select
+            [value]="writeViewMode"
+            (ionChange)="onWriteViewChange($event)"
+            interface="popover"
+            aria-label="Seleccionar modo de vista de escritura"
+          >
+            <ion-select-option value="panel">Panel (Rejilla 4×2)</ion-select-option>
+            <ion-select-option value="carousel">Carrusel (Deslizar)</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div class="view-description">
+          <div *ngIf="writeViewMode === 'panel'" class="mode-info">
+            <p><strong>📊 Modo Panel:</strong> Todos los grupos visibles simultáneamente en rejilla 4×2</p>
+          </div>
+          <div *ngIf="writeViewMode === 'carousel'" class="mode-info">
+            <p><strong>🔄 Modo Carrusel:</strong> Un grupo por pantalla, desliza con las flechas</p>
+          </div>
+        </div>
+      </section>
+
       <!-- Acciones -->
       <section class="actions-section" aria-label="Acciones de configuración">
         <div class="action-grid">

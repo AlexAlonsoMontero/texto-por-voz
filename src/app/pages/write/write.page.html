@@ -24,11 +24,32 @@
       (speakAction)="onSpeakAction($event)"
     ></app-text-input-section>
 
-    <!-- PARTE CENTRAL - 80% -->
+    <!-- PARTE CENTRAL - 80% (Condicional según estado) -->
+
+    <!-- Estado: 'groups' - Mostrar grupos de letras -->
     <app-letter-keyboard-section
+      *ngIf="viewState === 'groups'"
       [letterGroups]="letterGroups"
+      [viewMode]="viewMode"
+      (letterGroupHoldStart)="onLetterGroupHoldStart($event.actionId, $event.group)"
       (letterGroupAction)="onLetterGroupAction($event.actionId, $event.group)"
     ></app-letter-keyboard-section>
+
+    <!-- Estado: 'letters' - Mostrar letras individuales (Panel) -->
+    <app-letter-grid-view
+      *ngIf="viewState === 'letters' && viewMode === 'panel'"
+      [letters]="currentLetters"
+      (letterHoldStart)="onLetterHoldStart($event)"
+      (letterSelected)="onLetterSelected($event)"
+    ></app-letter-grid-view>
+
+    <!-- Estado: 'letters' - Mostrar letras individuales (Carrusel) -->
+    <app-letter-carousel-view
+      *ngIf="viewState === 'letters' && viewMode === 'carousel'"
+      [letters]="currentLetters"
+      (letterHoldStart)="onLetterHoldStart($event)"
+      (letterSelected)="onLetterSelected($event)"
+    ></app-letter-carousel-view>
 
     <!-- PARTE INFERIOR - 10% -->
     <app-action-buttons-section

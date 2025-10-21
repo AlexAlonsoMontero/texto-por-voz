@@ -9,6 +9,8 @@ import {
   IonRange,
   IonLabel,
   IonItem,
+  IonSelect,
+  IonSelectOption,
 } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
 import { THEME_SERVICE, TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
@@ -16,6 +18,8 @@ import { IThemeService, ThemeColors, ColorType, COLOR_TYPES } from '../../core/d
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
 import { PressHoldConfigService } from '../../core/application/services/press-hold-config.service';
+import { WriteViewConfigService } from '../../core/infrastructure/services/write-view-config.service';
+import { WriteViewMode } from '../../core/domain/interfaces/write-view.interface';
 
 @Component({
   selector: 'app-settings',
@@ -31,6 +35,8 @@ import { PressHoldConfigService } from '../../core/application/services/press-ho
     IonRange,
     IonLabel,
     IonItem,
+    IonSelect,
+    IonSelectOption,
     PressHoldButtonComponent,
   ],
 })
@@ -44,6 +50,9 @@ export class SettingsPage implements OnInit {
   // Duración de presión de botones (en milisegundos)
   pressHoldDuration: number = 2000; // Por defecto 2 segundos
 
+  // Modo de vista de escritura
+  writeViewMode: WriteViewMode = 'panel';
+
   constructor(
     private readonly navCtrl: NavController,
     @Inject(THEME_SERVICE)
@@ -51,11 +60,15 @@ export class SettingsPage implements OnInit {
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly tts: ITextToSpeechService,
     private readonly pressHoldConfig: PressHoldConfigService,
+    private readonly writeViewConfig: WriteViewConfigService,
   ) {}
 
   ngOnInit(): void {
     // Cargar duración desde el servicio
     this.pressHoldDuration = this.pressHoldConfig.getDuration();
+
+    // Cargar modo de vista de escritura
+    void this.loadWriteViewMode();
 
     // Seleccionar el primer tipo de color por defecto
     this.selectedColorType = COLOR_TYPES[0];
@@ -66,6 +79,13 @@ export class SettingsPage implements OnInit {
       priority: SpeechPriority.HIGH,
       interrupt: true,
     });
+  }
+
+  /**
+   * Carga el modo de vista de escritura actual
+   */
+  private async loadWriteViewMode(): Promise<void> {
+    this.writeViewMode = await this.writeViewConfig.getViewMode();
   }
 
   async goBack(): Promise<void> {
@@ -198,7 +218,7 @@ export class SettingsPage implements OnInit {
     this.pressHoldDuration = seconds * 1000; // Convertir a milisegundos
     this.pressHoldConfig.setDuration(this.pressHoldDuration);
 
-    await this.tts.speak(`Duración establecida a ${seconds} segundo${seconds !== 1 ? 's' : ''}`, {
+    await this.tts.speak(`Duración establecida a ${seconds} segundo${seconds === 1 ? '' : 's'}`, {
       priority: SpeechPriority.NORMAL,
       interrupt: false,
     });
@@ -212,7 +232,7 @@ export class SettingsPage implements OnInit {
     this.pressHoldConfig.setDuration(durationMs);
 
     const seconds = durationMs / 1000;
-    await this.tts.speak(`Duración establecida a ${seconds} segundo${seconds !== 1 ? 's' : ''}`, {
+    await this.tts.speak(`Duración establecida a ${seconds} segundo${seconds === 1 ? '' : 's'}`, {
       priority: SpeechPriority.NORMAL,
       interrupt: false,
     });
@@ -224,6 +244,21 @@ export class SettingsPage implements OnInit {
     await this.tts.speak('Colores restablecidos a los valores por defecto', {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
+    });
+  }
+
+  /**
+   * Maneja el cambio del modo de vista de escritura
+   */
+  async onWriteViewChange(event: any): Promise<void> {
+    const newMode: WriteViewMode = event.detail.value;
+    this.writeViewMode = newMode;
+    await this.writeViewConfig.setViewMode(newMode);
+
+    const modeName = newMode === 'panel' ? 'Panel (Rejilla)' : 'Carrusel (Deslizar)';
+    await this.tts.speak(`Vista de escritura cambiada a ${modeName}`, {
+      priority: SpeechPriority.NORMAL,
+      interrupt: false,
     });
   }
 }

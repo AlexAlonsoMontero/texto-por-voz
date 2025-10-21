@@ -1,0 +1,52 @@
+<section class="letter-carousel" aria-label="Selector de letras individuales en carrusel">
+  <!-- Swiper Container -->
+  <swiper-container
+    #swiper
+    [slidesPerView]="1"
+    [centeredSlides]="true"
+    [loop]="false"
+    (slidechange)="onSlideChange()"
+    class="swiper-container"
+  >
+    <swiper-slide *ngFor="let letter of letters; let i = index" class="swiper-slide">
+      <app-press-hold-button
+        [buttonId]="'letter-carousel-' + letter"
+        [actionId]="letter"
+        [color]="i % 2 === 0 ? 'primary' : 'secondary'"
+        [holdDuration]="2000"
+        [ariaLabel]="'Letra ' + letter + '. Mantener presionado 2 segundos para seleccionar'"
+        (holdStart)="onLetterHoldStart($event)"
+        (actionExecuted)="onLetterSelected($event)"
+        class="letter-button-carousel"
+      >
+        {{ letter }}
+      </app-press-hold-button>
+    </swiper-slide>
+  </swiper-container>
+
+  <!-- Botones de navegación -->
+  <ion-button
+    (click)="slidePrev()"
+    class="nav-button nav-button-prev"
+    fill="solid"
+    color="medium"
+    [disabled]="currentIndex === 0"
+    aria-label="Letra anterior"
+  >
+    ←
+  </ion-button>
+
+  <ion-button
+    (click)="slideNext()"
+    class="nav-button nav-button-next"
+    fill="solid"
+    color="medium"
+    [disabled]="currentIndex === letters.length - 1"
+    aria-label="Letra siguiente"
+  >
+    →
+  </ion-button>
+
+  <!-- Indicador de posición -->
+  <div class="position-indicator">{{ currentIndex + 1 }} / {{ letters.length }}</div>
+</section>

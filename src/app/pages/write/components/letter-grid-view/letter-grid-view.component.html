@@ -1,0 +1,15 @@
+<section class="letter-grid" aria-label="Selector de letras individuales en rejilla">
+  <app-press-hold-button
+    *ngFor="let letter of letters; let i = index"
+    [buttonId]="'letter-' + letter"
+    [actionId]="letter"
+    [color]="i % 2 === 0 ? 'primary' : 'secondary'"
+    [holdDuration]="2000"
+    [ariaLabel]="'Letra ' + letter + '. Mantener presionado 2 segundos para seleccionar'"
+    (holdStart)="onLetterHoldStart($event)"
+    (actionExecuted)="onLetterSelected($event)"
+    class="letter-button"
+  >
+    {{ letter }}
+  </app-press-hold-button>
+</section>

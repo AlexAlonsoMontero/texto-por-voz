@@ -37,4 +37,17 @@
   >
     <ion-icon name="settings" class="sidebar-btn-icon"></ion-icon>
   </app-press-hold-button>
+
+  <!-- Botón Volver (navegación global hacia atrás) -->
+  <app-press-hold-button
+    buttonId="sidebar-back-btn"
+    actionId="back-action"
+    color="danger"
+    [holdDuration]="2000"
+    ariaLabel="Botón de volver. Mantener presionado 2 segundos para regresar a la página anterior"
+    (actionExecuted)="onBackAction($event)"
+    class="sidebar-btn sidebar-btn-back"
+  >
+    <ion-icon name="arrow-back" class="sidebar-btn-icon"></ion-icon>
+  </app-press-hold-button>
 </aside>

@@ -48,4 +48,12 @@ export class SidebarNavigationComponent {
     console.log(`⚙️ [Sidebar] Acción Settings ejecutada: ${actionId}`);
     this.onButtonSettingsClick();
   }
+
+  /**
+   * Maneja la acción del botón Volver (press-hold)
+   */
+  onBackAction(actionId: string): void {
+    console.log(`🔙 [Sidebar] Acción Volver ejecutada: ${actionId}`);
+    this.navCtrl.back();
+  }
 }

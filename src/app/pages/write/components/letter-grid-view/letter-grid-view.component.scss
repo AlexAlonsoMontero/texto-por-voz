@@ -1,0 +1,68 @@
+// ========================================
+// VISTA DE LETRAS EN GRID (PANEL)
+// ========================================
+:host {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+.letter-grid {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  overflow: hidden;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 12px;
+  background: var(--ion-background-color);
+  width: 100%;
+
+  // Grid dinámico según cantidad de letras
+  // 4 letras (A-D): 2x2
+  // 5 letras (M-P): 3x2 o 2x3
+  // 10 números (0-9): 3x4 o 4x3
+  &:has(.letter-button:nth-child(4):last-child) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  &:has(.letter-button:nth-child(5):last-child) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  &:has(.letter-button:nth-child(10):last-child) {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  // Grid genérico para otros casos
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-auto-rows: 1fr;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .letter-button {
+    height: 100%;
+    min-height: 100px;
+
+    ::ng-deep ion-button {
+      font-size: 64px; // Letras MUY grandes
+      font-weight: bold;
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      letter-spacing: 3px;
+    }
+  }
+}
+
+// Accesibilidad - Alto contraste
+@media (prefers-contrast: high) {
+  .letter-grid {
+    border-width: 4px !important;
+  }
+}

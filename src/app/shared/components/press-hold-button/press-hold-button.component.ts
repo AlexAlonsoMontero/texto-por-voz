@@ -34,6 +34,8 @@ export class PressHoldButtonComponent implements OnInit, OnDestroy {
 
   // ✅ Output - DEBE emitir string (el actionId)
   @Output() actionExecuted = new EventEmitter<string>();
+  // ✅ Nuevo: evento al iniciar la pulsación prolongada (para TTS inmediato)
+  @Output() holdStart = new EventEmitter<string>();
 
   @ViewChild('buttonRef', { static: false }) buttonRef?: ElementRef<HTMLIonButtonElement>;
 
@@ -79,6 +81,14 @@ export class PressHoldButtonComponent implements OnInit, OnDestroy {
     // ✅ Verificar que buttonRef existe antes de acceder a nativeElement
     if (this.buttonRef?.nativeElement) {
       this.renderer.addClass(this.buttonRef.nativeElement, 'pressed');
+    }
+
+    // 🔊 Emitir evento de inicio para TTS inmediato utilizando el actionId si existe; si no, buttonId
+    const idToEmit = this.actionId || this.buttonId;
+    try {
+      this.holdStart.emit(idToEmit);
+    } catch (e) {
+      console.warn('⚠️ [PressHoldButton] Error emitiendo holdStart:', e);
     }
 
     this.startProgress();

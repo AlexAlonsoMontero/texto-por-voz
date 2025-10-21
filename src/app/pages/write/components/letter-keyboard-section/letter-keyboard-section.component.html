@@ -1,4 +1,9 @@
-<section class="middle-section" aria-label="Teclado alfabético por grupos">
+<!-- MODO PANEL (GRID) -->
+<section
+  *ngIf="viewMode === 'panel'"
+  class="middle-section middle-section-grid"
+  aria-label="Teclado alfabético por grupos en rejilla"
+>
   <app-press-hold-button
     *ngFor="let group of letterGroups; let i = index"
     [buttonId]="'letter-group-' + i"
@@ -6,9 +11,67 @@
     [color]="i % 2 === 0 ? 'primary' : 'secondary'"
     [holdDuration]="2000"
     [ariaLabel]="'Botón de letras ' + group + '. Mantener presionado 2 segundos para seleccionar'"
+    (holdStart)="onLetterGroupHoldStart($event, group)"
     (actionExecuted)="onLetterGroupClick($event, group)"
     class="letter-button"
   >
     {{ group }}
   </app-press-hold-button>
+</section>
+
+<!-- MODO CARRUSEL (SLIDER) -->
+<section
+  *ngIf="viewMode === 'carousel'"
+  class="middle-section middle-section-carousel"
+  aria-label="Teclado alfabético por grupos en carrusel"
+>
+  <swiper-container
+    #swiper
+    [slidesPerView]="1"
+    [centeredSlides]="true"
+    [loop]="false"
+    (slidechange)="onSlideChange(swiper)"
+    class="groups-swiper"
+  >
+    <swiper-slide *ngFor="let group of letterGroups; let i = index" class="group-slide">
+      <app-press-hold-button
+        [buttonId]="'letter-group-carousel-' + i"
+        [actionId]="'letter-' + group"
+        [color]="i % 2 === 0 ? 'primary' : 'secondary'"
+        [holdDuration]="2000"
+        [ariaLabel]="'Botón de letras ' + group + '. Mantener presionado 2 segundos para seleccionar'"
+        (holdStart)="onLetterGroupHoldStart($event, group)"
+        (actionExecuted)="onLetterGroupClick($event, group)"
+        class="letter-button-carousel"
+      >
+        {{ group }}
+      </app-press-hold-button>
+    </swiper-slide>
+  </swiper-container>
+
+  <!-- Botones de navegación -->
+  <ion-button
+    (click)="onSlidePrev(swiper)"
+    class="nav-button nav-button-prev"
+    fill="solid"
+    color="medium"
+    [disabled]="currentSlideIndex === 0"
+    aria-label="Grupo anterior"
+  >
+    ←
+  </ion-button>
+
+  <ion-button
+    (click)="onSlideNext(swiper)"
+    class="nav-button nav-button-next"
+    fill="solid"
+    color="medium"
+    [disabled]="currentSlideIndex === letterGroups.length - 1"
+    aria-label="Grupo siguiente"
+  >
+    →
+  </ion-button>
+
+  <!-- Indicador de posición -->
+  <div class="position-indicator">{{ currentSlideIndex + 1 }} / {{ letterGroups.length }}</div>
 </section>

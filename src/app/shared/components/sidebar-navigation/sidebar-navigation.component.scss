@@ -6,12 +6,14 @@
   background: var(--ion-background-color);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 20px;
   padding: 10px;
   flex-shrink: 0;
   box-sizing: border-box;
+
+  // Agrupar botones principales (Home, Write, Settings) al centro
+  // El botón de volver irá al final con margin-top: auto
 
   // Estilos para press-hold-button en sidebar
   app-press-hold-button.sidebar-btn {
@@ -48,6 +50,12 @@
       right: 10px;
       top: 10px;
       transform: none;
+    }
+
+    // Botón de volver al final del sidebar
+    &.sidebar-btn-back {
+      margin-top: auto; // Empuja al final del contenedor flex
+      margin-bottom: 10px;
     }
   }
 }
