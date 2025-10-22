@@ -60,13 +60,15 @@ export class AppComponent implements OnInit, ViewDidEnter {
    * Inicializa el tema por defecto al arrancar la aplicación
    */
   private initializeTheme(): void {
-    try {
-      // Aplicar el tema por defecto para sincronizar las variables CSS
-      const currentTheme = this.themeService.getThemeColors();
-      this.themeService.applyTheme(currentTheme);
-    } catch (error) {
-      console.error('❌ Error inicializando tema:', error);
-    }
+    // Cargar y aplicar tema persistido antes de anunciar la app
+    // Nota: initialize() puede aplicar el tema restaurado internamente
+    void this.themeService
+      .initialize()
+      .then(() => {
+        const currentTheme = this.themeService.getThemeColors();
+        this.themeService.applyTheme(currentTheme);
+      })
+      .catch((error) => console.error('❌ Error inicializando tema:', error));
   }
 
   /**

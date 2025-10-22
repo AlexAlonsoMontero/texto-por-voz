@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Preferences } from '@capacitor/preferences';
 import {
   IThemeService,
   ThemeColors,
@@ -13,10 +14,18 @@ import {
 })
 export class ThemeService implements IThemeService {
   private currentTheme: ThemeColors = { ...DEFAULT_THEME_COLORS };
+  private readonly STORAGE_KEY = 'theme-colors-v1';
+
+  // Evitar operaciones asíncronas en el constructor; usar initialize()
+  async initialize(): Promise<void> {
+    await this.restoreThemeFromStorage();
+  }
 
   setThemeColors(colors: ThemeColors): void {
     this.currentTheme = { ...colors };
     this.applyTheme(colors);
+    // Persistir cambios
+    void this.persistTheme(colors);
   }
 
   getThemeColors(): ThemeColors {
@@ -25,6 +34,8 @@ export class ThemeService implements IThemeService {
 
   resetToDefault(): void {
     this.setThemeColors(DEFAULT_THEME_COLORS);
+    // Limpiar preferencia para volver a valores por defecto
+    void Preferences.remove({ key: this.STORAGE_KEY });
   }
 
   applyTheme(colors: ThemeColors): void {
@@ -78,10 +89,9 @@ export class ThemeService implements IThemeService {
    */
   private setCSSVariables(variables: IonicVariables): void {
     const root = document.documentElement;
-
-    Object.entries(variables).forEach(([property, value]) => {
+    for (const [property, value] of Object.entries(variables)) {
       root.style.setProperty(property, value);
-    });
+    }
   }
 
   /**
@@ -91,9 +101,9 @@ export class ThemeService implements IThemeService {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (!result) return '0, 0, 0';
 
-    const r = parseInt(result[1], 16);
-    const g = parseInt(result[2], 16);
-    const b = parseInt(result[3], 16);
+    const r = Number.parseInt(result[1], 16);
+    const g = Number.parseInt(result[2], 16);
+    const b = Number.parseInt(result[3], 16);
 
     return `${r}, ${g}, ${b}`;
   }
@@ -127,7 +137,7 @@ export class ThemeService implements IThemeService {
    * Ajusta brillo de un color hex
    */
   private adjustBrightness(hex: string, percent: number): string {
-    const num = parseInt(hex.replace('#', ''), 16);
+    const num = Number.parseInt(hex.replace('#', ''), 16);
     const amt = Math.round(2.55 * percent);
     const R = (num >> 16) + amt;
     const G = ((num >> 8) & 0x00ff) + amt;
@@ -145,5 +155,46 @@ export class ThemeService implements IThemeService {
     const clampedB = clampValue(B);
 
     return '#' + (0x1000000 + clampedR * 0x10000 + clampedG * 0x100 + clampedB).toString(16).slice(1);
+  }
+
+  /**
+   * Persiste los colores del tema en almacenamiento nativo
+   */
+  private async persistTheme(colors: ThemeColors): Promise<void> {
+    try {
+      await Preferences.set({ key: this.STORAGE_KEY, value: JSON.stringify(colors) });
+    } catch (e) {
+      console.error('[ThemeService] Error al guardar tema:', e);
+    }
+  }
+
+  /**
+   * Restaura el tema desde almacenamiento y lo aplica
+   */
+  private async restoreThemeFromStorage(): Promise<void> {
+    try {
+      const { value } = await Preferences.get({ key: this.STORAGE_KEY });
+      if (!value) return;
+
+      const parsed = JSON.parse(value) as Partial<ThemeColors>;
+      if (this.isValidTheme(parsed)) {
+        this.currentTheme = { ...parsed } as ThemeColors;
+        this.applyTheme(this.currentTheme);
+        return;
+      }
+    } catch (e) {
+      console.warn('[ThemeService] No se pudo restaurar el tema persistido:', e);
+    }
+    // Si falla, aplicar por defecto para asegurar variables
+    this.applyTheme(this.currentTheme);
+  }
+
+  /**
+   * Valida que el objeto tenga la forma de ThemeColors
+   */
+  private isValidTheme(theme: Partial<ThemeColors> | null | undefined): theme is ThemeColors {
+    if (!theme) return false;
+    const keys: (keyof ThemeColors)[] = ['primary', 'secondary', 'background', 'text'];
+    return keys.every((k) => typeof theme[k] === 'string' && (theme[k] || '').startsWith('#'));
   }
 }

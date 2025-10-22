@@ -1,4 +1,6 @@
 export interface IThemeService {
+  /** Inicializa el servicio restaurando el tema persistido, si existe */
+  initialize(): Promise<void>;
   setThemeColors(colors: ThemeColors): void;
   getThemeColors(): ThemeColors;
   resetToDefault(): void;

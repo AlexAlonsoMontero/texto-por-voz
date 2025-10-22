@@ -60,3 +60,19 @@
     }
   }
 }
+
+ion-input,
+ion-textarea {
+  /* Usa el fondo del tema configurado en Settings */
+  --background: var(--ion-background-color);
+  --color: var(--ion-text-color);
+
+  /* Fallback para asegurar el mismo color en el contenedor */
+  background: var(--ion-background-color);
+
+  height: 100%;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
