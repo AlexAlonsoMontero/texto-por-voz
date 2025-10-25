@@ -2,7 +2,7 @@
 
 .sidebar-nav {
   width: vars.$sidebar-width;
-  height: 100vh; /* Ocupa toda la altura del menú */
+  height: 100dvh; /* Ocupa toda la altura del menú */
   background: var(--ion-background-color);
   display: flex;
   flex-direction: column;

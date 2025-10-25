@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { IonContent } from '@ionic/angular/standalone';
+import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { NavController } from '@ionic/angular';
 import {
@@ -19,7 +19,7 @@ import { PressHoldButtonComponent } from '../shared/components/press-hold-button
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [CommonModule, IonContent, TtsActivationComponent, PressHoldButtonComponent],
+  imports: [CommonModule, IonContent, IonIcon, TtsActivationComponent, PressHoldButtonComponent],
 })
 export class HomePage implements OnInit, OnDestroy {
   showActivation = false;
@@ -220,7 +220,63 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   /**
-   * Maneja la acción de ir a la página Write
+   * Maneja la acción del botón Home (press-hold)
+   */
+  onHomeAction(actionId: string): void {
+    console.log(`🏠 [Home] Acción Home ejecutada: ${actionId}`);
+    this.navCtrl.navigateRoot('/home');
+  }
+
+  /**
+   * Maneja la acción del botón Write (press-hold)
+   */
+  onWriteAction(actionId: string): void {
+    console.log(`✍️ [Home] Acción Write ejecutada: ${actionId}`);
+    void this.tts.speak('Abriendo página de escritura', {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+    this.navCtrl.navigateRoot('/write');
+  }
+
+  /**
+   * Maneja la acción del botón Frases (press-hold)
+   */
+  onPhrasesAction(actionId: string): void {
+    console.log(`📝 [Home] Acción Frases ejecutada: ${actionId}`);
+    void this.tts.speak('Abriendo frases guardadas', {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+    this.navCtrl.navigateRoot('/phrases');
+  }
+
+  /**
+   * Maneja la acción del botón Settings (press-hold)
+   */
+  onSettingsAction(actionId: string): void {
+    console.log(`⚙️ [Home] Acción Settings ejecutada: ${actionId}`);
+    void this.tts.speak('Abriendo configuración', {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+    this.navCtrl.navigateRoot('/settings');
+  }
+
+  /**
+   * Maneja la acción del botón Back (press-hold)
+   */
+  onBackAction(actionId: string): void {
+    console.log(`🔙 [Home] Acción Back ejecutada: ${actionId}`);
+    void this.tts.speak('Yendo a la página anterior', {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+    this.navCtrl.back();
+  }
+
+  /**
+   * Maneja la acción de ir a la página Write (método antiguo, deprecated)
    */
   async onGoToWriteAction(actionId: string): Promise<void> {
     console.log(`✍️ [Home] Acción de ir a Write ejecutada: ${actionId}`);

@@ -21,7 +21,7 @@ ion-toolbar {
 
 // Contenedor principal con layout 10-80-10 (sin scroll)
 .write-container {
-  height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
   display: flex;
   flex-direction: column;
   padding: 5px;
