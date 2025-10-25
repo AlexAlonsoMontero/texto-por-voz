@@ -16,6 +16,7 @@ import {
   backspace,
   trash,
   arrowBack,
+  save,
 } from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
@@ -35,6 +36,7 @@ addIcons({
   backspace,
   trash,
   'arrow-back': arrowBack,
+  save,
 });
 
 // Registrar web components de Swiper (carruseles)

@@ -1,7 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonSplitPane, IonMenu } from '@ionic/angular/standalone';
 import { SidebarNavigationComponent } from './shared/components/sidebar-navigation/sidebar-navigation.component';
-import { SAFE_AREA_SERVICE, TEXT_TO_SPEECH_SERVICE, THEME_SERVICE, PHRASE_STORE_SERVICE } from './core/infrastructure/injection-tokens';
+import {
+  SAFE_AREA_SERVICE,
+  TEXT_TO_SPEECH_SERVICE,
+  THEME_SERVICE,
+  PHRASE_STORE_SERVICE,
+} from './core/infrastructure/injection-tokens';
 import { WriteViewConfigService } from './core/infrastructure/services/write-view-config.service';
 import { ISafeAreaService } from './core/domain/interfaces/safe-area.interface';
 import { ITextToSpeechService, SpeechPriority } from './core/domain/interfaces/text-to-speech.interface';
