@@ -26,5 +26,4 @@ export class ActionButtonsSectionComponent {
   onClearClick(actionId: string): void {
     this.clearAction.emit(actionId);
   }
-
 }
