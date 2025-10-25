@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonSplitPane, IonMenu } from '@ionic/angular/standalone';
 import { SidebarNavigationComponent } from './shared/components/sidebar-navigation/sidebar-navigation.component';
 import { SAFE_AREA_SERVICE, TEXT_TO_SPEECH_SERVICE, THEME_SERVICE } from './core/infrastructure/injection-tokens';
+import { WriteViewConfigService } from './core/infrastructure/services/write-view-config.service';
 import { ISafeAreaService } from './core/domain/interfaces/safe-area.interface';
 import { ITextToSpeechService, SpeechPriority } from './core/domain/interfaces/text-to-speech.interface';
 import { IThemeService } from './core/domain/interfaces/theme.interface';
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit, ViewDidEnter {
     private readonly ttsService: ITextToSpeechService,
     @Inject(THEME_SERVICE)
     private readonly themeService: IThemeService,
+    private readonly writeViewConfig: WriteViewConfigService,
   ) {}
 
   ngOnInit(): void {
@@ -42,18 +44,30 @@ export class AppComponent implements OnInit, ViewDidEnter {
       // 1. Inicializar tema por defecto
       this.initializeTheme();
 
-      // 2. Inicializar TTS Service globalmente
+      // 2. Pre-cargar modo de vista de escritura para evitar flickers y asegurar persistencia
+      await this.warmupWriteViewConfig();
+
+      // 3. Inicializar TTS Service globalmente
       await this.initializeTTSService();
 
-      // 3. Aplicar safe areas
+      // 4. Aplicar safe areas
       await this.applySafeAreaMargins();
 
-      // 4. Mensaje de bienvenida accesible
+      // 5. Mensaje de bienvenida accesible
       await this.announceAppReady();
     } catch (error) {
       console.error('❌ Error crítico en AppComponent:', error);
       this.handleCriticalAppError(error);
     }
+  }
+
+  /**
+   * Precarga el modo de vista de escritura desde storage para hidratar el BehaviorSubject
+   */
+  private async warmupWriteViewConfig(): Promise<void> {
+    try {
+      await this.writeViewConfig.getViewMode();
+    } catch {}
   }
 
   /**
