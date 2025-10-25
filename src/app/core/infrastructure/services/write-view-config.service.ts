@@ -44,15 +44,13 @@ export class WriteViewConfigService implements IWriteViewConfigService {
     try {
       const { value } = await Preferences.get({ key: this.STORAGE_KEY });
       const normalized = (value ?? '').toString().trim().toLowerCase();
-      const mode = (normalized === 'panel' || normalized === 'carousel')
-        ? (normalized as WriteViewMode)
-        : undefined;
+      const mode = normalized === 'panel' || normalized === 'carousel' ? (normalized as WriteViewMode) : undefined;
 
       if (mode) {
         this.viewModeSubject.next(mode);
       } else {
         // Intentar fallback a localStorage (WebView) si no hay valor en Preferences
-  const ls = typeof localStorage === 'undefined' ? null : localStorage.getItem(this.LOCAL_KEY);
+        const ls = typeof localStorage === 'undefined' ? null : localStorage.getItem(this.LOCAL_KEY);
         const lsNorm = (ls ?? '').toString().trim().toLowerCase();
         if (lsNorm === 'panel' || lsNorm === 'carousel') {
           this.viewModeSubject.next(lsNorm as WriteViewMode);
