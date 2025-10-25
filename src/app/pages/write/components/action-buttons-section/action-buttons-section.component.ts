@@ -14,7 +14,6 @@ export class ActionButtonsSectionComponent {
   @Output() spaceAction = new EventEmitter<string>();
   @Output() backspaceAction = new EventEmitter<string>();
   @Output() clearAction = new EventEmitter<string>();
-  @Output() punctuationAction = new EventEmitter<string>();
 
   onSpaceClick(actionId: string): void {
     this.spaceAction.emit(actionId);
@@ -28,7 +27,4 @@ export class ActionButtonsSectionComponent {
     this.clearAction.emit(actionId);
   }
 
-  onPunctuationClick(actionId: string): void {
-    this.punctuationAction.emit(actionId);
-  }
 }

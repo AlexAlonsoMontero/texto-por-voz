@@ -10,7 +10,8 @@
   height: 11vh;
   min-height: 50px;
   display: flex;
-  justify-content: space-around;
+  /* Los botones deben ocupar todo el ancho disponible */
+  justify-content: space-between;
   align-items: center;
   gap: 5px;
   padding: 5px;

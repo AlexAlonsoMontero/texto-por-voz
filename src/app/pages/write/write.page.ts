@@ -304,13 +304,13 @@ export class WritePage implements OnInit, OnDestroy {
   }
 
   /**
-   * Abre el selector de puntuación
+   * (Eliminado) Abre el selector de puntuación
    */
-  onPunctuationAction(actionId: string): void {
-    console.log(`.,?! [Write] Acción de puntuación: ${actionId}`);
-    void this.tts.speak('Función de puntuación no implementada aún', {
-      priority: SpeechPriority.NORMAL,
-      interrupt: true,
-    });
-  }
+  // onPunctuationAction(actionId: string): void {
+  //   console.log(`.,?! [Write] Acción de puntuación: ${actionId}`);
+  //   void this.tts.speak('Función de puntuación no implementada aún', {
+  //     priority: SpeechPriority.NORMAL,
+  //     interrupt: true,
+  //   });
+  // }
 }

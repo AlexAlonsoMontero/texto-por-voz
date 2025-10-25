@@ -4,7 +4,7 @@ La página Write está dividida en 3 componentes independientes para mejor mante
 
 ## 📁 Estructura
 
-```
+```text
 write/
 ├── write.page.ts                    # Página principal (orquestador)
 ├── write.page.html
@@ -75,18 +75,17 @@ write/
 - `spaceAction: EventEmitter<string>` - Añadir espacio
 - `backspaceAction: EventEmitter<string>` - Borrar último carácter
 - `clearAction: EventEmitter<string>` - Limpiar todo
-- `punctuationAction: EventEmitter<string>` - Abrir puntuación
 
 **Elementos:**
 
-- 4 botones press-hold con acciones de edición
-- Iconos: ⎵ (espacio), backspace, trash, .,?!
+- 3 botones press-hold con acciones de edición
+- Iconos: ⎵ (espacio), backspace, trash
 
 ---
 
 ## 🔄 Flujo de Datos
 
-```
+```text
 WritePage (Padre)
     ↓ [textContent]
 TextInputSectionComponent
@@ -99,7 +98,7 @@ LetterKeyboardSectionComponent
 
 WritePage (Padre)
 ActionButtonsSectionComponent
-    ↑ (spaceAction, backspaceAction, clearAction, punctuationAction)
+  ↑ (spaceAction, backspaceAction, clearAction)
 ```
 
 ## 🎨 Estilos
@@ -142,7 +141,6 @@ El archivo `write.page.scss` solo contiene:
     (spaceAction)="onSpaceAction($event)"
     (backspaceAction)="onBackspaceAction($event)"
     (clearAction)="onClearAction($event)"
-    (punctuationAction)="onPunctuationAction($event)"
   ></app-action-buttons-section>
 </div>
 ```
