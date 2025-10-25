@@ -4,12 +4,14 @@ import { HybridOrientationService } from './services/hybrid-orientation.service'
 import { HybridSafeAreaService } from './services/hybrid-safe-area.service';
 
 import { ThemeService } from './services/theme.service';
+import { PhraseStoreService } from './services/phrase-store.service';
 import {
   TEXT_TO_SPEECH_SERVICE,
   ORIENTATION_SERVICE,
   SAFE_AREA_SERVICE,
   PRESS_HOLD_BUTTON_SERVICE,
   THEME_SERVICE,
+  PHRASE_STORE_SERVICE,
 } from './injection-tokens';
 import { PressHoldButtonService } from './press-hold-button.service';
 
@@ -46,5 +48,11 @@ export const CORE_PROVIDERS: Provider[] = [
   {
     provide: THEME_SERVICE,
     useClass: ThemeService,
+  },
+
+  // Phrase Store Service - 12 slots persistentes
+  {
+    provide: PHRASE_STORE_SERVICE,
+    useClass: PhraseStoreService,
   },
 ];

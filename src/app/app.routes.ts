@@ -14,6 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/settings/settings.page').then((m) => m.SettingsPage),
   },
   {
+    path: 'phrases',
+    loadComponent: () => import('./pages/phrases/phrases.page').then((m) => m.PhrasesPage),
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',

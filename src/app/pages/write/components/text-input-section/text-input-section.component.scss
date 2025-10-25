@@ -59,6 +59,26 @@
       }
     }
   }
+
+  .save-button {
+    flex-shrink: 0;
+    width: 90px;
+    height: 100%;
+
+    ::ng-deep ion-button {
+      height: 100%;
+      min-height: 50px;
+
+      ion-icon {
+        font-size: 3.2rem;
+      }
+    }
+  }
+}
+
+// Clase para iconos de botones de acción
+.action-btn-icon {
+  font-size: 3.5rem;
 }
 
 ion-input,

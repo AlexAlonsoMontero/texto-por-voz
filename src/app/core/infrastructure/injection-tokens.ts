@@ -4,6 +4,7 @@ import { IOrientationService } from '../domain/interfaces/orientation.interface'
 import { ISafeAreaService } from '../domain/interfaces/safe-area.interface';
 import { IPressHoldButtonService } from '../domain/interfaces/press-hold-button.interface';
 import { IThemeService } from '../domain/interfaces/theme.interface';
+import { IPhraseStoreService } from '../domain/interfaces/phrase-store.interface';
 
 /**
  * Token de inyección para el servicio de Text-to-Speech
@@ -57,5 +58,15 @@ export const THEME_SERVICE = new InjectionToken<IThemeService>('ThemeService', {
   providedIn: 'root',
   factory: () => {
     throw new Error('THEME_SERVICE debe ser provisto explícitamente en los providers');
+  },
+});
+
+/**
+ * Token para el servicio de almacenamiento de frases (12 slots)
+ */
+export const PHRASE_STORE_SERVICE = new InjectionToken<IPhraseStoreService>('PhraseStoreService', {
+  providedIn: 'root',
+  factory: () => {
+    throw new Error('PHRASE_STORE_SERVICE debe ser provisto explícitamente en los providers');
   },
 });

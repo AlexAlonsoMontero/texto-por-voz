@@ -1,0 +1,86 @@
+<ion-content class="phrases-page" [fullscreen]="true">
+  <!-- Zona superior: input reutilizado con botón Guardar -->
+  <app-text-input-section
+    [showSave]="true"
+    (textContentChange)="onTextChange($event)"
+    (saveHoldStart)="onSaveHoldStart()"
+    (saveAction)="onSaveAction()"
+  >
+  </app-text-input-section>
+
+  <!-- Grid 3x4 sin scroll -->
+  <div class="slots-grid">
+    <div class="slot" *ngFor="let s of slots; let i = index">
+      <app-press-hold-button
+        class="slot-btn"
+        [buttonId]="'slot-btn-' + (i + 1)"
+        [actionId]="'slot-' + (i + 1)"
+        [color]="(s.value && s.value.trim()) ? 'success' : (i % 2 === 0 ? 'primary' : 'secondary')"
+        [holdDuration]="2000"
+        [ariaLabel]="'Botón ' + (i + 1) + (s.value && s.value.trim() ? '. Frase asignada' : ' vacío')"
+        (holdStart)="onSlotHoldStart(i)"
+        (actionExecuted)="onSlotAction(i)"
+      >
+        {{ i + 1 }}
+      </app-press-hold-button>
+
+      <app-press-hold-button
+        *ngIf="s.value && s.value.trim()"
+        class="delete-btn"
+        [buttonId]="'del-btn-' + (i + 1)"
+        [actionId]="'del-' + (i + 1)"
+        color="danger"
+        [holdDuration]="2000"
+        ariaLabel="Eliminar frase guardada en este botón"
+        (holdStart)="onDeleteSlotHoldStart(i)"
+        (actionExecuted)="onDeleteSlotAction(i)"
+      >
+        🗑️
+      </app-press-hold-button>
+    </div>
+  </div>
+
+  <!-- Modal para elegir número (guardar/sobrescribir) -->
+  <ion-modal [isOpen]="showSaveModal" [backdropDismiss]="false" (ionModalDidDismiss)="onCloseModalAction()">
+    <ng-template>
+      <ion-content class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Elige un botón (1–12)</h2>
+        </div>
+
+        <div class="modal-grid-wrapper">
+          <div class="slots-grid modal-grid">
+            <div class="slot" *ngFor="let s of slots; let i = index">
+              <app-press-hold-button
+                class="slot-btn"
+                [buttonId]="'pick-btn-' + (i + 1)"
+                [actionId]="'pick-' + (i + 1)"
+                [color]="i % 2 === 0 ? 'primary' : 'secondary'"
+                [holdDuration]="2000"
+                [ariaLabel]="'Seleccionar botón ' + (i + 1) + (s.value ? ' (reemplazar)' : ' (vacío)')"
+                (holdStart)="onPickSlotHoldStart(i)"
+                (actionExecuted)="onPickSlotAction(i)"
+              >
+                {{ i + 1 }}
+              </app-press-hold-button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <app-press-hold-button
+            [buttonId]="'close-modal'"
+            [actionId]="'close-modal-action'"
+            color="medium"
+            [holdDuration]="2000"
+            ariaLabel="Cerrar"
+            (holdStart)="onCloseModalHoldStart()"
+            (actionExecuted)="onCloseModalAction()"
+          >
+            Cerrar
+          </app-press-hold-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

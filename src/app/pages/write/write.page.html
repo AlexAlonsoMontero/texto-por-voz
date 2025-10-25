@@ -21,7 +21,10 @@
     <!-- PARTE SUPERIOR - 10% -->
     <app-text-input-section
       [(textContent)]="textContent"
+      [showSave]="true"
       (speakAction)="onSpeakAction($event)"
+      (saveHoldStart)="onSaveHoldStart($event)"
+      (saveAction)="onSaveAction($event)"
     ></app-text-input-section>
 
     <!-- PARTE CENTRAL - 80% (Condicional según estado) -->

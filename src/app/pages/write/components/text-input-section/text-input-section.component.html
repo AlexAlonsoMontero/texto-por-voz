@@ -7,6 +7,21 @@
     aria-label="Texto generado por el teclado alfabético"
   ></ion-input>
 
+  <ng-container *ngIf="showSave">
+    <app-press-hold-button
+      buttonId="save-btn"
+      actionId="save-action"
+      color="secondary"
+      [holdDuration]="2000"
+      ariaLabel="Botón de guardar. Mantener presionado 2 segundos para guardar el texto en un slot"
+      (holdStart)="onSaveHold($event)"
+      (actionExecuted)="onSaveClick($event)"
+      class="save-button"
+    >
+      <ion-icon name="arrow-down" class="action-btn-icon"></ion-icon>
+    </app-press-hold-button>
+  </ng-container>
+
   <app-press-hold-button
     buttonId="speak-btn"
     actionId="speak-action"
@@ -16,6 +31,6 @@
     (actionExecuted)="onSpeakClick($event)"
     class="speak-button"
   >
-    <ion-icon name="volume-high"></ion-icon>
+    <ion-icon name="volume-high" class="action-btn-icon"></ion-icon>
   </app-press-hold-button>
 </section>

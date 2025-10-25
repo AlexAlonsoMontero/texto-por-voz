@@ -25,11 +25,24 @@
     <ion-icon name="create" class="sidebar-btn-icon"></ion-icon>
   </app-press-hold-button>
 
+  <!-- Botón Frases con icono document-text -->
+  <app-press-hold-button
+    buttonId="sidebar-phrases-btn"
+    actionId="phrases-action"
+    color="primary"
+    [holdDuration]="2000"
+    ariaLabel="Botón de frases. Mantener presionado 2 segundos para ir a frases guardadas"
+    (actionExecuted)="onPhrasesAction($event)"
+    class="sidebar-btn"
+  >
+    <ion-icon name="document-text" class="sidebar-btn-icon"></ion-icon>
+  </app-press-hold-button>
+
   <!-- Botón Settings con icono -->
   <app-press-hold-button
     buttonId="sidebar-settings-btn"
     actionId="settings-action"
-    color="primary"
+    color="secondary"
     [holdDuration]="2000"
     ariaLabel="Botón de configuración. Mantener presionado 2 segundos para ir a ajustes"
     (actionExecuted)="onSettingsAction($event)"
@@ -42,7 +55,7 @@
   <app-press-hold-button
     buttonId="sidebar-back-btn"
     actionId="back-action"
-    color="secondary"
+    color="primary"
     [holdDuration]="2000"
     ariaLabel="Botón de volver. Mantener presionado 2 segundos para regresar a la página anterior"
     (actionExecuted)="onBackAction($event)"

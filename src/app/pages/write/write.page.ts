@@ -162,6 +162,29 @@ export class WritePage implements OnInit, OnDestroy {
   }
 
   /**
+   * Maneja el inicio de pulsación del botón Guardar (feedback TTS)
+   */
+  onSaveHoldStart(actionId: string): void {
+    void this.tts.speak('Guardar frase', {
+      priority: SpeechPriority.HIGH,
+      interrupt: true,
+    });
+  }
+
+  /**
+   * Maneja la acción completada del botón Guardar
+   * En Write, solo anunciamos que se abrirá la página de frases
+   */
+  onSaveAction(actionId: string): void {
+    console.log(`💾 [Write] Acción de guardar: ${actionId}`);
+    void this.tts.speak('Abriendo frases guardadas', {
+      priority: SpeechPriority.NORMAL,
+      interrupt: true,
+    });
+    void this.navCtrl.navigateForward('/phrases');
+  }
+
+  /**
    * Maneja el inicio de pulsación de un grupo (feedback TTS)
    */
   onLetterGroupHoldStart(actionId: string, group: string): void {

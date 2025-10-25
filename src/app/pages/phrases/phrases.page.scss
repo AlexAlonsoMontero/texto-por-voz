@@ -1,0 +1,80 @@
+:host, .phrases-page {
+  --page-padding: 12px;
+  height: 100%;
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 12px;
+  padding: var(--page-padding);
+  box-sizing: border-box;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.slot-btn {
+  flex: 1 1 auto;
+}
+
+.delete-btn {
+  flex: 0 0 44px;
+}
+
+/* Modal */
+.modal-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  background: var(--ion-background-color);
+}
+
+.modal-header {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--ion-text-color);
+}
+
+.modal-grid-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-grid {
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+  flex: 1 1 auto;
+  max-width: 100%;
+}
+
+.modal-actions {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+@media (max-width: 800px) {
+  .slots-grid,
+  .modal-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

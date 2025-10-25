@@ -15,6 +15,11 @@ export class TextInputSectionComponent {
   @Input() textContent: string = '';
   @Output() textContentChange = new EventEmitter<string>();
   @Output() speakAction = new EventEmitter<string>();
+  // Mostrar botón Guardar (opt-in para evitar romper layouts existentes)
+  @Input() showSave: boolean = false;
+  // Eventos para Guardar
+  @Output() saveHoldStart = new EventEmitter<string>();
+  @Output() saveAction = new EventEmitter<string>();
 
   onTextChange(value: string): void {
     this.textContentChange.emit(value);
@@ -22,5 +27,13 @@ export class TextInputSectionComponent {
 
   onSpeakClick(actionId: string): void {
     this.speakAction.emit(actionId);
+  }
+
+  onSaveHold(actionId: string): void {
+    this.saveHoldStart.emit(actionId);
+  }
+
+  onSaveClick(actionId: string): void {
+    this.saveAction.emit(actionId);
   }
 }

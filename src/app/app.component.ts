@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonSplitPane, IonMenu } from '@ionic/angular/standalone';
 import { SidebarNavigationComponent } from './shared/components/sidebar-navigation/sidebar-navigation.component';
-import { SAFE_AREA_SERVICE, TEXT_TO_SPEECH_SERVICE, THEME_SERVICE } from './core/infrastructure/injection-tokens';
+import { SAFE_AREA_SERVICE, TEXT_TO_SPEECH_SERVICE, THEME_SERVICE, PHRASE_STORE_SERVICE } from './core/infrastructure/injection-tokens';
 import { WriteViewConfigService } from './core/infrastructure/services/write-view-config.service';
 import { ISafeAreaService } from './core/domain/interfaces/safe-area.interface';
 import { ITextToSpeechService, SpeechPriority } from './core/domain/interfaces/text-to-speech.interface';
 import { IThemeService } from './core/domain/interfaces/theme.interface';
+import { IPhraseStoreService } from './core/domain/interfaces/phrase-store.interface';
 import { ViewDidEnter } from '@ionic/angular';
 
 @Component({
@@ -23,6 +24,8 @@ export class AppComponent implements OnInit, ViewDidEnter {
     private readonly ttsService: ITextToSpeechService,
     @Inject(THEME_SERVICE)
     private readonly themeService: IThemeService,
+    @Inject(PHRASE_STORE_SERVICE)
+    private readonly phraseStore: IPhraseStoreService,
     private readonly writeViewConfig: WriteViewConfigService,
   ) {}
 
@@ -47,13 +50,16 @@ export class AppComponent implements OnInit, ViewDidEnter {
       // 2. Pre-cargar modo de vista de escritura para evitar flickers y asegurar persistencia
       await this.warmupWriteViewConfig();
 
-      // 3. Inicializar TTS Service globalmente
+      // 3. Pre-cargar frases guardadas para hidratar BehaviorSubject y asegurar persistencia
+      await this.warmupPhraseStore();
+
+      // 4. Inicializar TTS Service globalmente
       await this.initializeTTSService();
 
-      // 4. Aplicar safe areas
+      // 5. Aplicar safe areas
       await this.applySafeAreaMargins();
 
-      // 5. Mensaje de bienvenida accesible
+      // 6. Mensaje de bienvenida accesible
       await this.announceAppReady();
     } catch (error) {
       console.error('❌ Error crítico en AppComponent:', error);
@@ -67,6 +73,15 @@ export class AppComponent implements OnInit, ViewDidEnter {
   private async warmupWriteViewConfig(): Promise<void> {
     try {
       await this.writeViewConfig.getViewMode();
+    } catch {}
+  }
+
+  /**
+   * Precarga las frases guardadas desde storage para hidratar el BehaviorSubject
+   */
+  private async warmupPhraseStore(): Promise<void> {
+    try {
+      await this.phraseStore.getAll();
     } catch {}
   }
 

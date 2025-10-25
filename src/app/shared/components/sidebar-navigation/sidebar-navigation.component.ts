@@ -25,6 +25,10 @@ export class SidebarNavigationComponent {
     this.navCtrl.navigateRoot('/settings');
   }
 
+  onButtonPhrasesClick(): void {
+    this.navCtrl.navigateRoot('/phrases');
+  }
+
   /**
    * Maneja la acción del botón Home (press-hold)
    */
@@ -47,6 +51,14 @@ export class SidebarNavigationComponent {
   onSettingsAction(actionId: string): void {
     console.log(`⚙️ [Sidebar] Acción Settings ejecutada: ${actionId}`);
     this.onButtonSettingsClick();
+  }
+
+  /**
+   * Maneja la acción del botón Phrases (press-hold)
+   */
+  onPhrasesAction(actionId: string): void {
+    console.log(`📝 [Sidebar] Acción Phrases ejecutada: ${actionId}`);
+    this.onButtonPhrasesClick();
   }
 
   /**
