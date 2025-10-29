@@ -2,12 +2,17 @@
 
 /* Variables dinámicas de Safe Area se aplican desde app.component.ts */
 
-ion-app {
+:host ::ng-deep ion-app {
   /* Asegurar que ocupe toda la pantalla */
-  width: 100vw;
-  height: 100dvh;
-  overflow: hidden;
-  box-sizing: border-box;
+  width: 100vw !important;
+  height: calc(100vh - var(--safe-area-bottom, 0px)) !important;
+  // margin-top: var(--safe-area-top, 0px) !important;
+  // margin-bottom: 0 !important;
+  margin-left: var(--safe-area-left, 0px) !important;
+  margin-right: var(--safe-area-right, 0px) !important;
+  // padding: 0px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
 ion-split-pane {
@@ -15,16 +20,11 @@ ion-split-pane {
   --side-min-width: #{vars.$sidebar-width};
   --side-max-width: #{vars.$sidebar-width};
 
-  /* Posicionamiento absoluto para control total */
-  position: fixed;
-  top: var(--safe-area-top, 0px);
-  bottom: var(--safe-area-bottom, 0px);
-  left: var(--safe-area-left, 0px);
-  right: var(--safe-area-right, 0px);
-
-  /* Dimensiones automáticas basadas en posición */
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
