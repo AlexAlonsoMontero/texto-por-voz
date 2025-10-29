@@ -1,21 +1,4 @@
 <ion-content [fullscreen]="true">
-  <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <app-press-hold-button
-          buttonId="back-btn"
-          actionId="back-action"
-          color="medium"
-          [holdDuration]="2000"
-          ariaLabel="Botón de volver. Mantener presionado 2 segundos para regresar a la página principal"
-          (actionExecuted)="onBackAction($event)"
-        >
-          ← Volver
-        </app-press-hold-button>
-      </ion-buttons>
-      <ion-title>Escribir Texto</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
   <div class="write-container">
     <!-- PARTE SUPERIOR - 10% -->

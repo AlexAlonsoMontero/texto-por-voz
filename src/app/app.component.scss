@@ -6,8 +6,8 @@
   /* Asegurar que ocupe toda la pantalla */
   width: 100vw !important;
   height: calc(100vh - var(--safe-area-bottom, 0px)) !important;
-  // margin-top: var(--safe-area-top, 0px) !important;
   // margin-bottom: 0 !important;
+  border: 2px solid red;
   margin-left: var(--safe-area-left, 0px) !important;
   margin-right: var(--safe-area-right, 0px) !important;
   // padding: 0px !important;
@@ -34,12 +34,17 @@ ion-menu {
 
   /* El menú hereda la altura del split-pane */
   height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .ion-page {
   background: var(--ion-background-color);
 
   /* La página ocupa todo el espacio del split-pane */
+  flex: 1;
   height: 100%;
-  width: 100%;
+  width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
