@@ -50,6 +50,7 @@ export class SettingsPage implements OnInit {
 
   // Duración de presión de botones (en milisegundos)
   pressHoldDuration: number = 2000; // Por defecto 2 segundos
+  holdDuration$ = this.pressHoldConfig.duration$;
 
   // Modo de vista de escritura
   writeViewMode: WriteViewMode = 'panel';

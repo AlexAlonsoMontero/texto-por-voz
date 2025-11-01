@@ -5,5 +5,19 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "eslint.validate": ["typescript", "typescriptangular"]
+  "eslint.validate": ["typescript", "typescriptangular"],
+  "files.exclude": {
+    "node_modules": true,
+    "android": true,
+    "ios": true,
+    "dist": true,
+    "www": true,
+    ".angular": true
+  },
+  "search.exclude": {
+    "node_modules": true,
+    "android": true,
+    "ios": true,
+    "dist": true
+  }
 }

@@ -8,6 +8,7 @@ import {
   PHRASE_STORE_SERVICE,
 } from './core/infrastructure/injection-tokens';
 import { WriteViewConfigService } from './core/infrastructure/services/write-view-config.service';
+import { PressHoldConfigService } from './core/application/services/press-hold-config.service';
 import { ISafeAreaService } from './core/domain/interfaces/safe-area.interface';
 import { ITextToSpeechService, SpeechPriority } from './core/domain/interfaces/text-to-speech.interface';
 import { IThemeService } from './core/domain/interfaces/theme.interface';
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit, ViewDidEnter {
     @Inject(PHRASE_STORE_SERVICE)
     private readonly phraseStore: IPhraseStoreService,
     private readonly writeViewConfig: WriteViewConfigService,
+    private readonly pressHoldConfig: PressHoldConfigService,
   ) {}
 
   ngOnInit(): void {
@@ -49,22 +51,25 @@ export class AppComponent implements OnInit, ViewDidEnter {
    */
   private async initializeAppAsync(): Promise<void> {
     try {
-      // 1. Inicializar tema por defecto
+      // 1. Cargar configuración de press-hold buttons
+      this.pressHoldConfig.getDuration();
+
+      // 2. Inicializar tema por defecto
       this.initializeTheme();
 
-      // 2. Pre-cargar modo de vista de escritura para evitar flickers y asegurar persistencia
+      // 3. Pre-cargar modo de vista de escritura para evitar flickers y asegurar persistencia
       await this.warmupWriteViewConfig();
 
-      // 3. Pre-cargar frases guardadas para hidratar BehaviorSubject y asegurar persistencia
+      // 4. Pre-cargar frases guardadas para hidratar BehaviorSubject y asegurar persistencia
       await this.warmupPhraseStore();
 
-      // 4. Inicializar TTS Service globalmente
+      // 5. Inicializar TTS Service globalmente
       await this.initializeTTSService();
 
-      // 5. Aplicar safe areas
+      // 6. Aplicar safe areas
       await this.applySafeAreaMargins();
 
-      // 6. Mensaje de bienvenida accesible
+      // 7. Mensaje de bienvenida accesible
       await this.announceAppReady();
     } catch (error) {
       console.error('❌ Error crítico en AppComponent:', error);

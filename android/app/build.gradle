@@ -3,6 +3,16 @@ apply plugin: 'com.android.application'
 android {
     namespace "io.ionic.starter"
     compileSdk rootProject.ext.compileSdkVersion
+    
+    signingConfigs {
+        release {
+            storeFile file("../texto-voz.keystore")
+            storePassword "texto123"
+            keyAlias "texto-voz"
+            keyPassword "texto123"
+        }
+    }
+    
     defaultConfig {
         applicationId "io.ionic.starter"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -20,6 +30,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }

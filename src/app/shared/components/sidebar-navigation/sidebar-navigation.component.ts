@@ -1,17 +1,24 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { IonIcon } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
+import { PressHoldConfigService } from '../../../core/application/services/press-hold-config.service';
 import { PressHoldButtonComponent } from '../press-hold-button/press-hold-button.component';
 
 @Component({
   selector: 'app-sidebar-navigation',
   standalone: true,
-  imports: [IonIcon, PressHoldButtonComponent],
+  imports: [CommonModule, IonIcon, PressHoldButtonComponent],
   templateUrl: './sidebar-navigation.component.html',
   styleUrls: ['./sidebar-navigation.component.scss'],
 })
 export class SidebarNavigationComponent {
-  constructor(private readonly navCtrl: NavController) {}
+  holdDuration$ = this.pressHoldConfig.duration$;
+
+  constructor(
+    private readonly navCtrl: NavController,
+    private readonly pressHoldConfig: PressHoldConfigService,
+  ) {}
 
   onButtonHomeClick(): void {
     this.navCtrl.navigateRoot('/home');

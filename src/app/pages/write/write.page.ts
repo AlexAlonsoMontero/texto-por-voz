@@ -5,6 +5,7 @@ import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
+import { PressHoldConfigService } from '../../core/application/services/press-hold-config.service';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
 import { TextInputSectionComponent } from './components/text-input-section/text-input-section.component';
 import { LetterKeyboardSectionComponent } from './components/letter-keyboard-section/letter-keyboard-section.component';
@@ -41,6 +42,7 @@ export class WritePage implements OnInit, OnDestroy {
   viewMode: WriteViewMode = 'panel';
   currentLetters: string[] = [];
   private viewModeSubscription?: Subscription;
+  holdDuration$ = this.pressHoldConfig.duration$;
 
   // Grupos de letras del abecedario español (sin acentos, incluye Ñ)
   letterGroups: string[] = [
@@ -81,6 +83,7 @@ export class WritePage implements OnInit, OnDestroy {
   constructor(
     private readonly navCtrl: NavController,
     private readonly writeViewConfig: WriteViewConfigService,
+    private readonly pressHoldConfig: PressHoldConfigService,
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly tts: ITextToSpeechService,
   ) {}

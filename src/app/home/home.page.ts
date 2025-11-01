@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
-import { CommonModule } from '@angular/common';
+import { CommonModule, AsyncPipe } from '@angular/common';
 import { NavController } from '@ionic/angular';
 import {
   TEXT_TO_SPEECH_SERVICE,
@@ -12,6 +12,7 @@ import { ITextToSpeechService, SpeechPriority } from '../core/domain/interfaces/
 import { IOrientationService } from '../core/domain/interfaces/orientation.interface';
 import { ISafeAreaService } from '../core/domain/interfaces/safe-area.interface';
 import { IPressHoldButtonService } from '../core/domain/interfaces/press-hold-button.interface';
+import { PressHoldConfigService } from '../core/application/services/press-hold-config.service';
 import { TtsActivationComponent } from '../shared/components/tts-activation/tts-activation.component';
 import { PressHoldButtonComponent } from '../shared/components/press-hold-button/press-hold-button.component';
 
@@ -23,6 +24,7 @@ import { PressHoldButtonComponent } from '../shared/components/press-hold-button
 })
 export class HomePage implements OnInit, OnDestroy {
   showActivation = false;
+  holdDuration$ = this.pressHoldConfig.duration$;
 
   constructor(
     private readonly navCtrl: NavController,
@@ -34,6 +36,7 @@ export class HomePage implements OnInit, OnDestroy {
     private readonly safeAreaService: ISafeAreaService,
     @Inject(PRESS_HOLD_BUTTON_SERVICE)
     private readonly pressHoldService: IPressHoldButtonService,
+    private readonly pressHoldConfig: PressHoldConfigService,
   ) {}
 
   ngOnInit(): void {
