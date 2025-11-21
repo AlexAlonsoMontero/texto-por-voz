@@ -57,9 +57,9 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
     }
 
     const speechOptions: SpeechOptions = {
-      rate: 1.0,
-      pitch: 1.0,
-      volume: 1.0,
+      rate: 1,
+      pitch: 1,
+      volume: 1,
       lang: 'es-ES',
       interrupt: true,
       priority: SpeechPriority.NORMAL,
@@ -132,7 +132,7 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
     if (this.isNativePlatform) {
       return true;
     } else {
-      return 'speechSynthesis' in window;
+      return 'speechSynthesis' in globalThis;
     }
   }
 
@@ -198,11 +198,11 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
   }
 
   private async initializeWeb(): Promise<void> {
-    if (!('speechSynthesis' in window)) {
+    if (!('speechSynthesis' in globalThis)) {
       throw new Error('Web Speech API no soportada en este navegador');
     }
 
-    this.webSpeechAPI = window.speechSynthesis;
+    this.webSpeechAPI = (globalThis as any).speechSynthesis as SpeechSynthesis;
 
     return new Promise((resolve) => {
       if (this.webSpeechAPI!.getVoices().length > 0) {
@@ -216,14 +216,42 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
   private async speakNative(text: string, options: SpeechOptions): Promise<void> {
     this.status = TTSStatus.SPEAKING;
 
-    await this.capacitorTTS.speak({
-      text,
-      lang: options.lang || 'es-ES',
-      rate: options.rate || 1.0,
-      pitch: options.pitch || 1.0,
-      volume: options.volume || 1.0,
-      category: options.category || 'ambient',
-    });
+    // En algunos dispositivos Samsung, la categoría "ambient" puede no solicitar AudioFocus correctamente.
+    // Usamos "playback" por defecto en Android para garantizar salida por STREAM_MUSIC.
+    const isAndroid = Capacitor.getPlatform() === 'android';
+    const category = options.category || (isAndroid ? 'playback' : 'ambient');
+
+    const attemptSpeak = async (langCode: string) =>
+      this.capacitorTTS.speak({
+        text,
+        lang: langCode,
+        rate: options.rate || 1,
+        pitch: options.pitch || 1,
+        volume: options.volume || 1,
+        category,
+      });
+
+    try {
+      await attemptSpeak(options.lang || 'es-ES');
+    } catch (err: any) {
+      // Fallbacks de idioma comunes en Android (algunas ROM Samsung reportan diferencias de locale)
+      const fallbacks = ['es-ES', 'es-419', 'es'];
+      let spoken = false;
+      for (const fb of fallbacks) {
+        try {
+          await attemptSpeak(fb);
+          spoken = true;
+          break;
+        } catch (error_) {
+          // intentar siguiente con otro locale
+          console.debug('TTS fallback locale failed, trying next', { locale: fb, error: error_ });
+        }
+      }
+      if (!spoken) {
+        this.status = TTSStatus.READY;
+        throw err;
+      }
+    }
 
     this.status = TTSStatus.READY;
   }
@@ -237,9 +265,9 @@ export class HybridTextToSpeechService implements ITextToSpeechService {
 
       const utterance = new SpeechSynthesisUtterance(text);
 
-      utterance.rate = options.rate || 1.0;
-      utterance.pitch = options.pitch || 1.0;
-      utterance.volume = options.volume || 1.0;
+      utterance.rate = options.rate || 1;
+      utterance.pitch = options.pitch || 1;
+      utterance.volume = options.volume || 1;
       utterance.lang = options.lang || 'es-ES';
 
       utterance.onstart = () => {
