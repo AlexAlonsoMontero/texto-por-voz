@@ -18,6 +18,9 @@ ion-toolbar {
 
 .settings-container {
   padding: 20px;
+  /* Padding seguro arriba y abajo */
+  padding-top: calc(20px + var(--safe-area-top, 0px));
+  padding-bottom: calc(20px + var(--safe-area-bottom, 20px));
   max-width: 1200px;
   margin: 0 auto;
 

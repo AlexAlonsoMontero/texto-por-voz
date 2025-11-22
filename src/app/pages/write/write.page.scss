@@ -21,10 +21,13 @@ ion-toolbar {
 
 // Contenedor principal con layout 10-80-10 (sin scroll)
 .write-container {
-  height: calc(100dvh - 56px);
+  height: 100%; /* Usar 100% para llenar el ion-content */
   display: flex;
   flex-direction: column;
   padding: 5px;
+  /* Padding seguro arriba y abajo */
+  padding-top: calc(5px + var(--safe-area-top, 0px));
+  padding-bottom: calc(5px + var(--safe-area-bottom, 20px));
   gap: 5px;
   box-sizing: border-box;
   background: var(--ion-background-color);

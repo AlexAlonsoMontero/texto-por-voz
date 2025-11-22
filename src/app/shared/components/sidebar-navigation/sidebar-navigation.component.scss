@@ -2,13 +2,17 @@
 
 .sidebar-nav {
   width: vars.$sidebar-width;
-  height: 100dvh; /* Ocupa toda la altura del menú */
+  height: 100%; /* Usar 100% del contenedor padre (ion-menu) */
   background: var(--ion-background-color);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; /* Centrar verticalmente */
   gap: 20px;
   padding: 10px;
+  /* Padding seguro arriba y abajo */
+  padding-top: calc(10px + var(--safe-area-top, 0px));
+  padding-bottom: calc(10px + var(--safe-area-bottom, 20px)); 
   flex-shrink: 0;
   box-sizing: border-box;
 

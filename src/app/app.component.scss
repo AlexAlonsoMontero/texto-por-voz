@@ -3,15 +3,18 @@
 /* Variables dinámicas de Safe Area se aplican desde app.component.ts */
 
 :host ::ng-deep ion-app {
-  /* Asegurar que ocupe toda la pantalla */
-  width: 100vw !important;
-  height: calc(100vh - var(--safe-area-bottom, 0px)) !important;
-  // margin-bottom: 0 !important;
-  margin-left: var(--safe-area-left, 0px) !important;
-  margin-right: var(--safe-area-right, 0px) !important;
-  // padding: 0px !important;
+  /*
+     FIX: Usar 100% para que Ionic maneje el layout automáticamente.
+     Los cálculos manuales con calc(100vh - safe-area) causaban problemas
+     cuando el webview ya estaba redimensionado por el sistema.
+  */
+  width: 100% !important;
+  height: 100% !important;
+
+  /* Resetear márgenes manuales */
+  margin: 0 !important;
+  padding: 0 !important;
   overflow: hidden !important;
-  box-sizing: border-box !important;
 }
 
 ion-split-pane {

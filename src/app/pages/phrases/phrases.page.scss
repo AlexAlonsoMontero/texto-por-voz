@@ -10,6 +10,9 @@
   grid-auto-rows: 1fr;
   gap: 12px;
   padding: var(--page-padding);
+  /* Padding seguro arriba y abajo */
+  padding-top: calc(var(--page-padding) + var(--safe-area-top, 0px));
+  padding-bottom: calc(var(--page-padding) + var(--safe-area-bottom, 20px));
   box-sizing: border-box;
 }
 
