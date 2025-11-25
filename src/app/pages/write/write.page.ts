@@ -210,7 +210,7 @@ export class WritePage implements OnInit, OnDestroy {
       this.viewState = 'groups';
       this.currentLetters = [];
       this.backNavService.unregisterHandler();
-      
+
       void this.tts.speak('Volviendo a grupos', {
         priority: SpeechPriority.NORMAL,
         interrupt: true,

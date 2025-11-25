@@ -77,7 +77,7 @@ export class SidebarNavigationComponent {
    */
   onBackAction(actionId: string): void {
     console.log(`🔙 [Sidebar] Acción Volver ejecutada: ${actionId}`);
-    
+
     // 1. Prioridad: Handler personalizado (navegación interna de la página)
     if (this.backNavService.handleBack()) {
       return;
