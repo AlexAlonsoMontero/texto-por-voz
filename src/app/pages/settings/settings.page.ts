@@ -2,10 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonRange,
   IonLabel,
   IonItem,
@@ -29,10 +25,6 @@ import { CarouselConfigService } from '../../core/infrastructure/services/carous
   imports: [
     CommonModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
     IonRange,
     IonLabel,
     IonItem,

@@ -1,0 +1,32 @@
+<div class="phrase-slot-container">
+  <!-- Botón Principal - Solo muestra número o imagen -->
+  <app-press-hold-button
+    class="slot-btn"
+    [buttonId]="'slot-btn-' + (slot.index + 1)"
+    [actionId]="'slot-' + (slot.index + 1)"
+    [color]="getButtonColor()"
+    [holdDuration]="2000"
+    [ariaLabel]="getAriaLabel()"
+    (holdStart)="onHoldStart()"
+    (actionExecuted)="onAction()"
+  >
+    <!-- Contenido del botón -->
+    <div class="slot-content">
+      <img
+        *ngIf="slot.imageUri"
+        [src]="slot.imageUri"
+        [alt]="slot.imageAltText || 'Botón ' + (slot.index + 1)"
+        class="slot-image"
+      />
+      <span *ngIf="!slot.imageUri" class="slot-number">{{ slot.index + 1 }}</span>
+      
+      <!-- Indicadores visuales -->
+      <div class="slot-indicators">
+        <!-- Indicador de frase guardada -->
+        <ion-icon *ngIf="hasPhrase" name="checkmark-circle" class="phrase-icon"></ion-icon>
+        <!-- Indicador de imagen guardada -->
+        <ion-icon *ngIf="hasImage && !slot.imageUri" name="image" class="image-icon"></ion-icon>
+      </div>
+    </div>
+  </app-press-hold-button>
+</div>

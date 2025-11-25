@@ -1,8 +1,13 @@
 @use '../../styles/variables' as vars;
 
+:host {
+  height: 100%;
+  display: block;
+}
+
 .sidebar-nav {
-  width: vars.$sidebar-width;
-  height: 100%; /* Usar 100% del contenedor padre (ion-menu) */
+  width: 100%;
+  height: 100%;
   background: var(--ion-background-color);
   display: flex;
   flex-direction: column;
@@ -15,6 +20,8 @@
   padding-bottom: calc(10px + var(--safe-area-bottom, 20px)); 
   flex-shrink: 0;
   box-sizing: border-box;
+  margin: 0;
+  border: none;
 
   // Agrupar botones principales (Home, Write, Settings) al centro
   // El botón de volver irá al final con margin-top: auto

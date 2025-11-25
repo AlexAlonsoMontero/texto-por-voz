@@ -2,6 +2,7 @@ import { Provider } from '@angular/core';
 import { HybridTextToSpeechService } from './services/hybrid-text-to-speech.service';
 import { HybridOrientationService } from './services/hybrid-orientation.service';
 import { HybridSafeAreaService } from './services/hybrid-safe-area.service';
+import { HybridGalleryService } from './services/hybrid-gallery.service';
 
 import { ThemeService } from './services/theme.service';
 import { PhraseStoreService } from './services/phrase-store.service';
@@ -12,6 +13,7 @@ import {
   PRESS_HOLD_BUTTON_SERVICE,
   THEME_SERVICE,
   PHRASE_STORE_SERVICE,
+  GALLERY_SERVICE,
 } from './injection-tokens';
 import { PressHoldButtonService } from './press-hold-button.service';
 
@@ -54,5 +56,11 @@ export const CORE_PROVIDERS: Provider[] = [
   {
     provide: PHRASE_STORE_SERVICE,
     useClass: PhraseStoreService,
+  },
+
+  // Gallery Service - Selector de imágenes híbrido (web + móvil)
+  {
+    provide: GALLERY_SERVICE,
+    useClass: HybridGalleryService,
   },
 ];

@@ -1,6 +1,8 @@
 export interface PhraseStoreSlot {
   index: number; // 0..11
   value: string; // '' si vacío
+  imageUri?: string; // URI local de imagen opcional (undefined = mostrar número)
+  imageAltText?: string; // Descripción accesible de la imagen para TTS
 }
 
 export interface SaveResult {
@@ -18,4 +20,6 @@ export interface IPhraseStoreService {
   clearAll(): Promise<void>;
   findDuplicateIndex(phrase: string): Promise<number>; // -1 si no hay duplicado
   normalize(phrase: string): string; // trim + colapsar espacios
+  setImageAt(index: number, imageUri: string, altText?: string): Promise<void>;
+  removeImageAt(index: number): Promise<void>;
 }

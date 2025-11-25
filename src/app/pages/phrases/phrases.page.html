@@ -1,84 +1,336 @@
 <ion-content class="phrases-page" [fullscreen]="true">
-  <!-- Zona superior: input reutilizado con botón Guardar -->
-  <app-text-input-section
-    [showSave]="true"
-    (textContentChange)="onTextChange($event)"
-    (saveHoldStart)="onSaveHoldStart()"
-    (saveAction)="onSaveAction()"
-  >
-  </app-text-input-section>
+  <div class="phrases-container">
+    <!-- Zona superior: input reutilizado con botón Guardar -->
+    <app-text-input-section
+      [showSave]="true"
+      (textContentChange)="onTextChange($event)"
+      (saveHoldStart)="onSaveHoldStart()"
+      (saveAction)="onSaveAction()"
+    >
+    </app-text-input-section>
 
-  <!-- Grid 3x4 sin scroll -->
-  <div class="slots-grid">
-    <div class="slot" *ngFor="let s of slots; let i = index">
-      <app-press-hold-button
-        class="slot-btn"
-        [buttonId]="'slot-btn-' + (i + 1)"
-        [actionId]="'slot-' + (i + 1)"
-        [color]="(s.value && s.value.trim()) ? 'success' : (i % 2 === 0 ? 'primary' : 'secondary')"
-        [holdDuration]="2000"
-        [ariaLabel]="'Botón ' + (i + 1) + (s.value && s.value.trim() ? '. Frase asignada' : ' vacío')"
+    <!-- Grid optimizado 4x4 - 16 Botones -->
+    <div class="slots-grid-4x4">
+      <app-phrase-slot-button
+        *ngFor="let s of slots; let i = index"
+        class="slot-item"
+        [slot]="s"
         (holdStart)="onSlotHoldStart(i)"
-        (actionExecuted)="onSlotAction(i)"
+        (action)="onSlotAction(i)"
+      ></app-phrase-slot-button>
+    </div>
+
+    <!-- Botones de acción globales (Imagen y Borrar) -->
+    <div class="action-buttons-section">
+      <app-press-hold-button
+        buttonId="manage-images-btn"
+        actionId="manage-images"
+        color="primary"
+        [holdDuration]="2000"
+        ariaLabel="Gestionar imágenes de botones"
+        (holdStart)="onImageActionHoldStart()"
+        (actionExecuted)="openImageManageModal()"
+        class="action-button"
       >
-        {{ i + 1 }}
+        📷 Imagen
       </app-press-hold-button>
 
       <app-press-hold-button
-        *ngIf="s.value && s.value.trim()"
-        class="delete-btn"
-        [buttonId]="'del-btn-' + (i + 1)"
-        [actionId]="'del-' + (i + 1)"
+        buttonId="manage-delete-btn"
+        actionId="manage-delete"
         color="danger"
         [holdDuration]="2000"
-        ariaLabel="Eliminar frase guardada en este botón"
-        (holdStart)="onDeleteSlotHoldStart(i)"
-        (actionExecuted)="onDeleteSlotAction(i)"
+        ariaLabel="Eliminar botones"
+        (holdStart)="onDeleteActionHoldStart()"
+        (actionExecuted)="openDeleteManageModal()"
+        class="action-button"
       >
-        🗑️
+        🗑️ Borrar
       </app-press-hold-button>
     </div>
   </div>
 
-  <!-- Modal para elegir número (guardar/sobrescribir) -->
+  <!-- Modal para elegir número (guardar/sobrescribir) - Diseño compacto -->
   <ion-modal [isOpen]="showSaveModal" [backdropDismiss]="false" (ionModalDidDismiss)="onCloseModalAction()">
     <ng-template>
-      <ion-content class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title">Elige un botón (1–12)</h2>
-        </div>
+      <ion-content class="modal-content compact-modal">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <h2 class="modal-title">Selecciona botón</h2>
+            <p class="modal-subtitle">Mantén presionado para guardar</p>
+          </div>
 
-        <div class="modal-grid-wrapper">
-          <div class="slots-grid modal-grid">
-            <div class="slot" *ngFor="let s of slots; let i = index">
+          <div class="compact-grid-wrapper">
+            <div class="compact-slots-grid">
               <app-press-hold-button
-                class="slot-btn"
+                *ngFor="let s of slots; let i = index"
+                class="compact-slot-btn"
                 [buttonId]="'pick-btn-' + (i + 1)"
                 [actionId]="'pick-' + (i + 1)"
-                [color]="i % 2 === 0 ? 'primary' : 'secondary'"
+                [color]="s.value ? 'warning' : 'primary'"
                 [holdDuration]="2000"
                 [ariaLabel]="'Seleccionar botón ' + (i + 1) + (s.value ? ' (reemplazar)' : ' (vacío)')"
                 (holdStart)="onPickSlotHoldStart(i)"
                 (actionExecuted)="onPickSlotAction(i)"
               >
-                {{ i + 1 }}
+                <div class="compact-slot-content">
+                  <span class="compact-number">{{ i + 1 }}</span>
+                  <ion-icon *ngIf="s.value" name="warning" class="occupied-icon"></ion-icon>
+                </div>
               </app-press-hold-button>
             </div>
           </div>
-        </div>
 
-        <div class="modal-actions">
-          <app-press-hold-button
-            [buttonId]="'close-modal'"
-            [actionId]="'close-modal-action'"
-            color="medium"
-            [holdDuration]="2000"
-            ariaLabel="Cerrar"
-            (holdStart)="onCloseModalHoldStart()"
-            (actionExecuted)="onCloseModalAction()"
-          >
-            Cerrar
-          </app-press-hold-button>
+          <div class="modal-actions">
+            <app-press-hold-button
+              [buttonId]="'close-modal'"
+              [actionId]="'close-modal-action'"
+              color="medium"
+              [holdDuration]="2000"
+              ariaLabel="Cerrar"
+              (holdStart)="onCloseModalHoldStart()"
+              (actionExecuted)="onCloseModalAction()"
+            >
+              Cerrar
+            </app-press-hold-button>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal de gestión de imágenes (seleccionar slot) -->
+  <ion-modal
+    [isOpen]="showImageManageModal"
+    [backdropDismiss]="false"
+    (ionModalDidDismiss)="closeImageManageModal()"
+  >
+    <ng-template>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <h2 class="modal-title">Gestionar Imágenes</h2>
+            <p class="modal-subtitle">Selecciona un botón</p>
+          </div>
+
+          <div class="slots-grid-modal">
+            <app-press-hold-button
+              *ngFor="let item of slots; let i = index"
+              [buttonId]="'image-manage-' + (i + 1)"
+              [actionId]="'image-manage-' + (i + 1)"
+              color="primary"
+              [holdDuration]="2000"
+              [ariaLabel]="'Gestionar imagen del botón ' + (i + 1)"
+              (actionExecuted)="openImageConfig(i)"
+              class="modal-slot-btn"
+            >
+              <div class="modal-slot-content">
+                <!-- Mostrar imagen si existe -->
+                <img
+                  *ngIf="slots[i].imageUri"
+                  [src]="slots[i].imageUri"
+                  [alt]="'Botón ' + (i + 1)"
+                  class="modal-slot-image"
+                />
+                <!-- Mostrar número si NO hay imagen -->
+                <span *ngIf="!slots[i].imageUri" class="modal-slot-number">{{ i + 1 }}</span>
+                <!-- Indicador de imagen -->
+                <ion-icon *ngIf="slots[i].imageUri" name="image" class="has-image-icon"></ion-icon>
+              </div>
+            </app-press-hold-button>
+          </div>
+
+          <div class="modal-actions">
+            <app-press-hold-button
+              buttonId="close-image-manage"
+              actionId="close-image-manage"
+              color="medium"
+              [holdDuration]="2000"
+              ariaLabel="Cancelar"
+              (actionExecuted)="closeImageManageModal()"
+            >
+              Cancelar
+            </app-press-hold-button>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal de configuración de imagen -->
+  <ion-modal
+    [isOpen]="currentConfigIndex >= 0 && !showImageManageModal"
+    [backdropDismiss]="false"
+    (ionModalDidDismiss)="closeImageConfig()"
+  >
+    <ng-template>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <h2 class="modal-title">Configurar Imagen del Botón {{ currentConfigIndex + 1 }}</h2>
+          </div>
+
+          <div class="image-config-options">
+            <!-- Preview actual -->
+            <div class="current-preview" *ngIf="getCurrentSlot()?.imageUri">
+              <img [src]="getCurrentSlot()!.imageUri" alt="Configurar" class="preview-image" />
+              <p class="preview-description">{{ getCurrentSlot()!.imageAltText }}</p>
+            </div>
+            <div class="current-preview no-image" *ngIf="!getCurrentSlot()?.imageUri">
+              <span class="no-image-placeholder">{{ currentConfigIndex + 1 }}</span>
+              <p class="preview-description">Sin imagen personalizada</p>
+            </div>
+
+            <!-- Botón para seleccionar imagen -->
+            <app-press-hold-button
+              buttonId="select-image-btn"
+              actionId="select-image"
+              color="primary"
+              [holdDuration]="2000"
+              ariaLabel="Seleccionar imagen de la galería"
+              (holdStart)="onSelectImageHoldStart()"
+              (actionExecuted)="selectImageFromGallery()"
+            >
+              📷 Seleccionar de Galería
+            </app-press-hold-button>
+
+            <!-- Botón para quitar imagen (solo si hay imagen) -->
+            <app-press-hold-button
+              *ngIf="getCurrentSlot()?.imageUri"
+              buttonId="remove-image-btn"
+              actionId="remove-image"
+              color="danger"
+              [holdDuration]="2000"
+              ariaLabel="Quitar imagen y volver a mostrar número"
+              (holdStart)="onRemoveImageHoldStart()"
+              (actionExecuted)="removeImage()"
+            >
+              🗑️ Quitar Imagen
+            </app-press-hold-button>
+          </div>
+
+          <div class="modal-actions">
+            <app-press-hold-button
+              buttonId="close-image-config"
+              actionId="close-image-config"
+              color="medium"
+              [holdDuration]="2000"
+              ariaLabel="Cerrar configuración de imagen"
+              (actionExecuted)="closeImageConfig()"
+            >
+              Cerrar
+            </app-press-hold-button>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal de gestión de borrados (seleccionar slot) -->
+  <ion-modal
+    [isOpen]="showDeleteManageModal"
+    [backdropDismiss]="false"
+    (ionModalDidDismiss)="closeDeleteManageModal()"
+  >
+    <ng-template>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <h2 class="modal-title">Eliminar Botones</h2>
+            <p class="modal-subtitle">Selecciona un botón para borrar</p>
+          </div>
+
+          <div class="slots-grid-modal">
+            <app-press-hold-button
+              *ngFor="let s of slots; let i = index"
+              [buttonId]="'delete-manage-' + (i + 1)"
+              [actionId]="'delete-manage-' + (i + 1)"
+              [color]="(s.value || s.imageUri) ? 'danger' : 'medium'"
+              [holdDuration]="2000"
+              [ariaLabel]="'Eliminar botón ' + (i + 1)"
+              (actionExecuted)="onDeleteSlotSelected(i)"
+              class="modal-slot-btn"
+            >
+              <div class="modal-slot-content">
+                <!-- Mostrar imagen si existe -->
+                <img
+                  *ngIf="s.imageUri"
+                  [src]="s.imageUri"
+                  [alt]="'Botón ' + (i + 1)"
+                  class="modal-slot-image"
+                />
+                <!-- Mostrar número si NO hay imagen -->
+                <span *ngIf="!s.imageUri" class="modal-slot-number">{{ i + 1 }}</span>
+              </div>
+            </app-press-hold-button>
+          </div>
+
+          <div class="modal-actions">
+            <app-press-hold-button
+              buttonId="close-delete-manage"
+              actionId="close-delete-manage"
+              color="medium"
+              [holdDuration]="2000"
+              ariaLabel="Cancelar"
+              (actionExecuted)="closeDeleteManageModal()"
+            >
+              Cancelar
+            </app-press-hold-button>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal de confirmación de borrado -->
+  <ion-modal
+    [isOpen]="showDeleteConfirmModal"
+    [backdropDismiss]="false"
+    (ionModalDidDismiss)="closeDeleteConfirmModal()"
+  >
+    <ng-template>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <h2 class="modal-title">Confirmar Borrado</h2>
+            <p class="modal-subtitle">¿Borrar botón {{ slotToDeleteIndex + 1 }}?</p>
+          </div>
+
+          <div class="confirm-preview">
+            <div class="confirm-slot-preview" *ngIf="slots[slotToDeleteIndex]?.imageUri">
+              <img [src]="slots[slotToDeleteIndex]!.imageUri" alt="Confirmar" class="preview-image" />
+              <p class="preview-text">{{ slots[slotToDeleteIndex]?.value }}</p>
+            </div>
+            <div class="confirm-slot-preview no-image" *ngIf="!slots[slotToDeleteIndex]?.imageUri">
+              <span class="slot-number">{{ slotToDeleteIndex + 1 }}</span>
+              <p class="preview-text">{{ slots[slotToDeleteIndex]?.value }}</p>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <app-press-hold-button
+              buttonId="confirm-delete-btn"
+              actionId="confirm-delete"
+              color="danger"
+              [holdDuration]="2000"
+              ariaLabel="Confirmar borrado. Mantén presionado"
+              (holdStart)="onConfirmDeleteHoldStart()"
+              (actionExecuted)="confirmDeleteSlot()"
+            >
+              ✓ Confirmar Borrado
+            </app-press-hold-button>
+
+            <app-press-hold-button
+              buttonId="cancel-delete-btn"
+              actionId="cancel-delete"
+              color="medium"
+              [holdDuration]="2000"
+              ariaLabel="Cancelar borrado"
+              (actionExecuted)="closeDeleteConfirmModal()"
+            >
+              ✗ Cancelar
+            </app-press-hold-button>
+          </div>
         </div>
       </ion-content>
     </ng-template>

@@ -23,34 +23,60 @@ export class PhraseStoreService implements IPhraseStoreService {
   private async load(): Promise<void> {
     try {
       const { value } = await Preferences.get({ key: this.STORAGE_KEY });
-      let arr: string[] | null = null;
+      let loadedData: any[] | null = null;
+
       if (value) {
         try {
-          arr = JSON.parse(value) as string[];
+          loadedData = JSON.parse(value);
         } catch {}
       }
-      if (!arr || !Array.isArray(arr) || arr.length !== this.capacity) {
+
+      // Fallback a localStorage
+      if (!loadedData || !Array.isArray(loadedData) || loadedData.length !== this.capacity) {
         const ls = typeof localStorage === 'undefined' ? null : localStorage.getItem(this.LOCAL_KEY);
         if (ls) {
           try {
-            arr = JSON.parse(ls) as string[];
+            loadedData = JSON.parse(ls);
           } catch {}
         }
       }
-      if (!arr || !Array.isArray(arr) || arr.length !== this.capacity) {
-        arr = Array.from({ length: this.capacity }, () => '');
+
+      // Si no hay datos válidos, inicializar vacío
+      if (!loadedData || !Array.isArray(loadedData) || loadedData.length !== this.capacity) {
+        const arr = Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' }));
+        this.slotsSubject.next(arr);
+        return;
       }
-      const norm = arr.map((v) => (typeof v === 'string' ? this.normalize(v) : ''));
-      this.slotsSubject.next(norm.map((v, i) => ({ index: i, value: v })));
+
+      // Procesar datos (migración de string[] a PhraseStoreSlot[])
+      const slots: PhraseStoreSlot[] = loadedData.map((item, i) => {
+        if (typeof item === 'string') {
+          // Formato antiguo: array de strings
+          return { index: i, value: this.normalize(item) };
+        } else if (typeof item === 'object' && item !== null) {
+          // Formato nuevo: objeto PhraseStoreSlot
+          return {
+            index: i,
+            value: this.normalize(item.value || ''),
+            imageUri: item.imageUri,
+            imageAltText: item.imageAltText,
+          };
+        }
+        return { index: i, value: '' };
+      });
+
+      this.slotsSubject.next(slots);
     } catch {
-      const arr = Array.from({ length: this.capacity }, () => '');
-      this.slotsSubject.next(arr.map((v, i) => ({ index: i, value: v })));
+      const arr = Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' }));
+      this.slotsSubject.next(arr);
     }
   }
 
   private async persist(): Promise<void> {
-    const arr = this.slotsSubject.value.map((s) => s.value);
-    const json = JSON.stringify(arr);
+    // Guardar el objeto completo para preservar imágenes
+    const slots = this.slotsSubject.value;
+    const json = JSON.stringify(slots);
+    
     await Preferences.set({ key: this.STORAGE_KEY, value: json });
     try {
       if (typeof localStorage !== 'undefined') localStorage.setItem(this.LOCAL_KEY, json);
@@ -113,6 +139,36 @@ export class PhraseStoreService implements IPhraseStoreService {
   async clearAll(): Promise<void> {
     const arr = Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' }));
     this.slotsSubject.next(arr);
+    await this.persist();
+  }
+
+  async setImageAt(index: number, imageUri: string, altText?: string): Promise<void> {
+    await this.ensureLoaded();
+    if (index < 0 || index >= this.capacity) return;
+
+    const slots = [...this.slotsSubject.value];
+    slots[index] = {
+      ...slots[index],
+      imageUri,
+      imageAltText: altText || `Imagen personalizada ${index + 1}`,
+    };
+
+    this.slotsSubject.next(slots);
+    await this.persist();
+  }
+
+  async removeImageAt(index: number): Promise<void> {
+    await this.ensureLoaded();
+    if (index < 0 || index >= this.capacity) return;
+
+    const slots = [...this.slotsSubject.value];
+    slots[index] = {
+      ...slots[index],
+      imageUri: undefined,
+      imageAltText: undefined,
+    };
+
+    this.slotsSubject.next(slots);
     await this.persist();
   }
 }

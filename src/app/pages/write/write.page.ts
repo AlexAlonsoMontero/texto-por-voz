@@ -1,12 +1,11 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonButtons } from '@ionic/angular/standalone';
+import { IonContent } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { PressHoldConfigService } from '../../core/application/services/press-hold-config.service';
-import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
 import { TextInputSectionComponent } from './components/text-input-section/text-input-section.component';
 import { LetterKeyboardSectionComponent } from './components/letter-keyboard-section/letter-keyboard-section.component';
 import { ActionButtonsSectionComponent } from './components/action-buttons-section/action-buttons-section.component';
@@ -24,11 +23,6 @@ type WriteViewState = 'groups' | 'letters';
   imports: [
     CommonModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    PressHoldButtonComponent,
     TextInputSectionComponent,
     LetterKeyboardSectionComponent,
     ActionButtonsSectionComponent,

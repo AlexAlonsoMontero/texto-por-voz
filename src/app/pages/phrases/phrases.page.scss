@@ -1,19 +1,62 @@
 :host,
 .phrases-page {
-  --page-padding: 12px;
   height: 100%;
 }
 
-.slots-grid {
+ion-content {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --overflow: hidden;
+  height: 100%;
+}
+
+.phrases-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 6px;
+  padding-top: calc(6px + var(--safe-area-top, 0px));
+  padding-bottom: calc(6px + var(--safe-area-bottom, 8px));
+  gap: 6px;
+}
+
+/* Grid de 3x4 para los 12 botones - SIN SCROLL */
+.slots-grid-4x4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 1fr;
-  gap: 12px;
-  padding: var(--page-padding);
-  /* Padding seguro arriba y abajo */
-  padding-top: calc(var(--page-padding) + var(--safe-area-top, 0px));
-  padding-bottom: calc(var(--page-padding) + var(--safe-area-bottom, 20px));
-  box-sizing: border-box;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Botones de acción globales (Imagen y Borrar) */
+.action-buttons-section {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  background: var(--ion-background-color);
+}
+
+.action-button {
+  flex: 1;
+  min-height: 44px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  
+  ::ng-deep {
+    ion-button {
+      width: 100%;
+      height: 100%;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+  }
 }
 
 .slot {
@@ -21,29 +64,105 @@
   flex-direction: column;
   gap: 8px;
   min-height: 0;
+  position: relative;
 }
 
 .slot-btn {
   flex: 1 1 auto;
+  position: relative;
 }
 
 .delete-btn {
-  flex: 0 0 44px;
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
+  min-height: 44px;
+  font-size: 20px;
+  
+  ::ng-deep ion-button {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 /* Modal */
 .modal-content {
-  padding: 16px;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --overflow: hidden;
+  height: 100%;
+}
+
+.modal-inner {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   height: 100%;
-  background: var(--ion-background-color);
+  padding: 6px 3px;
+  padding-top: calc(6px + var(--safe-area-top, 0px));
+  padding-bottom: calc(6px + var(--safe-area-bottom, 8px));
+  gap: 6px;
+  overflow: hidden;
+}
+
+/* Modal de guardar frase */
+.compact-modal {
+  .compact-grid-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .compact-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .compact-slot-btn {
+    width: 100%;
+    height: 100%;
+
+    ::ng-deep ion-button {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+  }
+
+  .compact-slot-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .compact-number {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  .occupied-icon {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 1.2rem;
+  }
 }
 
 .modal-header {
   flex-shrink: 0;
   text-align: center;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--ion-color-primary);
 }
 
 .modal-title {
@@ -51,6 +170,7 @@
   font-size: 24px;
   font-weight: bold;
   color: var(--ion-text-color);
+  letter-spacing: 0.5px;
 }
 
 .modal-grid-wrapper {
@@ -60,19 +180,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 16px 8px;
 }
 
 .modal-grid {
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: 1fr;
-  flex: 1 1 auto;
+  gap: 12px;
+  width: 100%;
   max-width: 100%;
+  padding: 8px;
 }
 
 .modal-actions {
   flex-shrink: 0;
   display: flex;
   justify-content: center;
+  gap: 8px;
   padding-top: 8px;
 }
 
@@ -82,3 +207,258 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* 🆕 Estilos del modal de configuración de imagen */
+.image-config-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.current-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid var(--ion-color-medium);
+  border-radius: 12px;
+  background: var(--ion-color-light);
+
+  &.no-image {
+    background: var(--ion-color-light-tint);
+  }
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.no-image-placeholder {
+  font-size: 4rem;
+  font-weight: bold;
+  color: var(--ion-color-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border: 3px dashed var(--ion-color-medium);
+  border-radius: 12px;
+}
+
+.preview-description {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ion-text-color);
+  text-align: center;
+  font-weight: 500;
+}
+
+.alt-text-input {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+
+  input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid var(--ion-color-primary);
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--ion-text-color);
+    background: var(--ion-background-color);
+  }
+}
+
+/* ========== MODAL DE BORRAR ========== */
+
+.delete-slots-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+}
+
+.delete-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  padding: 8px;
+}
+
+.delete-slot-btn {
+  width: 100%;
+  height: 100%;
+  min-height: 80px;
+
+  ::ng-deep ion-button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.delete-slot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.delete-slot-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--ion-color-contrast);
+}
+
+.delete-slot-preview {
+  font-size: 0.75rem;
+  color: var(--ion-color-contrast);
+  opacity: 0.8;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  .delete-slots-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ========== MODAL DE GESTIÓN DE IMÁGENES ========== */
+
+.slots-grid-modal {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 4px;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.modal-slot-btn {
+  width: 100%;
+  height: 100%;
+
+  ::ng-deep ion-button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    overflow: hidden;
+  }
+}
+
+.modal-slot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.modal-slot-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.modal-slot-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--ion-color-contrast);
+}
+
+.has-image-icon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(26, 91, 178, 0.8);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ========== MODAL DE CONFIRMACIÓN DE BORRADO ========== */
+
+.confirm-preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--ion-color-light);
+}
+
+.confirm-slot-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+  
+  &.no-image {
+    background: var(--ion-color-medium);
+    padding: 32px;
+    border-radius: 12px;
+    min-height: 150px;
+  }
+}
+
+.preview-text {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--ion-text-color);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+@media (max-width: 800px) {
+  .slots-grid-modal {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+

@@ -1,29 +1,58 @@
 import { Component, Inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonModal } from '@ionic/angular/standalone';
+import { FormsModule } from '@angular/forms';
+import { IonContent, IonModal, IonInput, IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { warning } from 'ionicons/icons';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
 import { TextInputSectionComponent } from '../write/components/text-input-section/text-input-section.component';
-import { PHRASE_STORE_SERVICE, TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
+import { PhraseSlotButtonComponent } from './components/phrase-slot-button/phrase-slot-button.component';
+import {
+  PHRASE_STORE_SERVICE,
+  TEXT_TO_SPEECH_SERVICE,
+  GALLERY_SERVICE,
+} from '../../core/infrastructure/injection-tokens';
 import { IPhraseStoreService, PhraseStoreSlot } from '../../core/domain/interfaces/phrase-store.interface';
 import { ITextToSpeechService } from '../../core/domain/interfaces/text-to-speech.interface';
+import { IGalleryService } from '../../core/domain/interfaces/gallery.interface';
 
 @Component({
   selector: 'app-phrases',
   standalone: true,
   templateUrl: './phrases.page.html',
   styleUrls: ['./phrases.page.scss'],
-  imports: [CommonModule, IonContent, IonModal, PressHoldButtonComponent, TextInputSectionComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonModal,
+    IonInput,
+    IonIcon,
+    PressHoldButtonComponent,
+    TextInputSectionComponent,
+    PhraseSlotButtonComponent,
+  ],
 })
 export class PhrasesPage implements OnInit {
   slots: PhraseStoreSlot[] = [];
   showSaveModal = false;
+  showImageManageModal = false;
+  showImageConfigModal = false;
+  showDeleteManageModal = false;
+  showDeleteConfirmModal = false;
   confirmOverwriteIndex: number | null = null;
   currentText = signal<string>('');
+  currentConfigIndex = -1;
+  imageAltTextInput = '';
+  slotToDeleteIndex = -1;
 
   constructor(
     @Inject(PHRASE_STORE_SERVICE) private readonly store: IPhraseStoreService,
     @Inject(TEXT_TO_SPEECH_SERVICE) private readonly tts: ITextToSpeechService,
-  ) {}
+    @Inject(GALLERY_SERVICE) private readonly gallery: IGalleryService,
+  ) {
+    addIcons({ warning });
+  }
 
   ngOnInit(): void {
     void this.store.getAll().then((all) => (this.slots = all));
@@ -66,13 +95,58 @@ export class PhrasesPage implements OnInit {
     void this.tts.speak(slot.value);
   }
 
-  // Borrar slot (botón rojo bajo cada slot ocupado)
-  onDeleteSlotHoldStart(i: number) {
-    void this.tts.speak(`Eliminar frase del botón ${i + 1}`);
+  // Gestión global de imágenes
+  openImageManageModal(): void {
+    this.showImageManageModal = true;
+    void this.tts.speak('Selecciona un botón para gestionar su imagen');
   }
-  async onDeleteSlotAction(i: number) {
-    await this.store.removeAt(i);
-    await this.tts.speak('Frase eliminada');
+
+  closeImageManageModal(): void {
+    this.showImageManageModal = false;
+  }
+
+  // Gestión global de borrados
+  openDeleteManageModal(): void {
+    this.showDeleteManageModal = true;
+    void this.tts.speak('Selecciona un botón para eliminarlo');
+  }
+
+  closeDeleteManageModal(): void {
+    this.showDeleteManageModal = false;
+  }
+
+  onDeleteSlotSelected(index: number): void {
+    const slot = this.slots[index];
+    if (!slot?.value && !slot?.imageUri) {
+      void this.tts.speak(`El botón ${index + 1} está vacío`);
+      return;
+    }
+    this.openDeleteConfirmModal(index);
+  }
+
+  openDeleteConfirmModal(index: number): void {
+    this.slotToDeleteIndex = index;
+    this.showDeleteConfirmModal = true;
+    void this.tts.speak(`¿Borrar botón ${index + 1}? Mantén pulsado para confirmar`);
+  }
+
+  closeDeleteConfirmModal(): void {
+    this.showDeleteConfirmModal = false;
+    this.slotToDeleteIndex = -1;
+  }
+
+  async confirmDeleteSlot(): Promise<void> {
+    if (this.slotToDeleteIndex < 0) return;
+    await this.store.removeAt(this.slotToDeleteIndex);
+    await this.tts.speak('Botón eliminado');
+    this.closeDeleteConfirmModal();
+    this.closeDeleteManageModal();
+  }
+
+  getSlotesConContenido(): { index: number; slot: PhraseStoreSlot }[] {
+    return this.slots
+      .map((slot, index) => ({ index, slot }))
+      .filter(({ slot }) => (slot?.value?.trim?.()?.length ?? 0) > 0 || !!slot?.imageUri);
   }
 
   // Modal: seleccionar slot para guardar
@@ -116,5 +190,87 @@ export class PhrasesPage implements OnInit {
         this.confirmOverwriteIndex = null;
       }
     }
+  }
+
+  // 🆕 Nuevos métodos para gestión de imágenes
+
+  openImageConfig(index: number): void {
+    this.currentConfigIndex = index;
+    const slot = this.slots[index];
+    this.imageAltTextInput = slot?.imageAltText || '';
+    this.closeImageManageModal();
+
+    void this.tts.speak(`Configurar imagen del botón ${index + 1}`);
+  }
+
+  closeImageConfig(): void {
+    this.currentConfigIndex = -1;
+    this.imageAltTextInput = '';
+  }
+
+  getCurrentSlot(): PhraseStoreSlot | undefined {
+    if (this.currentConfigIndex < 0) return undefined;
+    return this.slots[this.currentConfigIndex];
+  }
+
+  onSelectImageHoldStart(): void {
+    void this.tts.speak('Seleccionar imagen de la galería');
+  }
+
+  async selectImageFromGallery(): Promise<void> {
+    try {
+      const image = await this.gallery.pickImage();
+
+      if (!image) {
+        await this.tts.speak('No se seleccionó ninguna imagen');
+        return;
+      }
+
+      // Usar webPath si está disponible para asegurar que se vea en el WebView
+      const imageUri = image.webPath || image.uri;
+
+      // Guardar imagen en el slot
+      await this.store.setImageAt(
+        this.currentConfigIndex,
+        imageUri,
+        this.imageAltTextInput || `Imagen ${this.currentConfigIndex + 1}`,
+      );
+
+      await this.tts.speak('Imagen guardada correctamente');
+    } catch (error) {
+      console.error('[PhrasesPage] Error al seleccionar imagen:', error);
+      await this.tts.speak('Error al seleccionar imagen');
+    }
+  }
+
+  onRemoveImageHoldStart(): void {
+    void this.tts.speak('Quitar imagen personalizada');
+  }
+
+  async removeImage(): Promise<void> {
+    await this.store.removeImageAt(this.currentConfigIndex);
+    await this.tts.speak('Imagen eliminada. Se mostrará el número nuevamente');
+    this.closeImageConfig();
+  }
+
+  async saveAltText(): Promise<void> {
+    const slot = this.getCurrentSlot();
+    if (!slot?.imageUri) return;
+
+    await this.store.setImageAt(this.currentConfigIndex, slot.imageUri, this.imageAltTextInput);
+
+    await this.tts.speak('Descripción guardada');
+  }
+
+  onImageActionHoldStart(): void {
+    void this.tts.speak('Gestionar imágenes');
+  }
+
+  onDeleteActionHoldStart(): void {
+    void this.tts.speak('Eliminar botones');
+  }
+
+  onConfirmDeleteHoldStart(): void {
+    void this.tts.speak('Borrar botón');
   }
 }

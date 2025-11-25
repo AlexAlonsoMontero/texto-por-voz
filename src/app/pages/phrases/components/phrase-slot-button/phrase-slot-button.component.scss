@@ -1,0 +1,119 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.phrase-slot-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.slot-btn {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+
+  ::ng-deep ion-button {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+}
+
+.slot-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.slot-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.slot-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--ion-color-contrast);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+/* Indicadores visuales */
+.slot-indicators {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 4px;
+  z-index: 5;
+}
+
+.phrase-icon {
+  background: rgba(46, 213, 115, 0.95);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.image-icon {
+  background: rgba(26, 91, 178, 0.95);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive - botones más grandes en tablets */
+@media (min-width: 768px) {
+  .slot-number {
+    font-size: 3rem;
+  }
+  
+  .phrase-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 20px;
+  }
+  
+  .image-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+}
