@@ -175,9 +175,10 @@ export class PhrasesPage implements OnInit {
       if (this.confirmOverwriteIndex === i) {
         const res = await this.store.saveAt(i, norm, { overwrite: true });
         if (res.ok) {
-          await this.tts.speak(`Frase reemplazada en el botón ${i + 1}`);
           this.showSaveModal = false;
           this.confirmOverwriteIndex = null;
+          this.currentText.set('');
+          await this.tts.speak(`Frase reemplazada en el botón ${i + 1}`);
         }
       } else {
         this.confirmOverwriteIndex = i;
@@ -185,9 +186,10 @@ export class PhrasesPage implements OnInit {
     } else {
       const res = await this.store.saveAt(i, norm, { overwrite: true });
       if (res.ok) {
-        await this.tts.speak(`Frase guardada en el botón ${i + 1}`);
         this.showSaveModal = false;
         this.confirmOverwriteIndex = null;
+        this.currentText.set('');
+        await this.tts.speak(`Frase guardada en el botón ${i + 1}`);
       }
     }
   }
@@ -237,6 +239,7 @@ export class PhrasesPage implements OnInit {
       );
 
       await this.tts.speak('Imagen guardada correctamente');
+      this.closeImageConfig();
     } catch (error) {
       console.error('[PhrasesPage] Error al seleccionar imagen:', error);
       await this.tts.speak('Error al seleccionar imagen');

@@ -2,6 +2,7 @@
   <div class="phrases-container">
     <!-- Zona superior: input reutilizado con botón Guardar -->
     <app-text-input-section
+      [textContent]="currentText()"
       [showSave]="true"
       (textContentChange)="onTextChange($event)"
       (saveHoldStart)="onSaveHoldStart()"
@@ -53,7 +54,7 @@
   <!-- Modal para elegir número (guardar/sobrescribir) - Diseño compacto -->
   <ion-modal [isOpen]="showSaveModal" [backdropDismiss]="false" (ionModalDidDismiss)="onCloseModalAction()">
     <ng-template>
-      <ion-content class="modal-content compact-modal">
+      <div class="modal-content compact-modal">
         <div class="modal-inner">
           <div class="modal-header">
             <h2 class="modal-title">Selecciona botón</h2>
@@ -95,7 +96,7 @@
             </app-press-hold-button>
           </div>
         </div>
-      </ion-content>
+      </div>
     </ng-template>
   </ion-modal>
 
