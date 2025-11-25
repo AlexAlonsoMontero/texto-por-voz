@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { IonIcon } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
 import { PressHoldConfigService } from '../../../core/application/services/press-hold-config.service';
+import { BackNavigationService } from '../../../core/application/services/back-navigation.service';
 import { PressHoldButtonComponent } from '../press-hold-button/press-hold-button.component';
 
 @Component({
@@ -18,6 +20,8 @@ export class SidebarNavigationComponent {
   constructor(
     private readonly navCtrl: NavController,
     private readonly pressHoldConfig: PressHoldConfigService,
+    private readonly router: Router,
+    private readonly backNavService: BackNavigationService,
   ) {}
 
   onButtonHomeClick(): void {
@@ -73,6 +77,19 @@ export class SidebarNavigationComponent {
    */
   onBackAction(actionId: string): void {
     console.log(`🔙 [Sidebar] Acción Volver ejecutada: ${actionId}`);
-    this.navCtrl.back();
+    
+    // 1. Prioridad: Handler personalizado (navegación interna de la página)
+    if (this.backNavService.handleBack()) {
+      return;
+    }
+
+    const currentUrl = this.router.url;
+    // Si estamos en una página raíz distinta de home, volvemos a home
+    if (currentUrl.includes('/write') || currentUrl.includes('/phrases') || currentUrl.includes('/settings')) {
+      this.navCtrl.navigateRoot('/home');
+    } else {
+      // En otros casos (subpáginas o historial válido), intentamos volver atrás
+      this.navCtrl.back();
+    }
   }
 }

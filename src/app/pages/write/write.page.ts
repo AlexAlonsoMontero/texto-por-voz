@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { PressHoldConfigService } from '../../core/application/services/press-hold-config.service';
+import { BackNavigationService } from '../../core/application/services/back-navigation.service';
 import { TextInputSectionComponent } from './components/text-input-section/text-input-section.component';
 import { LetterKeyboardSectionComponent } from './components/letter-keyboard-section/letter-keyboard-section.component';
 import { ActionButtonsSectionComponent } from './components/action-buttons-section/action-buttons-section.component';
@@ -78,6 +79,7 @@ export class WritePage implements OnInit, OnDestroy {
     private readonly navCtrl: NavController,
     private readonly writeViewConfig: WriteViewConfigService,
     private readonly pressHoldConfig: PressHoldConfigService,
+    private readonly backNavService: BackNavigationService,
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly tts: ITextToSpeechService,
   ) {}
@@ -100,6 +102,7 @@ export class WritePage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.viewModeSubscription?.unsubscribe();
+    this.backNavService.unregisterHandler();
   }
 
   /**
@@ -202,6 +205,18 @@ export class WritePage implements OnInit, OnDestroy {
     this.currentLetters = this.groupLettersMap[group] || [];
     this.viewState = 'letters';
 
+    // Registrar manejador para volver a grupos con el botón atrás
+    this.backNavService.registerHandler(() => {
+      this.viewState = 'groups';
+      this.currentLetters = [];
+      this.backNavService.unregisterHandler();
+      
+      void this.tts.speak('Volviendo a grupos', {
+        priority: SpeechPriority.NORMAL,
+        interrupt: true,
+      });
+    });
+
     void this.tts.speak(`Grupo ${group} seleccionado. Elige una letra.`, {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
@@ -239,6 +254,7 @@ export class WritePage implements OnInit, OnDestroy {
     // Volver al panel de grupos
     this.viewState = 'groups';
     this.currentLetters = [];
+    this.backNavService.unregisterHandler();
   }
 
   /**
