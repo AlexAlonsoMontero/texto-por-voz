@@ -135,7 +135,7 @@ export class PhraseStoreService implements IPhraseStoreService {
     await this.ensureLoaded();
     if (index < 0 || index >= this.capacity) return;
     const slots = [...this.slotsSubject.value];
-    
+
     // Borrar imagen si existe
     if (slots[index].imageUri) {
       await this.fileStorage.deleteImage(slots[index].imageUri!);
@@ -149,7 +149,7 @@ export class PhraseStoreService implements IPhraseStoreService {
   async clearAll(): Promise<void> {
     await this.ensureLoaded();
     const slots = this.slotsSubject.value;
-    
+
     // Borrar todas las imágenes
     for (const slot of slots) {
       if (slot.imageUri) {
@@ -167,7 +167,7 @@ export class PhraseStoreService implements IPhraseStoreService {
     if (index < 0 || index >= this.capacity) return;
 
     const slots = [...this.slotsSubject.value];
-    
+
     // 1. Borrar imagen anterior si existe
     if (slots[index].imageUri) {
       await this.fileStorage.deleteImage(slots[index].imageUri!);
@@ -179,7 +179,7 @@ export class PhraseStoreService implements IPhraseStoreService {
       // Solo guardar si es una ruta temporal (webPath) o content://
       // Si ya es file:// en data, asumimos que ya está guardada (aunque esto es raro en este flujo)
       if (!imageUri.includes('file://') || !imageUri.includes('btn_img_')) {
-         permanentUri = await this.fileStorage.saveImageFromWebPath(imageUri);
+        permanentUri = await this.fileStorage.saveImageFromWebPath(imageUri);
       }
     } catch (e) {
       console.error('Error persistiendo imagen, usando original', e);
@@ -200,7 +200,7 @@ export class PhraseStoreService implements IPhraseStoreService {
     if (index < 0 || index >= this.capacity) return;
 
     const slots = [...this.slotsSubject.value];
-    
+
     // Borrar imagen física
     if (slots[index].imageUri) {
       await this.fileStorage.deleteImage(slots[index].imageUri!);

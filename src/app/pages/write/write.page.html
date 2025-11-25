@@ -69,7 +69,12 @@
               >
                 <div class="compact-slot-content">
                   <!-- Mostrar imagen si existe -->
-                  <img *ngIf="s.imageUri" [src]="getImageSrc(s.imageUri)" [alt]="'Botón ' + (i + 1)" class="slot-image" />
+                  <img
+                    *ngIf="s.imageUri"
+                    [src]="getImageSrc(s.imageUri)"
+                    [alt]="'Botón ' + (i + 1)"
+                    class="slot-image"
+                  />
 
                   <!-- Mostrar número si NO hay imagen -->
                   <span *ngIf="!s.imageUri" class="compact-number">{{ i + 1 }}</span>

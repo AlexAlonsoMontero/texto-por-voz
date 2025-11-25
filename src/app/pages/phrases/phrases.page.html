@@ -167,7 +167,7 @@
             <h2 class="modal-title">Configurar Imagen del Botón {{ currentConfigIndex + 1 }}</h2>
           </div>
 
-                    <div class="image-config-layout">
+          <div class="image-config-layout">
             <!-- Columna Izquierda: Previsualización -->
             <div class="config-preview-section">
               <div class="current-preview" [class.no-image]="!getCurrentSlot()?.imageUri">
@@ -225,8 +225,8 @@
                 Cerrar
               </app-press-hold-button>
             </div>
+          </div>
         </div>
-      </div>
       </ion-content>
     </ng-template>
   </ion-modal>
@@ -254,7 +254,12 @@
             >
               <div class="modal-slot-content">
                 <!-- Mostrar imagen si existe -->
-                <img *ngIf="s.imageUri" [src]="getImageSrc(s.imageUri)" [alt]="'Botón ' + (i + 1)" class="modal-slot-image" />
+                <img
+                  *ngIf="s.imageUri"
+                  [src]="getImageSrc(s.imageUri)"
+                  [alt]="'Botón ' + (i + 1)"
+                  class="modal-slot-image"
+                />
                 <!-- Mostrar número si NO hay imagen -->
                 <span *ngIf="!s.imageUri" class="modal-slot-number">{{ i + 1 }}</span>
               </div>

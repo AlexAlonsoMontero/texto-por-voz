@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FileStorageService {
-
-  constructor() { }
+  constructor() {}
 
   /**
    * Guarda una imagen desde una ruta web (blob/temp) al almacenamiento persistente de la app.
@@ -19,7 +18,7 @@ export class FileStorageService {
       const blob = await response.blob();
 
       // 2. Convertir a Base64
-      const base64Data = await this.convertBlobToBase64(blob) as string;
+      const base64Data = (await this.convertBlobToBase64(blob)) as string;
       // Eliminar la cabecera "data:image/jpeg;base64," si existe
       const savedData = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data;
 
@@ -30,7 +29,7 @@ export class FileStorageService {
       const savedFile = await Filesystem.writeFile({
         path: fileName,
         data: savedData,
-        directory: Directory.Data
+        directory: Directory.Data,
       });
 
       // 5. Retornar la URI nativa (file://...)
@@ -55,7 +54,7 @@ export class FileStorageService {
       if (fileName) {
         await Filesystem.deleteFile({
           path: fileName,
-          directory: Directory.Data
+          directory: Directory.Data,
         });
         console.log('Imagen antigua eliminada:', fileName);
       }
@@ -65,12 +64,13 @@ export class FileStorageService {
     }
   }
 
-  private readonly convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = () => {
+  private readonly convertBlobToBase64 = (blob: Blob) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
         resolve(reader.result);
-    };
-    reader.readAsDataURL(blob);
-  });
+      };
+      reader.readAsDataURL(blob);
+    });
 }
