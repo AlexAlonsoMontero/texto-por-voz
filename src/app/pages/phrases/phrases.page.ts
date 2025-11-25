@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonModal, IonInput, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { warning } from 'ionicons/icons';
+import { warning, image } from 'ionicons/icons';
+import { Capacitor } from '@capacitor/core';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
 import { TextInputSectionComponent } from '../write/components/text-input-section/text-input-section.component';
 import { PhraseSlotButtonComponent } from './components/phrase-slot-button/phrase-slot-button.component';
@@ -51,7 +52,7 @@ export class PhrasesPage implements OnInit {
     @Inject(TEXT_TO_SPEECH_SERVICE) private readonly tts: ITextToSpeechService,
     @Inject(GALLERY_SERVICE) private readonly gallery: IGalleryService,
   ) {
-    addIcons({ warning });
+    addIcons({ warning, image });
   }
 
   ngOnInit(): void {
@@ -275,5 +276,10 @@ export class PhrasesPage implements OnInit {
 
   onConfirmDeleteHoldStart(): void {
     void this.tts.speak('Borrar botón');
+  }
+
+  getImageSrc(imageUri: string | undefined): string {
+    if (!imageUri) return '';
+    return Capacitor.convertFileSrc(imageUri);
   }
 }

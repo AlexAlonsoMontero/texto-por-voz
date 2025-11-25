@@ -125,7 +125,7 @@
                 <!-- Mostrar imagen si existe -->
                 <img
                   *ngIf="slots[i].imageUri"
-                  [src]="slots[i].imageUri"
+                  [src]="getImageSrc(slots[i].imageUri)"
                   [alt]="'Botón ' + (i + 1)"
                   class="modal-slot-image"
                 />
@@ -167,16 +167,17 @@
             <h2 class="modal-title">Configurar Imagen del Botón {{ currentConfigIndex + 1 }}</h2>
           </div>
 
-          <div class="image-config-layout">
+                    <div class="image-config-layout">
             <!-- Columna Izquierda: Previsualización -->
             <div class="config-preview-section">
-              <div class="current-preview" *ngIf="getCurrentSlot()?.imageUri">
-                <img [src]="getCurrentSlot()!.imageUri" alt="Configurar" class="preview-image" />
-                <p class="preview-description">{{ getCurrentSlot()!.imageAltText }}</p>
-              </div>
-              <div class="current-preview no-image" *ngIf="!getCurrentSlot()?.imageUri">
-                <span class="no-image-placeholder">{{ currentConfigIndex + 1 }}</span>
-                <p class="preview-description">Sin imagen personalizada</p>
+              <div class="current-preview" [class.no-image]="!getCurrentSlot()?.imageUri">
+                <img
+                  *ngIf="getCurrentSlot()?.imageUri"
+                  [src]="getImageSrc(getCurrentSlot()?.imageUri)"
+                  alt="Previsualización"
+                  class="preview-image"
+                />
+                <span *ngIf="!getCurrentSlot()?.imageUri" class="slot-number">{{ currentConfigIndex + 1 }}</span>
               </div>
             </div>
 
@@ -224,8 +225,8 @@
                 Cerrar
               </app-press-hold-button>
             </div>
-          </div>
         </div>
+      </div>
       </ion-content>
     </ng-template>
   </ion-modal>
@@ -253,7 +254,7 @@
             >
               <div class="modal-slot-content">
                 <!-- Mostrar imagen si existe -->
-                <img *ngIf="s.imageUri" [src]="s.imageUri" [alt]="'Botón ' + (i + 1)" class="modal-slot-image" />
+                <img *ngIf="s.imageUri" [src]="getImageSrc(s.imageUri)" [alt]="'Botón ' + (i + 1)" class="modal-slot-image" />
                 <!-- Mostrar número si NO hay imagen -->
                 <span *ngIf="!s.imageUri" class="modal-slot-number">{{ i + 1 }}</span>
               </div>
@@ -295,7 +296,7 @@
             <!-- Columna Izquierda: Previsualización -->
             <div class="confirm-preview-section">
               <div class="confirm-slot-preview" *ngIf="slots[slotToDeleteIndex]?.imageUri">
-                <img [src]="slots[slotToDeleteIndex]!.imageUri" alt="Confirmar" class="preview-image" />
+                <img [src]="getImageSrc(slots[slotToDeleteIndex]!.imageUri)" alt="Confirmar" class="preview-image" />
                 <p class="preview-text">{{ slots[slotToDeleteIndex]?.value }}</p>
               </div>
               <div class="confirm-slot-preview no-image" *ngIf="!slots[slotToDeleteIndex]?.imageUri">

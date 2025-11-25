@@ -5,6 +5,7 @@ import { NavController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { warning } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
 import { TEXT_TO_SPEECH_SERVICE, PHRASE_STORE_SERVICE } from '../../core/infrastructure/injection-tokens';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { IPhraseStoreService, PhraseStoreSlot } from '../../core/domain/interfaces/phrase-store.interface';
@@ -276,6 +277,11 @@ export class WritePage implements OnInit, OnDestroy {
     this.showOverwriteModal = false;
     this.confirmOverwriteIndex = null;
     void this.tts.speak('Cancelado');
+  }
+
+  getImageSrc(imageUri: string | undefined): string {
+    if (!imageUri) return '';
+    return Capacitor.convertFileSrc(imageUri);
   }
 
   /**

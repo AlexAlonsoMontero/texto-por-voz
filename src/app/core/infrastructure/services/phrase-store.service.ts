@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { BehaviorSubject } from 'rxjs';
 import { IPhraseStoreService, PhraseStoreSlot, SaveResult } from '../../domain/interfaces/phrase-store.interface';
+import { FileStorageService } from './file-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class PhraseStoreService implements IPhraseStoreService {
@@ -13,6 +14,8 @@ export class PhraseStoreService implements IPhraseStoreService {
     Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' })),
   );
   private initialized = false;
+
+  constructor(private readonly fileStorage: FileStorageService) {}
 
   private async ensureLoaded(): Promise<void> {
     if (this.initialized) return;
@@ -132,12 +135,28 @@ export class PhraseStoreService implements IPhraseStoreService {
     await this.ensureLoaded();
     if (index < 0 || index >= this.capacity) return;
     const slots = [...this.slotsSubject.value];
+    
+    // Borrar imagen si existe
+    if (slots[index].imageUri) {
+      await this.fileStorage.deleteImage(slots[index].imageUri!);
+    }
+
     slots[index] = { index, value: '' };
     this.slotsSubject.next(slots);
     await this.persist();
   }
 
   async clearAll(): Promise<void> {
+    await this.ensureLoaded();
+    const slots = this.slotsSubject.value;
+    
+    // Borrar todas las imágenes
+    for (const slot of slots) {
+      if (slot.imageUri) {
+        await this.fileStorage.deleteImage(slot.imageUri);
+      }
+    }
+
     const arr = Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' }));
     this.slotsSubject.next(arr);
     await this.persist();
@@ -148,9 +167,27 @@ export class PhraseStoreService implements IPhraseStoreService {
     if (index < 0 || index >= this.capacity) return;
 
     const slots = [...this.slotsSubject.value];
+    
+    // 1. Borrar imagen anterior si existe
+    if (slots[index].imageUri) {
+      await this.fileStorage.deleteImage(slots[index].imageUri!);
+    }
+
+    // 2. Guardar nueva imagen persistentemente
+    let permanentUri = imageUri;
+    try {
+      // Solo guardar si es una ruta temporal (webPath) o content://
+      // Si ya es file:// en data, asumimos que ya está guardada (aunque esto es raro en este flujo)
+      if (!imageUri.includes('file://') || !imageUri.includes('btn_img_')) {
+         permanentUri = await this.fileStorage.saveImageFromWebPath(imageUri);
+      }
+    } catch (e) {
+      console.error('Error persistiendo imagen, usando original', e);
+    }
+
     slots[index] = {
       ...slots[index],
-      imageUri,
+      imageUri: permanentUri,
       imageAltText: altText || `Imagen personalizada ${index + 1}`,
     };
 
@@ -163,6 +200,12 @@ export class PhraseStoreService implements IPhraseStoreService {
     if (index < 0 || index >= this.capacity) return;
 
     const slots = [...this.slotsSubject.value];
+    
+    // Borrar imagen física
+    if (slots[index].imageUri) {
+      await this.fileStorage.deleteImage(slots[index].imageUri!);
+    }
+
     slots[index] = {
       ...slots[index],
       imageUri: undefined,

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle, image } from 'ionicons/icons';
+import { Capacitor } from '@capacitor/core';
 import { PressHoldButtonComponent } from '../../../../shared/components/press-hold-button/press-hold-button.component';
 import { PhraseStoreSlot } from '../../../../core/domain/interfaces/phrase-store.interface';
 
@@ -28,6 +29,11 @@ export class PhraseSlotButtonComponent {
 
   get hasImage(): boolean {
     return !!this.slot.imageUri;
+  }
+
+  get imageSrc(): string {
+    if (!this.slot.imageUri) return '';
+    return Capacitor.convertFileSrc(this.slot.imageUri);
   }
 
   getButtonColor(): string {

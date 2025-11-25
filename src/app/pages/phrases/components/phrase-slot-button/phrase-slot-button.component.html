@@ -14,7 +14,7 @@
     <div class="slot-content">
       <img
         *ngIf="slot.imageUri"
-        [src]="slot.imageUri"
+        [src]="imageSrc"
         [alt]="slot.imageAltText || 'Botón ' + (slot.index + 1)"
         class="slot-image"
       />
