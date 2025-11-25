@@ -65,7 +65,7 @@ ion-modal {
   flex-direction: column;
   background: var(--ion-background-color);
   overflow: hidden;
-  
+
   &.compact-modal {
     padding: 0;
   }
@@ -160,7 +160,7 @@ ion-modal {
   right: 4px;
   font-size: 1.5rem;
   color: var(--ion-color-warning);
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 50%;
 }
 

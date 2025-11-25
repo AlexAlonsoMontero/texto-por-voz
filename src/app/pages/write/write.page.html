@@ -70,10 +70,10 @@
                 <div class="compact-slot-content">
                   <!-- Mostrar imagen si existe -->
                   <img *ngIf="s.imageUri" [src]="s.imageUri" [alt]="'Botón ' + (i + 1)" class="slot-image" />
-                  
+
                   <!-- Mostrar número si NO hay imagen -->
                   <span *ngIf="!s.imageUri" class="compact-number">{{ i + 1 }}</span>
-                  
+
                   <!-- Icono de advertencia si está ocupado -->
                   <ion-icon *ngIf="s.value" name="warning" class="occupied-icon"></ion-icon>
                 </div>

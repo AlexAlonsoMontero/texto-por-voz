@@ -43,7 +43,7 @@ export class WritePage implements OnInit, OnDestroy {
   viewState: WriteViewState = 'groups';
   viewMode: WriteViewMode = 'panel';
   currentLetters: string[] = [];
-  
+
   // Estado para el modal de guardado
   showSaveModal = false;
   showOverwriteModal = false;
@@ -199,7 +199,7 @@ export class WritePage implements OnInit, OnDestroy {
    */
   onSaveAction(actionId: string): void {
     console.log(`💾 [Write] Acción de guardar: ${actionId}`);
-    
+
     if (!this.textContent.trim()) {
       void this.tts.speak('Escribe algo antes de guardar', {
         priority: SpeechPriority.NORMAL,
@@ -252,7 +252,7 @@ export class WritePage implements OnInit, OnDestroy {
   async saveToSlot(index: number): Promise<void> {
     const textToSave = this.textContent.trim();
     await this.store.saveAt(index, textToSave, { overwrite: true });
-    
+
     this.textContent = ''; // Limpiar texto tras guardar
     this.onCloseSaveModal();
 
