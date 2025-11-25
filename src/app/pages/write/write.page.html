@@ -43,4 +43,103 @@
       (clearAction)="onClearAction($event)"
     ></app-action-buttons-section>
   </div>
+
+  <!-- Modal para elegir número (guardar/sobrescribir) -->
+  <ion-modal [isOpen]="showSaveModal" [backdropDismiss]="false" (ionModalDidDismiss)="onCloseSaveModal()">
+    <ng-template>
+      <div class="modal-content compact-modal">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <h2 class="modal-title">Guardar Frase</h2>
+            <p class="modal-subtitle">Elige un botón para guardar</p>
+          </div>
+
+          <div class="compact-grid-wrapper">
+            <div class="compact-slots-grid">
+              <app-press-hold-button
+                *ngFor="let s of slots; let i = index"
+                class="compact-slot-btn"
+                [buttonId]="'pick-btn-' + (i + 1)"
+                [actionId]="'pick-' + (i + 1)"
+                [color]="s.value ? 'warning' : 'primary'"
+                [holdDuration]="2000"
+                [ariaLabel]="'Guardar en botón ' + (i + 1) + (s.value ? ' (ocupado)' : ' (vacío)')"
+                (holdStart)="onPickSlotHoldStart(i)"
+                (actionExecuted)="onPickSlotAction(i)"
+              >
+                <div class="compact-slot-content">
+                  <!-- Mostrar imagen si existe -->
+                  <img *ngIf="s.imageUri" [src]="s.imageUri" [alt]="'Botón ' + (i + 1)" class="slot-image" />
+                  
+                  <!-- Mostrar número si NO hay imagen -->
+                  <span *ngIf="!s.imageUri" class="compact-number">{{ i + 1 }}</span>
+                  
+                  <!-- Icono de advertencia si está ocupado -->
+                  <ion-icon *ngIf="s.value" name="warning" class="occupied-icon"></ion-icon>
+                </div>
+              </app-press-hold-button>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <app-press-hold-button
+              buttonId="close-save-modal"
+              actionId="close-save-modal"
+              color="medium"
+              [holdDuration]="2000"
+              ariaLabel="Cancelar guardado"
+              (actionExecuted)="onCloseSaveModal()"
+            >
+              Cancelar
+            </app-press-hold-button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal de confirmación de sobrescritura -->
+  <ion-modal [isOpen]="showOverwriteModal" [backdropDismiss]="false" (ionModalDidDismiss)="onCancelOverwriteAction()">
+    <ng-template>
+      <div class="modal-content compact-modal">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <h2 class="modal-title">¿Sobrescribir?</h2>
+            <p class="modal-subtitle">El botón {{ (confirmOverwriteIndex ?? 0) + 1 }} ya tiene una frase</p>
+          </div>
+
+          <div class="confirm-preview" *ngIf="confirmOverwriteIndex !== null">
+            <p class="old-phrase">"{{ slots[confirmOverwriteIndex].value }}"</p>
+            <p class="arrow">⬇️</p>
+            <p class="new-phrase">"{{ textContent }}"</p>
+          </div>
+
+          <div class="modal-actions vertical-actions">
+            <app-press-hold-button
+              buttonId="confirm-overwrite"
+              actionId="confirm-overwrite"
+              color="danger"
+              [holdDuration]="2000"
+              ariaLabel="Confirmar sobrescritura"
+              (holdStart)="onConfirmOverwriteHoldStart()"
+              (actionExecuted)="onConfirmOverwriteAction()"
+            >
+              Sí, Sobrescribir
+            </app-press-hold-button>
+
+            <app-press-hold-button
+              buttonId="cancel-overwrite"
+              actionId="cancel-overwrite"
+              color="medium"
+              [holdDuration]="2000"
+              ariaLabel="Cancelar"
+              (actionExecuted)="onCancelOverwriteAction()"
+            >
+              Cancelar
+            </app-press-hold-button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
 </ion-content>

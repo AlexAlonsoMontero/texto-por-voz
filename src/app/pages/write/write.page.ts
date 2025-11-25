@@ -1,13 +1,17 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent } from '@ionic/angular/standalone';
+import { IonContent, IonModal, IonIcon } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { warning } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
-import { TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
+import { TEXT_TO_SPEECH_SERVICE, PHRASE_STORE_SERVICE } from '../../core/infrastructure/injection-tokens';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
+import { IPhraseStoreService, PhraseStoreSlot } from '../../core/domain/interfaces/phrase-store.interface';
 import { PressHoldConfigService } from '../../core/application/services/press-hold-config.service';
 import { BackNavigationService } from '../../core/application/services/back-navigation.service';
 import { TextInputSectionComponent } from './components/text-input-section/text-input-section.component';
+import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
 import { LetterKeyboardSectionComponent } from './components/letter-keyboard-section/letter-keyboard-section.component';
 import { ActionButtonsSectionComponent } from './components/action-buttons-section/action-buttons-section.component';
 import { LetterGridViewComponent } from './components/letter-grid-view/letter-grid-view.component';
@@ -24,11 +28,14 @@ type WriteViewState = 'groups' | 'letters';
   imports: [
     CommonModule,
     IonContent,
+    IonModal,
+    IonIcon,
     TextInputSectionComponent,
     LetterKeyboardSectionComponent,
     ActionButtonsSectionComponent,
     LetterGridViewComponent,
     LetterCarouselViewComponent,
+    PressHoldButtonComponent,
   ],
 })
 export class WritePage implements OnInit, OnDestroy {
@@ -36,6 +43,13 @@ export class WritePage implements OnInit, OnDestroy {
   viewState: WriteViewState = 'groups';
   viewMode: WriteViewMode = 'panel';
   currentLetters: string[] = [];
+  
+  // Estado para el modal de guardado
+  showSaveModal = false;
+  showOverwriteModal = false;
+  slots: PhraseStoreSlot[] = [];
+  confirmOverwriteIndex: number | null = null;
+
   private viewModeSubscription?: Subscription;
   holdDuration$ = this.pressHoldConfig.duration$;
 
@@ -82,9 +96,17 @@ export class WritePage implements OnInit, OnDestroy {
     private readonly backNavService: BackNavigationService,
     @Inject(TEXT_TO_SPEECH_SERVICE)
     private readonly tts: ITextToSpeechService,
-  ) {}
+    @Inject(PHRASE_STORE_SERVICE)
+    private readonly store: IPhraseStoreService,
+  ) {
+    addIcons({ warning });
+  }
 
   ngOnInit(): void {
+    // Cargar slots
+    void this.store.getAll().then((all) => (this.slots = all));
+    this.store.observeAll().subscribe((s) => (this.slots = s));
+
     // Cargar modo de vista
     this.viewModeSubscription = this.writeViewConfig.viewMode$.subscribe((mode) => {
       this.viewMode = mode;
@@ -173,15 +195,87 @@ export class WritePage implements OnInit, OnDestroy {
 
   /**
    * Maneja la acción completada del botón Guardar
-   * En Write, solo anunciamos que se abrirá la página de frases
+   * Abre el modal de selección de slot
    */
   onSaveAction(actionId: string): void {
     console.log(`💾 [Write] Acción de guardar: ${actionId}`);
-    void this.tts.speak('Abriendo frases guardadas', {
+    
+    if (!this.textContent.trim()) {
+      void this.tts.speak('Escribe algo antes de guardar', {
+        priority: SpeechPriority.NORMAL,
+        interrupt: true,
+      });
+      return;
+    }
+
+    this.showSaveModal = true;
+    void this.tts.speak('Selecciona donde guardar', {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
     });
-    void this.navCtrl.navigateForward('/phrases');
+  }
+
+  // ========================================
+  // GESTIÓN DEL MODAL DE GUARDADO
+  // ========================================
+
+  onCloseSaveModal(): void {
+    this.showSaveModal = false;
+    this.confirmOverwriteIndex = null;
+    this.showOverwriteModal = false;
+  }
+
+  onPickSlotHoldStart(index: number): void {
+    const slot = this.slots[index];
+    if (slot.value) {
+      void this.tts.speak(`Botón ${index + 1} ocupado. Mantén para sobrescribir.`);
+    } else {
+      void this.tts.speak(`Guardar en botón ${index + 1}`);
+    }
+  }
+
+  async onPickSlotAction(index: number): Promise<void> {
+    const slot = this.slots[index];
+
+    // Si está vacío, guardar directamente
+    if (!slot.value) {
+      await this.saveToSlot(index);
+      return;
+    }
+
+    // Si está ocupado, pedir confirmación
+    this.confirmOverwriteIndex = index;
+    this.showOverwriteModal = true;
+    void this.tts.speak(`El botón ${index + 1} ya tiene una frase. ¿Sobrescribir?`);
+  }
+
+  async saveToSlot(index: number): Promise<void> {
+    const textToSave = this.textContent.trim();
+    await this.store.saveAt(index, textToSave, { overwrite: true });
+    
+    this.textContent = ''; // Limpiar texto tras guardar
+    this.onCloseSaveModal();
+
+    void this.tts.speak(`Frase guardada en botón ${index + 1}`, {
+      priority: SpeechPriority.HIGH,
+      interrupt: true,
+    });
+  }
+
+  onConfirmOverwriteHoldStart(): void {
+    void this.tts.speak('Confirmar sobrescritura');
+  }
+
+  async onConfirmOverwriteAction(): Promise<void> {
+    if (this.confirmOverwriteIndex !== null) {
+      await this.saveToSlot(this.confirmOverwriteIndex);
+    }
+  }
+
+  onCancelOverwriteAction(): void {
+    this.showOverwriteModal = false;
+    this.confirmOverwriteIndex = null;
+    void this.tts.speak('Cancelado');
   }
 
   /**
