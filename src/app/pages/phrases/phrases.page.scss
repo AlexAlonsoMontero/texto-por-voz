@@ -48,7 +48,7 @@ ion-content {
   font-size: 1rem;
   font-weight: 600;
   border-radius: 8px;
-  
+
   ::ng-deep {
     ion-button {
       width: 100%;
@@ -78,7 +78,7 @@ ion-content {
   height: auto;
   min-height: 44px;
   font-size: 20px;
-  
+
   ::ng-deep ion-button {
     width: 100%;
     height: 100%;
@@ -86,6 +86,14 @@ ion-content {
 }
 
 /* Modal */
+ion-modal {
+  --width: 95%;
+  --height: 75%;
+  --max-width: 95vw;
+  --max-height: 75vh;
+  --border-radius: 16px;
+}
+
 .modal-content {
   --padding-top: 0;
   --padding-bottom: 0;
@@ -113,6 +121,8 @@ ion-content {
     min-height: 0;
     display: flex;
     align-items: stretch;
+    overflow: hidden;
+    padding: 4px 0;
   }
 
   .compact-slots-grid {
@@ -146,7 +156,7 @@ ion-content {
   }
 
   .compact-number {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bold;
   }
 
@@ -161,16 +171,21 @@ ion-content {
 .modal-header {
   flex-shrink: 0;
   text-align: center;
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--ion-color-primary);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--ion-color-light-shade);
 }
 
 .modal-title {
   margin: 0;
-  font-size: 24px;
+  font-size: 1.2rem;
   font-weight: bold;
   color: var(--ion-text-color);
-  letter-spacing: 0.5px;
+}
+
+.modal-subtitle {
+  margin: 2px 0 0 0;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
 }
 
 .modal-grid-wrapper {
@@ -198,7 +213,10 @@ ion-content {
   display: flex;
   justify-content: center;
   gap: 8px;
-  padding-top: 8px;
+  padding-top: 6px;
+  background: var(--ion-background-color);
+  z-index: 10;
+  position: relative;
 }
 
 @media (max-width: 800px) {
@@ -209,24 +227,51 @@ ion-content {
 }
 
 /* 🆕 Estilos del modal de configuración de imagen */
-.image-config-options {
+.image-config-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  padding: 8px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.config-preview-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0; /* Para que el flex shrink funcione bien con imágenes */
+  height: 100%;
+}
+
+.config-actions-section {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
   gap: 16px;
-  padding: 16px;
-  max-width: 600px;
-  margin: 0 auto;
+  padding: 12px;
+  background: rgba(var(--ion-color-light-rgb), 0.3);
+  border-radius: 12px;
+  overflow-y: auto;
 }
 
 .current-preview {
+  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
   border: 2px solid var(--ion-color-medium);
   border-radius: 12px;
   background: var(--ion-color-light);
+  overflow: hidden;
 
   &.no-image {
     background: var(--ion-color-light-tint);
@@ -235,46 +280,66 @@ ion-content {
 
 .preview-image {
   max-width: 100%;
-  max-height: 200px;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 1;
 }
 
 .no-image-placeholder {
-  font-size: 4rem;
+  font-size: 6rem;
   font-weight: bold;
   color: var(--ion-color-medium);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 120px;
-  height: 120px;
-  border: 3px dashed var(--ion-color-medium);
-  border-radius: 12px;
+  width: 160px;
+  height: 160px;
+  border: 4px dashed var(--ion-color-medium);
+  border-radius: 16px;
 }
 
 .preview-description {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: var(--ion-text-color);
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
+  flex-shrink: 0;
+  padding-top: 8px;
 }
 
-.alt-text-input {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
+.config-action-btn {
+  min-height: 50px;
+  flex: 1;
+  max-height: 70px;
+  width: 100%;
+  font-size: 1.1rem;
+  
+  ::ng-deep ion-button {
+    height: 100%;
+    width: 100%;
+    --border-radius: 8px;
+  }
+}
 
-  input {
+/* Ajuste para móvil vertical si fuera necesario */
+@media (orientation: portrait) {
+  .image-config-layout {
+    flex-direction: column;
+  }
+  
+  .config-actions-section {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .config-action-btn {
     flex: 1;
-    padding: 8px 12px;
-    border: 2px solid var(--ion-color-primary);
-    border-radius: 8px;
-    font-size: 16px;
-    color: var(--ion-text-color);
-    background: var(--ion-background-color);
   }
 }
 
@@ -293,17 +358,24 @@ ion-content {
 .delete-slots-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 1fr;
-  gap: 12px;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
   width: 100%;
-  max-width: 100%;
-  padding: 8px;
+  height: 100%;
+  padding: 4px;
+}
+
+@media (orientation: portrait) {
+  .delete-slots-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
 }
 
 .delete-slot-btn {
   width: 100%;
   height: 100%;
-  min-height: 80px;
+  min-height: 0;
 
   ::ng-deep ion-button {
     width: 100%;
@@ -321,6 +393,9 @@ ion-content {
   justify-content: center;
   gap: 4px;
   text-align: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .delete-slot-number {
@@ -339,23 +414,25 @@ ion-content {
   white-space: nowrap;
 }
 
-@media (max-width: 800px) {
-  .delete-slots-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 /* ========== MODAL DE GESTIÓN DE IMÁGENES ========== */
 
 .slots-grid-modal {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
   width: 100%;
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  padding: 4px;
+}
+
+@media (orientation: portrait) {
+  .slots-grid-modal {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
 }
 
 .modal-slot-btn {
@@ -439,7 +516,7 @@ ion-content {
   gap: 12px;
   width: 100%;
   max-width: 300px;
-  
+
   &.no-image {
     background: var(--ion-color-medium);
     padding: 32px;
@@ -461,4 +538,3 @@ ion-content {
     grid-template-columns: repeat(3, 1fr);
   }
 }
-

@@ -76,7 +76,7 @@ export class PhraseStoreService implements IPhraseStoreService {
     // Guardar el objeto completo para preservar imágenes
     const slots = this.slotsSubject.value;
     const json = JSON.stringify(slots);
-    
+
     await Preferences.set({ key: this.STORAGE_KEY, value: json });
     try {
       if (typeof localStorage !== 'undefined') localStorage.setItem(this.LOCAL_KEY, json);
@@ -121,7 +121,8 @@ export class PhraseStoreService implements IPhraseStoreService {
       return { ok: false, error: 'DUPLICATE' };
     }
 
-    slots[index] = { index, value: norm };
+    // Preservar imagen si existe
+    slots[index] = { ...slots[index], value: norm };
     this.slotsSubject.next(slots);
     await this.persist();
     return { ok: true };

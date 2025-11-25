@@ -100,11 +100,7 @@
   </ion-modal>
 
   <!-- Modal de gestión de imágenes (seleccionar slot) -->
-  <ion-modal
-    [isOpen]="showImageManageModal"
-    [backdropDismiss]="false"
-    (ionModalDidDismiss)="closeImageManageModal()"
-  >
+  <ion-modal [isOpen]="showImageManageModal" [backdropDismiss]="false" (ionModalDidDismiss)="closeImageManageModal()">
     <ng-template>
       <ion-content class="modal-content">
         <div class="modal-inner">
@@ -170,56 +166,63 @@
             <h2 class="modal-title">Configurar Imagen del Botón {{ currentConfigIndex + 1 }}</h2>
           </div>
 
-          <div class="image-config-options">
-            <!-- Preview actual -->
-            <div class="current-preview" *ngIf="getCurrentSlot()?.imageUri">
-              <img [src]="getCurrentSlot()!.imageUri" alt="Configurar" class="preview-image" />
-              <p class="preview-description">{{ getCurrentSlot()!.imageAltText }}</p>
+          <div class="image-config-layout">
+            <!-- Columna Izquierda: Previsualización -->
+            <div class="config-preview-section">
+              <div class="current-preview" *ngIf="getCurrentSlot()?.imageUri">
+                <img [src]="getCurrentSlot()!.imageUri" alt="Configurar" class="preview-image" />
+                <p class="preview-description">{{ getCurrentSlot()!.imageAltText }}</p>
+              </div>
+              <div class="current-preview no-image" *ngIf="!getCurrentSlot()?.imageUri">
+                <span class="no-image-placeholder">{{ currentConfigIndex + 1 }}</span>
+                <p class="preview-description">Sin imagen personalizada</p>
+              </div>
             </div>
-            <div class="current-preview no-image" *ngIf="!getCurrentSlot()?.imageUri">
-              <span class="no-image-placeholder">{{ currentConfigIndex + 1 }}</span>
-              <p class="preview-description">Sin imagen personalizada</p>
+
+            <!-- Columna Derecha: Acciones -->
+            <div class="config-actions-section">
+              <!-- Botón para seleccionar imagen -->
+              <app-press-hold-button
+                buttonId="select-image-btn"
+                actionId="select-image"
+                color="primary"
+                [holdDuration]="2000"
+                ariaLabel="Seleccionar imagen de la galería"
+                (holdStart)="onSelectImageHoldStart()"
+                (actionExecuted)="selectImageFromGallery()"
+                class="config-action-btn"
+              >
+                📷 Seleccionar de Galería
+              </app-press-hold-button>
+
+              <!-- Botón para quitar imagen (solo si hay imagen) -->
+              <app-press-hold-button
+                *ngIf="getCurrentSlot()?.imageUri"
+                buttonId="remove-image-btn"
+                actionId="remove-image"
+                color="danger"
+                [holdDuration]="2000"
+                ariaLabel="Quitar imagen y volver a mostrar número"
+                (holdStart)="onRemoveImageHoldStart()"
+                (actionExecuted)="removeImage()"
+                class="config-action-btn"
+              >
+                🗑️ Quitar Imagen
+              </app-press-hold-button>
+
+              <!-- Botón Cerrar (Movido aquí) -->
+              <app-press-hold-button
+                buttonId="close-image-config"
+                actionId="close-image-config"
+                color="medium"
+                [holdDuration]="2000"
+                ariaLabel="Cerrar configuración de imagen"
+                (actionExecuted)="closeImageConfig()"
+                class="config-action-btn"
+              >
+                Cerrar
+              </app-press-hold-button>
             </div>
-
-            <!-- Botón para seleccionar imagen -->
-            <app-press-hold-button
-              buttonId="select-image-btn"
-              actionId="select-image"
-              color="primary"
-              [holdDuration]="2000"
-              ariaLabel="Seleccionar imagen de la galería"
-              (holdStart)="onSelectImageHoldStart()"
-              (actionExecuted)="selectImageFromGallery()"
-            >
-              📷 Seleccionar de Galería
-            </app-press-hold-button>
-
-            <!-- Botón para quitar imagen (solo si hay imagen) -->
-            <app-press-hold-button
-              *ngIf="getCurrentSlot()?.imageUri"
-              buttonId="remove-image-btn"
-              actionId="remove-image"
-              color="danger"
-              [holdDuration]="2000"
-              ariaLabel="Quitar imagen y volver a mostrar número"
-              (holdStart)="onRemoveImageHoldStart()"
-              (actionExecuted)="removeImage()"
-            >
-              🗑️ Quitar Imagen
-            </app-press-hold-button>
-          </div>
-
-          <div class="modal-actions">
-            <app-press-hold-button
-              buttonId="close-image-config"
-              actionId="close-image-config"
-              color="medium"
-              [holdDuration]="2000"
-              ariaLabel="Cerrar configuración de imagen"
-              (actionExecuted)="closeImageConfig()"
-            >
-              Cerrar
-            </app-press-hold-button>
           </div>
         </div>
       </ion-content>
@@ -227,11 +230,7 @@
   </ion-modal>
 
   <!-- Modal de gestión de borrados (seleccionar slot) -->
-  <ion-modal
-    [isOpen]="showDeleteManageModal"
-    [backdropDismiss]="false"
-    (ionModalDidDismiss)="closeDeleteManageModal()"
-  >
+  <ion-modal [isOpen]="showDeleteManageModal" [backdropDismiss]="false" (ionModalDidDismiss)="closeDeleteManageModal()">
     <ng-template>
       <ion-content class="modal-content">
         <div class="modal-inner">
@@ -253,12 +252,7 @@
             >
               <div class="modal-slot-content">
                 <!-- Mostrar imagen si existe -->
-                <img
-                  *ngIf="s.imageUri"
-                  [src]="s.imageUri"
-                  [alt]="'Botón ' + (i + 1)"
-                  class="modal-slot-image"
-                />
+                <img *ngIf="s.imageUri" [src]="s.imageUri" [alt]="'Botón ' + (i + 1)" class="modal-slot-image" />
                 <!-- Mostrar número si NO hay imagen -->
                 <span *ngIf="!s.imageUri" class="modal-slot-number">{{ i + 1 }}</span>
               </div>

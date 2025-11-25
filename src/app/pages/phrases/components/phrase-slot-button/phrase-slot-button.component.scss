@@ -18,8 +18,10 @@
   height: 100%;
   border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
   &:active {
     transform: scale(0.98);
   }
@@ -104,13 +106,13 @@
   .slot-number {
     font-size: 3rem;
   }
-  
+
   .phrase-icon {
     width: 28px;
     height: 28px;
     font-size: 20px;
   }
-  
+
   .image-icon {
     width: 28px;
     height: 28px;
