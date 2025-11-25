@@ -139,8 +139,8 @@ export class PhrasesPage implements OnInit {
     if (this.slotToDeleteIndex < 0) return;
     await this.store.removeAt(this.slotToDeleteIndex);
     await this.tts.speak('Botón eliminado');
-    this.closeDeleteConfirmModal();
-    this.closeDeleteManageModal();
+    // Recargar la página para evitar problemas de UI con los modales
+    globalThis.location.reload();
   }
 
   getSlotesConContenido(): { index: number; slot: PhraseStoreSlot }[] {

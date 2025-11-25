@@ -290,40 +290,46 @@
             <p class="modal-subtitle">¿Borrar botón {{ slotToDeleteIndex + 1 }}?</p>
           </div>
 
-          <div class="confirm-preview">
-            <div class="confirm-slot-preview" *ngIf="slots[slotToDeleteIndex]?.imageUri">
-              <img [src]="slots[slotToDeleteIndex]!.imageUri" alt="Confirmar" class="preview-image" />
-              <p class="preview-text">{{ slots[slotToDeleteIndex]?.value }}</p>
+          <div class="confirm-layout">
+            <!-- Columna Izquierda: Previsualización -->
+            <div class="confirm-preview-section">
+              <div class="confirm-slot-preview" *ngIf="slots[slotToDeleteIndex]?.imageUri">
+                <img [src]="slots[slotToDeleteIndex]!.imageUri" alt="Confirmar" class="preview-image" />
+                <p class="preview-text">{{ slots[slotToDeleteIndex]?.value }}</p>
+              </div>
+              <div class="confirm-slot-preview no-image" *ngIf="!slots[slotToDeleteIndex]?.imageUri">
+                <span class="slot-number">{{ slotToDeleteIndex + 1 }}</span>
+                <p class="preview-text">{{ slots[slotToDeleteIndex]?.value }}</p>
+              </div>
             </div>
-            <div class="confirm-slot-preview no-image" *ngIf="!slots[slotToDeleteIndex]?.imageUri">
-              <span class="slot-number">{{ slotToDeleteIndex + 1 }}</span>
-              <p class="preview-text">{{ slots[slotToDeleteIndex]?.value }}</p>
+
+            <!-- Columna Derecha: Acciones -->
+            <div class="confirm-actions-section">
+              <app-press-hold-button
+                buttonId="confirm-delete-btn"
+                actionId="confirm-delete"
+                color="danger"
+                [holdDuration]="2000"
+                ariaLabel="Confirmar borrado. Mantén presionado"
+                (holdStart)="onConfirmDeleteHoldStart()"
+                (actionExecuted)="confirmDeleteSlot()"
+                class="confirm-action-btn"
+              >
+                ✓ Confirmar Borrado
+              </app-press-hold-button>
+
+              <app-press-hold-button
+                buttonId="cancel-delete-btn"
+                actionId="cancel-delete"
+                color="medium"
+                [holdDuration]="2000"
+                ariaLabel="Cancelar borrado"
+                (actionExecuted)="closeDeleteConfirmModal()"
+                class="confirm-action-btn"
+              >
+                ✗ Cancelar
+              </app-press-hold-button>
             </div>
-          </div>
-
-          <div class="modal-actions">
-            <app-press-hold-button
-              buttonId="confirm-delete-btn"
-              actionId="confirm-delete"
-              color="danger"
-              [holdDuration]="2000"
-              ariaLabel="Confirmar borrado. Mantén presionado"
-              (holdStart)="onConfirmDeleteHoldStart()"
-              (actionExecuted)="confirmDeleteSlot()"
-            >
-              ✓ Confirmar Borrado
-            </app-press-hold-button>
-
-            <app-press-hold-button
-              buttonId="cancel-delete-btn"
-              actionId="cancel-delete"
-              color="medium"
-              [holdDuration]="2000"
-              ariaLabel="Cancelar borrado"
-              (actionExecuted)="closeDeleteConfirmModal()"
-            >
-              ✗ Cancelar
-            </app-press-hold-button>
           </div>
         </div>
       </ion-content>
