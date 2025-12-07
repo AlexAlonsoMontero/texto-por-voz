@@ -205,6 +205,59 @@
         </ion-item>
       </section>
 
+      <!-- 🆕 Configuración de Botones de Frases -->
+      <section class="phrase-buttons-section" aria-label="Configuración de botones de frases">
+        <h2 class="section-title">🔘 Botones de Frases Predefinidas</h2>
+        <p class="section-description">Configura el número y tamaño de los botones de frases</p>
+
+        <div class="button-config-info">
+          <p><strong>Configuración actual:</strong></p>
+          <p>📊 {{ buttonCount }} botones de tamaño {{ getSizeLabel(buttonSize) }}</p>
+          <p>📝 {{ currentPhraseCount }} frases guardadas</p>
+        </div>
+
+        <ion-item>
+          <ion-label position="stacked">
+            <strong>Número de botones</strong>
+          </ion-label>
+          <ion-select
+            [(ngModel)]="buttonCount"
+            interface="popover"
+            aria-label="Seleccionar número de botones"
+          >
+            <ion-select-option *ngFor="let count of availableButtonCounts" [value]="count">
+              {{ count }} botones
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">
+            <strong>Tamaño de botones</strong>
+          </ion-label>
+          <ion-select
+            [(ngModel)]="buttonSize"
+            interface="popover"
+            aria-label="Seleccionar tamaño de botones"
+          >
+            <ion-select-option *ngFor="let size of buttonSizes" [value]="size.value">
+              {{ size.label }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div class="apply-button-container">
+          <app-press-hold-button
+            buttonId="apply-button-config"
+            color="primary"
+            ariaLabel="Aplicar configuración de botones"
+            (actionExecuted)="applyButtonConfig()"
+          >
+            ✓ Aplicar Cambios
+          </app-press-hold-button>
+        </div>
+      </section>
+
       <!-- Acciones -->
       <section class="actions-section" aria-label="Acciones de configuración">
         <div class="action-grid">

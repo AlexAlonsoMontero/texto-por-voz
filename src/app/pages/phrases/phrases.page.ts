@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonModal, IonInput, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonModal, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { warning, image } from 'ionicons/icons';
 import { Capacitor } from '@capacitor/core';
@@ -12,10 +12,16 @@ import {
   PHRASE_STORE_SERVICE,
   TEXT_TO_SPEECH_SERVICE,
   GALLERY_SERVICE,
+  PHRASE_BUTTON_CONFIG_SERVICE,
 } from '../../core/infrastructure/injection-tokens';
 import { IPhraseStoreService, PhraseStoreSlot } from '../../core/domain/interfaces/phrase-store.interface';
 import { ITextToSpeechService } from '../../core/domain/interfaces/text-to-speech.interface';
 import { IGalleryService } from '../../core/domain/interfaces/gallery.interface';
+import {
+  IPhraseButtonConfigService,
+  ButtonSizeConfig,
+  GridLayout,
+} from '../../core/domain/interfaces/phrase-button-config.interface';
 
 @Component({
   selector: 'app-phrases',
@@ -27,7 +33,6 @@ import { IGalleryService } from '../../core/domain/interfaces/gallery.interface'
     FormsModule,
     IonContent,
     IonModal,
-    IonInput,
     IonIcon,
     PressHoldButtonComponent,
     TextInputSectionComponent,
@@ -47,17 +52,50 @@ export class PhrasesPage implements OnInit {
   imageAltTextInput = '';
   slotToDeleteIndex = -1;
 
+  // 🆕 Configuración dinámica
+  sizeConfig: ButtonSizeConfig = {
+    height: 220,
+    numberSize: '3.5rem',
+    numberSizeTablet: '4.5rem',
+    gap: 8,
+  };
+  gridLayout: GridLayout = {
+    portraitCols: 2,
+    landscapeCols: 3,
+  };
+
   constructor(
     @Inject(PHRASE_STORE_SERVICE) private readonly store: IPhraseStoreService,
     @Inject(TEXT_TO_SPEECH_SERVICE) private readonly tts: ITextToSpeechService,
     @Inject(GALLERY_SERVICE) private readonly gallery: IGalleryService,
+    @Inject(PHRASE_BUTTON_CONFIG_SERVICE) private readonly buttonConfig: IPhraseButtonConfigService,
   ) {
     addIcons({ warning, image });
   }
 
   ngOnInit(): void {
+    void this.loadConfig();
     void this.store.getAll().then((all) => (this.slots = all));
     this.store.observeAll().subscribe((s) => (this.slots = s));
+  }
+
+  private async loadConfig(): Promise<void> {
+    const config = await this.buttonConfig.getConfig();
+    this.sizeConfig = this.buttonConfig.getSizeConfig(config.size);
+    this.gridLayout = this.buttonConfig.getGridLayoutForSize(config.count, config.size);
+
+    // Aplicar estilos CSS dinámicamente
+    this.applyDynamicStyles();
+  }
+
+  private applyDynamicStyles(): void {
+    const root = document.documentElement;
+    root.style.setProperty('--phrase-button-height', `${this.sizeConfig.height}px`);
+    root.style.setProperty('--phrase-button-gap', `${this.sizeConfig.gap}px`);
+    root.style.setProperty('--phrase-number-size', this.sizeConfig.numberSize);
+    root.style.setProperty('--phrase-number-size-tablet', this.sizeConfig.numberSizeTablet);
+    root.style.setProperty('--phrase-grid-portrait-cols', `${this.gridLayout.portraitCols}`);
+    root.style.setProperty('--phrase-grid-landscape-cols', `${this.gridLayout.landscapeCols}`);
   }
 
   // TextInputSection -> emisión del texto actual

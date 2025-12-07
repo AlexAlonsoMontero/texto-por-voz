@@ -6,6 +6,7 @@ import { IPressHoldButtonService } from '../domain/interfaces/press-hold-button.
 import { IThemeService } from '../domain/interfaces/theme.interface';
 import { IPhraseStoreService } from '../domain/interfaces/phrase-store.interface';
 import { IGalleryService } from '../domain/interfaces/gallery.interface';
+import { IPhraseButtonConfigService } from '../domain/interfaces/phrase-button-config.interface';
 
 /**
  * Token de inyección para el servicio de Text-to-Speech
@@ -81,3 +82,16 @@ export const GALLERY_SERVICE = new InjectionToken<IGalleryService>('GalleryServi
     throw new Error('GALLERY_SERVICE debe ser provisto explícitamente en los providers');
   },
 });
+
+/**
+ * Token para el servicio de configuración de botones de frases
+ */
+export const PHRASE_BUTTON_CONFIG_SERVICE = new InjectionToken<IPhraseButtonConfigService>(
+  'PhraseButtonConfigService',
+  {
+    providedIn: 'root',
+    factory: () => {
+      throw new Error('PHRASE_BUTTON_CONFIG_SERVICE debe ser provisto explícitamente en los providers');
+    },
+  },
+);

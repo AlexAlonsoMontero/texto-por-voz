@@ -1,16 +1,19 @@
 <ion-content class="phrases-page" [fullscreen]="true">
   <div class="phrases-container">
-    <!-- Zona superior: input reutilizado con botón Guardar -->
-    <app-text-input-section
-      [textContent]="currentText()"
-      [showSave]="true"
-      (textContentChange)="onTextChange($event)"
-      (saveHoldStart)="onSaveHoldStart()"
-      (saveAction)="onSaveAction()"
-    >
-    </app-text-input-section>
+    <!-- 🆕 Sección superior fija - solo input -->
+    <div class="fixed-top-section">
+      <!-- Zona superior: input reutilizado con botón Guardar -->
+      <app-text-input-section
+        [textContent]="currentText()"
+        [showSave]="true"
+        (textContentChange)="onTextChange($event)"
+        (saveHoldStart)="onSaveHoldStart()"
+        (saveAction)="onSaveAction()"
+      >
+      </app-text-input-section>
+    </div>
 
-    <!-- Grid optimizado 4x4 - 16 Botones -->
+    <!-- Grid optimizado - scrollable -->
     <div class="slots-grid-4x4">
       <app-phrase-slot-button
         *ngFor="let s of slots; let i = index"
@@ -21,33 +24,35 @@
       ></app-phrase-slot-button>
     </div>
 
-    <!-- Botones de acción globales (Imagen y Borrar) -->
-    <div class="action-buttons-section">
-      <app-press-hold-button
-        buttonId="manage-images-btn"
-        actionId="manage-images"
-        color="primary"
-        [holdDuration]="2000"
-        ariaLabel="Gestionar imágenes de botones"
-        (holdStart)="onImageActionHoldStart()"
-        (actionExecuted)="openImageManageModal()"
-        class="action-button"
-      >
-        📷 Imagen
-      </app-press-hold-button>
+    <!-- 🆕 Botones de acción en la parte inferior fija -->
+    <div class="fixed-bottom-section">
+      <div class="action-buttons-section">
+        <app-press-hold-button
+          buttonId="manage-images-btn"
+          actionId="manage-images"
+          color="primary"
+          [holdDuration]="2000"
+          ariaLabel="Gestionar imágenes de botones"
+          (holdStart)="onImageActionHoldStart()"
+          (actionExecuted)="openImageManageModal()"
+          class="action-button"
+        >
+          📷 Imagen
+        </app-press-hold-button>
 
-      <app-press-hold-button
-        buttonId="manage-delete-btn"
-        actionId="manage-delete"
-        color="danger"
-        [holdDuration]="2000"
-        ariaLabel="Eliminar botones"
-        (holdStart)="onDeleteActionHoldStart()"
-        (actionExecuted)="openDeleteManageModal()"
-        class="action-button"
-      >
-        🗑️ Borrar
-      </app-press-hold-button>
+        <app-press-hold-button
+          buttonId="manage-delete-btn"
+          actionId="manage-delete"
+          color="danger"
+          [holdDuration]="2000"
+          ariaLabel="Eliminar botones"
+          (holdStart)="onDeleteActionHoldStart()"
+          (actionExecuted)="openDeleteManageModal()"
+          class="action-button"
+        >
+          🗑️ Borrar
+        </app-press-hold-button>
+      </div>
     </div>
   </div>
 

@@ -12,7 +12,7 @@ export interface SaveResult {
 }
 
 export interface IPhraseStoreService {
-  readonly capacity: number; // 12
+  readonly capacity: number; // Dinámico según configuración
   getAll(): Promise<PhraseStoreSlot[]>;
   observeAll(): import('rxjs').Observable<PhraseStoreSlot[]>;
   saveAt(index: number, phrase: string, opts?: { overwrite?: boolean }): Promise<SaveResult>;
@@ -22,4 +22,5 @@ export interface IPhraseStoreService {
   normalize(phrase: string): string; // trim + colapsar espacios
   setImageAt(index: number, imageUri: string, altText?: string): Promise<void>;
   removeImageAt(index: number): Promise<void>;
+  updateCapacity(newCapacity: number, deleteSurplus: boolean): Promise<void>;
 }

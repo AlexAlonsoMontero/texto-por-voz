@@ -8,38 +8,80 @@ ion-content {
   --padding-bottom: 0;
   --padding-start: 0;
   --padding-end: 0;
-  --overflow: hidden;
+  --overflow: auto; /* Permitir scroll */
   height: 100%;
 }
 
 .phrases-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-  padding: 6px;
-  padding-top: calc(6px + var(--safe-area-top, 0px));
-  padding-bottom: calc(6px + var(--safe-area-bottom, 8px));
-  gap: 6px;
+  min-height: 100%;
+  overflow: visible; /* Permitir scroll */
+  padding: 8px;
+  padding-top: calc(8px + var(--safe-area-top, 0px));
+  padding-bottom: calc(8px + var(--safe-area-bottom, 8px));
+  gap: 8px;
 }
 
-/* Grid de 3x4 para los 12 botones - SIN SCROLL */
+/* 🆕 Sección superior fija (solo input) */
+.fixed-top-section {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--ion-background-color);
+  padding-bottom: 8px;
+  /* Sombra sutil para indicar que está sobre el contenido */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 🆕 Sección inferior fija (botones de gestión) */
+.fixed-bottom-section {
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  background: var(--ion-background-color);
+  padding-top: 8px;
+  padding-bottom: calc(8px + var(--safe-area-bottom, 0px));
+  /* Sombra hacia arriba */
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Grid dinámico con botones grandes - CON SCROLL */
 .slots-grid-4x4 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 4px;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
+  grid-template-columns: repeat(var(--phrase-grid-landscape-cols, 3), 1fr);
+  gap: var(--phrase-button-gap, 8px);
+  width: 100%;
+  grid-auto-rows: minmax(var(--phrase-button-height, 220px), auto);
+  /* Padding para separar del contenido fijo */
+  padding: 8px 0;
 }
 
-/* Botones de acción globales (Imagen y Borrar) */
+/* Portrait: columnas dinámicas */
+@media (orientation: portrait) {
+  .slots-grid-4x4 {
+    grid-template-columns: repeat(var(--phrase-grid-portrait-cols, 2), 1fr);
+  }
+}
+
+/* Tablets y pantallas grandes: usar configuración sin cambios adicionales */
+@media (min-width: 768px) {
+  .slots-grid-4x4 {
+    /* El tamaño ya está definido por las variables CSS */
+  }
+}
+
+@media (min-width: 1024px) {
+  .slots-grid-4x4 {
+    gap: calc(var(--phrase-button-gap, 8px) * 1.5);
+  }
+}
+
+/* Botones de acción globales (Imagen y Borrar) - En la parte inferior */
 .action-buttons-section {
   display: flex;
-  gap: 4px;
+  gap: 8px;
   flex-shrink: 0;
-  background: var(--ion-background-color);
 }
 
 .action-button {
@@ -59,39 +101,24 @@ ion-content {
   }
 }
 
-.slot {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 0;
-  position: relative;
-}
-
-.slot-btn {
-  flex: 1 1 auto;
-  position: relative;
-}
-
-.delete-btn {
-  flex: 0 0 auto;
-  width: 100%;
-  height: auto;
-  min-height: 44px;
-  font-size: 20px;
-
-  ::ng-deep ion-button {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-/* Modal */
+/* Modal - Más espacio y mejor adaptación */
 ion-modal {
-  --width: 85%;
-  --height: 80%;
-  --max-width: 85vw;
-  --max-height: 80vh;
-  --border-radius: 16px;
+  --width: 95%;
+  --height: 92%;
+  --max-width: 95vw;
+  --max-height: 92vh;
+  --border-radius: 12px;
+}
+
+/* Tablets pequeñas: modal casi fullscreen */
+@media (max-height: 700px) {
+  ion-modal {
+    --width: 98%;
+    --height: 96%;
+    --max-width: 98vw;
+    --max-height: 96vh;
+    --border-radius: 8px;
+  }
 }
 
 .modal-content {
@@ -112,16 +139,15 @@ ion-modal {
   flex-direction: column;
   height: 100%;
   width: 100%;
-  padding: 3px 3px;
-  padding-top: calc(3px + var(--safe-area-top, 0px));
-  padding-bottom: calc(3px + var(--safe-area-bottom, 8px));
-  gap: 3px;
+  padding: 4px;
+  padding-top: calc(4px + var(--safe-area-top, 0px));
+  padding-bottom: calc(4px + var(--safe-area-bottom, 4px));
+  gap: 4px;
   overflow: hidden;
 }
 
 /* Modal de guardar frase */
 .compact-modal {
-  // Asegurar que el div contenedor ocupe todo el espacio
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -132,17 +158,24 @@ ion-modal {
     min-height: 0;
     display: flex;
     align-items: stretch;
-    overflow-y: auto; /* Permitir scroll si es necesario */
-    padding: 0;
+    overflow: hidden;
+    padding: 2px;
   }
 
   .compact-slots-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr); /* 4x3 en landscape */
+    grid-template-rows: repeat(3, 1fr);
     gap: 4px;
     width: 100%;
-    min-height: 100%; /* Asegurar que ocupe al menos el 100% */
+    height: 100%;
+  }
+
+  @media (orientation: portrait) {
+    .compact-slots-grid {
+      grid-template-columns: repeat(3, 1fr); /* 3x4 en portrait */
+      grid-template-rows: repeat(4, 1fr);
+    }
   }
 
   .compact-slot-btn {
@@ -173,75 +206,60 @@ ion-modal {
   }
 
   .compact-number {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
   }
 
   .occupied-icon {
     position: absolute;
-    top: 4px;
-    right: 4px;
-    font-size: 1.2rem;
+    top: 2px;
+    right: 2px;
+    font-size: 1rem;
   }
 }
 
 .modal-header {
   flex-shrink: 0;
   text-align: center;
-  padding: 3px 0;
+  padding: 2px 0;
   border-bottom: 1px solid var(--ion-color-light-shade);
 }
 
 .modal-title {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: var(--ion-text-color);
 }
 
 .modal-subtitle {
-  margin: 2px 0 0 0;
-  font-size: 0.9rem;
+  margin: 1px 0 0 0;
+  font-size: 0.85rem;
   color: var(--ion-color-medium);
-}
-
-.modal-grid-wrapper {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3px 8px;
-}
-
-.modal-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 1fr;
-  gap: 12px;
-  width: 100%;
-  max-width: 100%;
-  padding: 8px;
 }
 
 .modal-actions {
   flex-shrink: 0;
   display: flex;
   justify-content: center;
-  gap: 8px;
-  padding-top: 3px;
+  gap: 6px;
+  padding: 4px 0 0 0;
   background: var(--ion-background-color);
   z-index: 10;
   position: relative;
-}
 
-@media (max-width: 800px) {
-  .slots-grid,
-  .modal-grid {
-    grid-template-columns: repeat(3, 1fr);
+  app-press-hold-button {
+    max-width: 200px;
+    min-height: 40px;
+    
+    ::ng-deep ion-button {
+      height: 40px;
+      font-size: 0.95rem;
+    }
   }
 }
+
+
 
 /* 🆕 Estilos del modal de configuración de imagen */
 .image-config-layout {
@@ -264,15 +282,15 @@ ion-modal {
 }
 
 .config-actions-section {
-  width: 280px;
+  width: 240px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  gap: 16px;
-  padding: 12px;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px;
   background: rgba(var(--ion-color-light-rgb), 0.3);
-  border-radius: 12px;
+  border-radius: 10px;
   overflow-y: auto;
 }
 
@@ -330,105 +348,49 @@ ion-modal {
 }
 
 .config-action-btn {
-  min-height: 50px;
+  min-height: 44px;
   flex: 1;
-  max-height: 70px;
+  max-height: 60px;
   width: 100%;
-  font-size: 1.1rem;
+  font-size: 1rem;
 
   ::ng-deep ion-button {
     height: 100%;
     width: 100%;
     --border-radius: 8px;
+    font-size: 0.95rem;
   }
 }
 
-/* Ajuste para móvil vertical si fuera necesario */
+/* Ajuste para portrait */
 @media (orientation: portrait) {
   .image-config-layout {
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .config-preview-section {
+    flex: 2;
+    max-height: 50%;
   }
 
   .config-actions-section {
     width: 100%;
+    flex: 1;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px;
   }
 
   .config-action-btn {
-    flex: 1;
+    flex: 1 1 45%;
+    min-width: 140px;
+    max-width: 200px;
+    min-height: 40px;
+    max-height: 50px;
   }
-}
-
-/* ========== MODAL DE BORRAR ========== */
-
-.delete-slots-wrapper {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 8px;
-}
-
-.delete-slots-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 8px;
-  width: 100%;
-  height: 100%;
-  padding: 4px;
-}
-
-@media (orientation: portrait) {
-  .delete-slots-grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-  }
-}
-
-.delete-slot-btn {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-
-  ::ng-deep ion-button {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-.delete-slot-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.delete-slot-number {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--ion-color-contrast);
-}
-
-.delete-slot-preview {
-  font-size: 0.75rem;
-  color: var(--ion-color-contrast);
-  opacity: 0.8;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* ========== MODAL DE GESTIÓN DE IMÁGENES ========== */
@@ -437,18 +399,19 @@ ion-modal {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 8px;
+  gap: 5px;
   width: 100%;
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  padding: 4px;
+  padding: 2px;
 }
 
 @media (orientation: portrait) {
   .slots-grid-modal {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, 1fr);
+    gap: 4px;
   }
 }
 
@@ -495,7 +458,7 @@ ion-modal {
 }
 
 .modal-slot-number {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: var(--ion-color-contrast);
 }
@@ -538,22 +501,57 @@ ion-modal {
 }
 
 .confirm-actions-section {
-  width: 280px;
+  width: 220px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
-  padding: 12px;
+  gap: 10px;
+  padding: 10px;
   background: rgba(var(--ion-color-light-rgb), 0.3);
-  border-radius: 12px;
+  border-radius: 10px;
   overflow-y: auto;
 }
 
 .confirm-action-btn {
-  min-height: 60px;
-  max-height: 80px;
+  min-height: 50px;
+  max-height: 65px;
   width: 100%;
+
+  ::ng-deep ion-button {
+    height: 100%;
+    width: 100%;
+    font-size: 0.95rem;
+  }
+}
+
+/* Portrait para modal de confirmación */
+@media (orientation: portrait) {
+  .confirm-layout {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .confirm-preview-section {
+    flex: 2;
+    max-height: 55%;
+  }
+
+  .confirm-actions-section {
+    width: 100%;
+    flex: 1;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px;
+  }
+
+  .confirm-action-btn {
+    flex: 1;
+    max-width: 180px;
+    min-height: 45px;
+    max-height: 55px;
+  }
 }
 
 .confirm-slot-preview {

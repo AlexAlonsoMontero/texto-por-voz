@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   IonContent,
   IonRange,
@@ -9,7 +10,12 @@ import {
   IonSelectOption,
 } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
-import { THEME_SERVICE, TEXT_TO_SPEECH_SERVICE } from '../../core/infrastructure/injection-tokens';
+import {
+  THEME_SERVICE,
+  TEXT_TO_SPEECH_SERVICE,
+  PHRASE_BUTTON_CONFIG_SERVICE,
+  PHRASE_STORE_SERVICE,
+} from '../../core/infrastructure/injection-tokens';
 import { IThemeService, ThemeColors, ColorType, COLOR_TYPES } from '../../core/domain/interfaces/theme.interface';
 import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { PressHoldButtonComponent } from '../../shared/components/press-hold-button/press-hold-button.component';
@@ -17,6 +23,13 @@ import { PressHoldConfigService } from '../../core/application/services/press-ho
 import { WriteViewConfigService } from '../../core/infrastructure/services/write-view-config.service';
 import { WriteViewMode } from '../../core/domain/interfaces/write-view.interface';
 import { CarouselConfigService } from '../../core/infrastructure/services/carousel-config.service';
+import {
+  IPhraseButtonConfigService,
+  ButtonSize,
+  AVAILABLE_BUTTON_COUNTS,
+  PhraseButtonConfig,
+} from '../../core/domain/interfaces/phrase-button-config.interface';
+import { IPhraseStoreService } from '../../core/domain/interfaces/phrase-store.interface';
 
 @Component({
   selector: 'app-settings',
@@ -24,6 +37,7 @@ import { CarouselConfigService } from '../../core/infrastructure/services/carous
   styleUrls: ['./settings.page.scss'],
   imports: [
     CommonModule,
+    FormsModule,
     IonContent,
     IonRange,
     IonLabel,
@@ -49,6 +63,18 @@ export class SettingsPage implements OnInit {
   // Delay de carrusel (ms)
   carouselDelayMs: number = 1000;
 
+  // 🆕 Configuración de botones de frases
+  buttonCount: number = 12;
+  buttonSize: ButtonSize = 'medium';
+  availableButtonCounts = AVAILABLE_BUTTON_COUNTS;
+  buttonSizes: Array<{ value: ButtonSize; label: string }> = [
+    { value: 'small', label: 'Pequeño' },
+    { value: 'medium', label: 'Mediano' },
+    { value: 'large', label: 'Grande' },
+    { value: 'xlarge', label: 'Muy Grande' },
+  ];
+  currentPhraseCount: number = 0; // Número de frases guardadas actualmente
+
   constructor(
     private readonly navCtrl: NavController,
     @Inject(THEME_SERVICE)
@@ -58,6 +84,10 @@ export class SettingsPage implements OnInit {
     private readonly pressHoldConfig: PressHoldConfigService,
     private readonly writeViewConfig: WriteViewConfigService,
     private readonly carouselConfig: CarouselConfigService,
+    @Inject(PHRASE_BUTTON_CONFIG_SERVICE)
+    private readonly buttonConfigService: IPhraseButtonConfigService,
+    @Inject(PHRASE_STORE_SERVICE)
+    private readonly phraseStore: IPhraseStoreService,
   ) {}
 
   ngOnInit(): void {
@@ -68,13 +98,15 @@ export class SettingsPage implements OnInit {
     void this.loadWriteViewMode();
     // Cargar delay de carrusel
     void this.loadCarouselDelay();
+    // 🆕 Cargar configuración de botones de frases
+    void this.loadButtonConfig();
 
     // Seleccionar el primer tipo de color por defecto
     this.selectedColorType = COLOR_TYPES[0];
     this.selectedColor = this.getCurrentColorForType(this.selectedColorType.key);
 
     // Anuncio de bienvenida según las instrucciones
-    this.tts.speak('Página de configuración de colores activada. Selecciona qué tipo de color quieres modificar.', {
+    this.tts.speak('Página de configuración activada.', {
       priority: SpeechPriority.HIGH,
       interrupt: true,
     });
@@ -282,4 +314,76 @@ export class SettingsPage implements OnInit {
       interrupt: false,
     });
   }
+
+  /**
+   * 🆕 Obtiene el label del tamaño
+   */
+  getSizeLabel(size: ButtonSize): string {
+    const sizeObj = this.buttonSizes.find((s) => s.value === size);
+    return sizeObj?.label || 'Mediano';
+  }
+
+  /**
+   * 🆕 Carga la configuración de botones de frases
+   */
+  private async loadButtonConfig(): Promise<void> {
+    const config = await this.buttonConfigService.getConfig();
+    this.buttonCount = config.count;
+    this.buttonSize = config.size;
+
+    // Cargar número de frases guardadas
+    const phrases = await this.phraseStore.getAll();
+    this.currentPhraseCount = phrases.filter((p) => p.value.trim() !== '').length;
+  }
+
+  /**
+   * 🆕 Aplica la configuración de botones directamente
+   */
+  async applyButtonConfig(): Promise<void> {
+    const oldCount = await this.buttonConfigService.getConfig().then((c) => c.count);
+    const newCount = this.buttonCount;
+
+    await this.tts.speak('Aplicando configuración de botones');
+
+    // Si reduce el número de botones y hay frases que se perderían, preguntar
+    if (newCount < oldCount && this.currentPhraseCount > newCount) {
+      const confirmed = confirm(
+        `Tienes ${this.currentPhraseCount} frases guardadas. Al reducir a ${newCount} botones, algunas quedarán ocultas.\n\n¿Deseas ELIMINAR las frases excedentes?\n\nOK = Eliminar excedentes\nCancelar = Mantener ocultas (podrás recuperarlas si aumentas el número de botones)`,
+      );
+
+      await this.finalizeButtonConfig(confirmed);
+    } else {
+      // Aplicar directamente
+      await this.finalizeButtonConfig(false);
+    }
+  }
+
+  /**
+   * 🆕 Finaliza la aplicación de configuración
+   */
+  async finalizeButtonConfig(deleteSurplus: boolean): Promise<void> {
+    const config: PhraseButtonConfig = {
+      count: this.buttonCount,
+      size: this.buttonSize,
+    };
+
+    try {
+      // Guardar configuración
+      await this.buttonConfigService.setConfig(config);
+
+      // Actualizar capacidad del store
+      await this.phraseStore.updateCapacity(config.count, deleteSurplus);
+
+      await this.tts.speak('Configuración aplicada correctamente. Recargando aplicación');
+
+      // Recargar para aplicar cambios
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      console.error('Error aplicando configuración:', error);
+      await this.tts.speak('Error al aplicar configuración');
+    }
+  }
 }
+

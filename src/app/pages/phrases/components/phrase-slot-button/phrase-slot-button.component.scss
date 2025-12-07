@@ -61,10 +61,10 @@
 }
 
 .slot-number {
-  font-size: 2.5rem;
+  font-size: var(--phrase-number-size, 3.5rem);
   font-weight: bold;
   color: var(--ion-color-contrast);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
 }
 
@@ -104,21 +104,26 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive - botones más grandes en tablets */
+/* Responsive - usar variables dinámicas */
 @media (min-width: 768px) {
   .slot-number {
-    font-size: 3rem;
+    font-size: var(--phrase-number-size-tablet, 4.5rem);
   }
 
-  .phrase-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 20px;
-  }
-
+  .phrase-icon,
   .image-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    font-size: 22px;
+  }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1024px) {
+  .phrase-icon,
+  .image-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
   }
 }

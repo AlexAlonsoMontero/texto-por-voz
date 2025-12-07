@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
-import { CommonModule, AsyncPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NavController } from '@ionic/angular';
 import {
   TEXT_TO_SPEECH_SERVICE,

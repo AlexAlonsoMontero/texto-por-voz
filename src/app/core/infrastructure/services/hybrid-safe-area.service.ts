@@ -187,12 +187,10 @@ export class HybridSafeAreaService implements ISafeAreaService {
    * Método para debug - muestra información completa del safe area
    */
   async debugSafeAreaInfo(): Promise<void> {
-    const insets = await this.getSafeAreaInsets();
-
-    const availableHeight = await this.getAvailableHeight();
-    const availableWidth = await this.getAvailableWidth();
-
-    const hasSystemBars = await this.hasSystemBars();
+    await this.getSafeAreaInsets();
+    await this.getAvailableHeight();
+    await this.getAvailableWidth();
+    await this.hasSystemBars();
     console.groupEnd();
   }
 }

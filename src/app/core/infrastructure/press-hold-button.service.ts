@@ -132,7 +132,7 @@ export class PressHoldButtonService implements IPressHoldButtonService {
     });
   }
 
-  private emitEvent(event: PressHoldEvent): void {
+  private emitEvent(_event: PressHoldEvent): void {
     // Evento emitido silenciosamente
   }
 

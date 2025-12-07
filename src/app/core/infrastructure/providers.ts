@@ -6,6 +6,7 @@ import { HybridGalleryService } from './services/hybrid-gallery.service';
 
 import { ThemeService } from './services/theme.service';
 import { PhraseStoreService } from './services/phrase-store.service';
+import { PhraseButtonConfigService } from './services/phrase-button-config.service';
 import {
   TEXT_TO_SPEECH_SERVICE,
   ORIENTATION_SERVICE,
@@ -14,6 +15,7 @@ import {
   THEME_SERVICE,
   PHRASE_STORE_SERVICE,
   GALLERY_SERVICE,
+  PHRASE_BUTTON_CONFIG_SERVICE,
 } from './injection-tokens';
 import { PressHoldButtonService } from './press-hold-button.service';
 
@@ -62,5 +64,11 @@ export const CORE_PROVIDERS: Provider[] = [
   {
     provide: GALLERY_SERVICE,
     useClass: HybridGalleryService,
+  },
+
+  // Phrase Button Config Service - Configuración dinámica de botones
+  {
+    provide: PHRASE_BUTTON_CONFIG_SERVICE,
+    useClass: PhraseButtonConfigService,
   },
 ];

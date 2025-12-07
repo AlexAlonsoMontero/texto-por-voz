@@ -3,23 +3,44 @@ import { Preferences } from '@capacitor/preferences';
 import { BehaviorSubject } from 'rxjs';
 import { IPhraseStoreService, PhraseStoreSlot, SaveResult } from '../../domain/interfaces/phrase-store.interface';
 import { FileStorageService } from './file-storage.service';
+import { PhraseButtonConfigService } from './phrase-button-config.service';
 
 @Injectable({ providedIn: 'root' })
 export class PhraseStoreService implements IPhraseStoreService {
-  readonly capacity = 12;
-  private readonly STORAGE_KEY = 'saved-phrases-12';
-  private readonly LOCAL_KEY = 'saved-phrases-12';
+  private _capacity = 12; // Dinámico, se carga del config
+  private readonly STORAGE_KEY = 'saved-phrases-dynamic';
+  private readonly LOCAL_KEY = 'saved-phrases-dynamic';
 
-  private readonly slotsSubject = new BehaviorSubject<PhraseStoreSlot[]>(
-    Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' })),
-  );
+  private slotsSubject!: BehaviorSubject<PhraseStoreSlot[]>;
   private initialized = false;
 
-  constructor(private readonly fileStorage: FileStorageService) {}
+  constructor(
+    private readonly fileStorage: FileStorageService,
+    private readonly buttonConfig: PhraseButtonConfigService,
+  ) {
+    // Inicializar con capacidad por defecto
+    this.slotsSubject = new BehaviorSubject<PhraseStoreSlot[]>(
+      Array.from({ length: this._capacity }, (_, i) => ({ index: i, value: '' })),
+    );
+  }
+
+  get capacity(): number {
+    return this._capacity;
+  }
 
   private async ensureLoaded(): Promise<void> {
     if (this.initialized) return;
     this.initialized = true;
+
+    // Cargar configuración de capacidad
+    const config = await this.buttonConfig.getConfig();
+    this._capacity = config.count;
+
+    // Reinicializar subject con la capacidad correcta
+    this.slotsSubject = new BehaviorSubject<PhraseStoreSlot[]>(
+      Array.from({ length: this._capacity }, (_, i) => ({ index: i, value: '' })),
+    );
+
     await this.load();
   }
 
@@ -35,7 +56,7 @@ export class PhraseStoreService implements IPhraseStoreService {
       }
 
       // Fallback a localStorage
-      if (!loadedData || !Array.isArray(loadedData) || loadedData.length !== this.capacity) {
+      if (!loadedData || !Array.isArray(loadedData)) {
         const ls = typeof localStorage === 'undefined' ? null : localStorage.getItem(this.LOCAL_KEY);
         if (ls) {
           try {
@@ -45,32 +66,40 @@ export class PhraseStoreService implements IPhraseStoreService {
       }
 
       // Si no hay datos válidos, inicializar vacío
-      if (!loadedData || !Array.isArray(loadedData) || loadedData.length !== this.capacity) {
-        const arr = Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' }));
+      if (!loadedData || !Array.isArray(loadedData)) {
+        const arr = Array.from({ length: this._capacity }, (_, i) => ({ index: i, value: '' }));
         this.slotsSubject.next(arr);
         return;
       }
 
-      // Procesar datos (migración de string[] a PhraseStoreSlot[])
-      const slots: PhraseStoreSlot[] = loadedData.map((item, i) => {
-        if (typeof item === 'string') {
-          // Formato antiguo: array de strings
-          return { index: i, value: this.normalize(item) };
-        } else if (typeof item === 'object' && item !== null) {
-          // Formato nuevo: objeto PhraseStoreSlot
-          return {
-            index: i,
-            value: this.normalize(item.value || ''),
-            imageUri: item.imageUri,
-            imageAltText: item.imageAltText,
-          };
+      // Procesar datos - ajustar al tamaño actual
+      const slots: PhraseStoreSlot[] = [];
+
+      for (let i = 0; i < this._capacity; i++) {
+        if (i < loadedData.length) {
+          const item = loadedData[i];
+          if (typeof item === 'string') {
+            // Formato antiguo: array de strings
+            slots.push({ index: i, value: this.normalize(item) });
+          } else if (typeof item === 'object' && item !== null) {
+            // Formato nuevo: objeto PhraseStoreSlot
+            slots.push({
+              index: i,
+              value: this.normalize(item.value || ''),
+              imageUri: item.imageUri,
+              imageAltText: item.imageAltText,
+            });
+          } else {
+            slots.push({ index: i, value: '' });
+          }
+        } else {
+          slots.push({ index: i, value: '' });
         }
-        return { index: i, value: '' };
-      });
+      }
 
       this.slotsSubject.next(slots);
     } catch {
-      const arr = Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' }));
+      const arr = Array.from({ length: this._capacity }, (_, i) => ({ index: i, value: '' }));
       this.slotsSubject.next(arr);
     }
   }
@@ -157,8 +186,41 @@ export class PhraseStoreService implements IPhraseStoreService {
       }
     }
 
-    const arr = Array.from({ length: this.capacity }, (_, i) => ({ index: i, value: '' }));
+    const arr = Array.from({ length: this._capacity }, (_, i) => ({ index: i, value: '' }));
     this.slotsSubject.next(arr);
+    await this.persist();
+  }
+
+  /**
+   * Método para cambiar la capacidad dinámicamente
+   * Usado cuando el usuario cambia el número de botones en configuración
+   */
+  async updateCapacity(newCapacity: number, deleteSurplus: boolean = false): Promise<void> {
+    await this.ensureLoaded();
+    const oldSlots = this.slotsSubject.value;
+
+    // Si hay que eliminar botones excedentes
+    if (newCapacity < oldSlots.length && deleteSurplus) {
+      // Borrar imágenes de los slots que se eliminarán
+      for (let i = newCapacity; i < oldSlots.length; i++) {
+        if (oldSlots[i].imageUri) {
+          await this.fileStorage.deleteImage(oldSlots[i].imageUri!);
+        }
+      }
+    }
+
+    // Crear nuevo array con la nueva capacidad
+    const newSlots: PhraseStoreSlot[] = [];
+    for (let i = 0; i < newCapacity; i++) {
+      if (i < oldSlots.length) {
+        newSlots.push({ ...oldSlots[i], index: i });
+      } else {
+        newSlots.push({ index: i, value: '' });
+      }
+    }
+
+    this._capacity = newCapacity;
+    this.slotsSubject.next(newSlots);
     await this.persist();
   }
 
