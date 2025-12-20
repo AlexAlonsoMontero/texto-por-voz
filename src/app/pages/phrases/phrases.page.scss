@@ -8,80 +8,46 @@ ion-content {
   --padding-bottom: 0;
   --padding-start: 0;
   --padding-end: 0;
-  --overflow: auto; /* Permitir scroll */
+  --overflow: hidden;
   height: 100%;
 }
 
 .phrases-container {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
-  overflow: visible; /* Permitir scroll */
-  padding: 8px;
-  padding-top: calc(8px + var(--safe-area-top, 0px));
-  padding-bottom: calc(8px + var(--safe-area-bottom, 8px));
-  gap: 8px;
+  height: 100%;
+  overflow: hidden;
+  padding: 6px;
+  padding-top: calc(6px + var(--safe-area-top, 0px));
+  padding-bottom: calc(6px + var(--safe-area-bottom, 8px));
+  gap: 6px;
 }
 
-/* 🆕 Sección superior fija (solo input) */
-.fixed-top-section {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--ion-background-color);
-  padding-bottom: 8px;
-  /* Sombra sutil para indicar que está sobre el contenido */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* 🆕 Sección inferior fija (botones de gestión) */
-.fixed-bottom-section {
-  position: sticky;
-  bottom: 0;
-  z-index: 100;
-  background: var(--ion-background-color);
-  padding-top: 8px;
-  padding-bottom: calc(8px + var(--safe-area-bottom, 0px));
-  /* Sombra hacia arriba */
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Grid dinámico con botones grandes - CON SCROLL */
+/* Grid adaptativo para los 12 botones - SIN SCROLL */
 .slots-grid-4x4 {
   display: grid;
-  grid-template-columns: repeat(var(--phrase-grid-landscape-cols, 3), 1fr);
-  gap: var(--phrase-button-gap, 8px);
-  width: 100%;
-  grid-auto-rows: minmax(var(--phrase-button-height, 220px), auto);
-  /* Padding para separar del contenido fijo */
-  padding: 8px 0;
+  grid-template-columns: repeat(4, 1fr); /* 4 columnas en landscape */
+  grid-template-rows: repeat(3, 1fr); /* 3 filas en landscape */
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
-/* Portrait: columnas dinámicas */
+/* Portrait: 3 columnas x 4 filas */
 @media (orientation: portrait) {
   .slots-grid-4x4 {
-    grid-template-columns: repeat(var(--phrase-grid-portrait-cols, 2), 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
   }
 }
 
-/* Tablets y pantallas grandes: usar configuración sin cambios adicionales */
-@media (min-width: 768px) {
-  .slots-grid-4x4 {
-    /* El tamaño ya está definido por las variables CSS */
-  }
-}
-
-@media (min-width: 1024px) {
-  .slots-grid-4x4 {
-    gap: calc(var(--phrase-button-gap, 8px) * 1.5);
-  }
-}
-
-/* Botones de acción globales (Imagen y Borrar) - En la parte inferior */
+/* Botones de acción globales (Imagen y Borrar) */
 .action-buttons-section {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   flex-shrink: 0;
+  background: var(--ion-background-color);
 }
 
 .action-button {
@@ -98,6 +64,32 @@ ion-content {
       font-size: 1.1rem;
       font-weight: 600;
     }
+  }
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  position: relative;
+}
+
+.slot-btn {
+  flex: 1 1 auto;
+  position: relative;
+}
+
+.delete-btn {
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
+  min-height: 44px;
+  font-size: 20px;
+
+  ::ng-deep ion-button {
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -238,6 +230,26 @@ ion-modal {
   color: var(--ion-color-medium);
 }
 
+.modal-grid-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  padding: 8px;
+}
+
 .modal-actions {
   flex-shrink: 0;
   display: flex;
@@ -251,7 +263,7 @@ ion-modal {
   app-press-hold-button {
     max-width: 200px;
     min-height: 40px;
-    
+
     ::ng-deep ion-button {
       height: 40px;
       font-size: 0.95rem;
@@ -259,7 +271,12 @@ ion-modal {
   }
 }
 
-
+@media (max-width: 800px) {
+  .slots-grid,
+  .modal-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 
 /* 🆕 Estilos del modal de configuración de imagen */
 .image-config-layout {
@@ -391,6 +408,77 @@ ion-modal {
     min-height: 40px;
     max-height: 50px;
   }
+}
+
+/* ========== MODAL DE BORRAR ========== */
+
+.delete-slots-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+}
+
+.delete-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+}
+
+@media (orientation: portrait) {
+  .delete-slots-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+}
+
+.delete-slot-btn {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+
+  ::ng-deep ion-button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.delete-slot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.delete-slot-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--ion-color-contrast);
+}
+
+.delete-slot-preview {
+  font-size: 0.75rem;
+  color: var(--ion-color-contrast);
+  opacity: 0.8;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ========== MODAL DE GESTIÓN DE IMÁGENES ========== */

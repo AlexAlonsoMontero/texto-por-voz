@@ -137,7 +137,7 @@ export class HybridSafeAreaService implements ISafeAreaService {
     // Si hay diferencia significativa, asumimos que es por barras del sistema
     // Eliminamos los límites artificiales (antes 28 y 42) para permitir barras de tablets grandes
     return {
-      top: heightDiff > 20 ? Math.min(heightDiff * 0.35, 60) : 0, 
+      top: heightDiff > 20 ? Math.min(heightDiff * 0.35, 60) : 0,
       bottom: heightDiff > 20 ? Math.min(heightDiff * 0.65, 100) : 0, // Aumentado límite a 100px
       left: 0,
       right: 0,
@@ -154,7 +154,7 @@ export class HybridSafeAreaService implements ISafeAreaService {
     if (isAndroid) {
       // Aumentamos la heurística para tablets y dispositivos modernos
       return {
-        top: 24, 
+        top: 24,
         bottom: 48, // Aumentado de 32 a 48 (estándar mínimo Android)
         left: 0,
         right: 0,
@@ -187,10 +187,12 @@ export class HybridSafeAreaService implements ISafeAreaService {
    * Método para debug - muestra información completa del safe area
    */
   async debugSafeAreaInfo(): Promise<void> {
-    await this.getSafeAreaInsets();
-    await this.getAvailableHeight();
-    await this.getAvailableWidth();
-    await this.hasSystemBars();
+    const insets = await this.getSafeAreaInsets();
+
+    const availableHeight = await this.getAvailableHeight();
+    const availableWidth = await this.getAvailableWidth();
+
+    const hasSystemBars = await this.hasSystemBars();
     console.groupEnd();
   }
 }
