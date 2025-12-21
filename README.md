@@ -180,19 +180,6 @@ onPressStart(): void {
 }
 ```
 
-## 📋 Roadmap Futuro (v2.0+)
-
-### 🔮 Mejoras Planificadas
-
-- [ ] Exportación/importación de frases personalizadas
-- [ ] Soporte multiidioma (inglés, catalán, gallego)
-- [ ] Sincronización en la nube de configuración
-- [ ] Temas de alto contraste adicionales (WCAG AAA)
-- [ ] Integración con lectores de pantalla nativos
-- [ ] Modo de dictado por voz (Speech-to-Text)
-- [ ] Categorización de frases por contexto
-- [ ] Widgets de acceso rápido (Android/iOS)
-
 ## 🧪 Testing y Calidad
 
 ### Tests Implementados
@@ -247,7 +234,7 @@ cd android && ./gradlew assembleDebug
 
 ---
 
-**🎯 Estado v1.0.0**: Aplicación completa y funcional lista para uso en producción. Todas las funcionalidades principales implementadas con arquitectura sólida y accesibilidad garantizada. Ideal para usuarios con necesidades de comunicación asistida por tecnología 3. Implementar servicio híbrido en `core/infrastructure/services/` 4. Registrar en `providers.ts`
+3. Implementar servicio híbrido en `core/infrastructure/services/` 4. Registrar en `providers.ts`
 
 ### Crear Componente Accesible
 
@@ -268,7 +255,3 @@ cd android && ./gradlew assembleDebug
 ---
 
 **Para más detalles sobre convenciones y patrones, consulta [`.github/copilot-instructions.md`](.github/copilot-instructions.md).**
-
----
-
-**🎯 Enfoque Actual**: El proyecto está en fase de desarrollo activo con funcionalidades base implementadas y arquitectura sólida establecida. La prioridad es completar los componentes de interfaz antes de añadir funcionalidades avanzadas.
