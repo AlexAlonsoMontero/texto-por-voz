@@ -31,25 +31,25 @@ ion-accordion-group {
   margin-bottom: 20px;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   background: var(--ion-background-color);
 }
 
 ion-accordion {
   background: var(--ion-background-color);
-  
+
   // Estilo por defecto para cabeceras (Color Primario)
-  ion-item[slot="header"] {
+  ion-item[slot='header'] {
     --background: var(--ion-color-primary);
     --color: var(--ion-color-primary-contrast);
     --inner-padding-end: 16px;
-    
+
     ion-icon {
       margin-right: 12px;
       font-size: 24px;
       color: var(--ion-color-primary-contrast) !important;
     }
-    
+
     ion-label {
       h2 {
         font-weight: 700;
@@ -71,7 +71,7 @@ ion-accordion {
 
   // Estilo alterno para cabeceras pares (Color Secundario)
   &:nth-of-type(even) {
-    ion-item[slot="header"] {
+    ion-item[slot='header'] {
       --background: var(--ion-color-secondary);
       --color: var(--ion-color-secondary-contrast);
 
@@ -80,7 +80,8 @@ ion-accordion {
       }
 
       ion-label {
-        h2, p {
+        h2,
+        p {
           color: var(--ion-color-secondary-contrast);
         }
       }
@@ -107,15 +108,15 @@ ion-segment:not(.color-type-segment) {
   margin-bottom: 8px;
 
   ion-segment-button {
-    --indicator-box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    --indicator-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     min-height: 40px;
-    
+
     // Unselected state
     --color: var(--ion-color-medium);
-    
+
     // Selected state
     --color-checked: var(--ion-color-primary);
-    
+
     ion-label {
       font-weight: 600;
       font-size: 14px;
@@ -129,9 +130,9 @@ ion-segment:not(.color-type-segment) {
   margin-bottom: 20px;
   text-align: center;
   color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   font-weight: bold;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .palette-grid {
@@ -145,7 +146,7 @@ ion-segment:not(.color-type-segment) {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border: 2px solid rgba(0,0,0,0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   padding: 0;
   cursor: pointer;
   position: relative;
@@ -161,13 +162,13 @@ ion-segment:not(.color-type-segment) {
   &.selected {
     border: 3px solid var(--ion-color-primary);
     transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
   ion-icon {
     font-size: 24px;
     color: #fff;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
   }
 }
 
@@ -181,7 +182,7 @@ ion-segment:not(.color-type-segment) {
 }
 
 .custom-input-wrapper {
-  input[type="color"] {
+  input[type='color'] {
     width: 40px;
     height: 40px;
     border: none;
@@ -190,14 +191,14 @@ ion-segment:not(.color-type-segment) {
     cursor: pointer;
     padding: 0;
     background: none;
-    
+
     &::-webkit-color-swatch-wrapper {
       padding: 0;
     }
     &::-webkit-color-swatch {
       border: none;
       border-radius: 50%;
-      border: 1px solid rgba(0,0,0,0.1);
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
   }
 }

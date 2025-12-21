@@ -16,7 +16,6 @@
 
 <ion-content>
   <div class="settings-wrapper">
-
     <!-- SECCIÓN: APARIENCIA -->
     <ion-list-header>
       <ion-label>Apariencia</ion-label>
@@ -31,11 +30,10 @@
           </ion-label>
         </ion-item>
         <div class="ion-padding" slot="content">
-          
           <!-- Selector de Tipo de Color -->
-          <ion-segment 
-            [value]="selectedColorType?.key" 
-            scrollable="true" 
+          <ion-segment
+            [value]="selectedColorType?.key"
+            scrollable="true"
             (ionChange)="selectColorTypeByKey($event)"
             mode="ios"
             class="color-type-segment"
@@ -45,7 +43,11 @@
             </ion-segment-button>
           </ion-segment>
 
-          <div class="current-color-indicator" *ngIf="selectedColorType" [style.background-color]="getCurrentColorForType(selectedColorType.key)">
+          <div
+            class="current-color-indicator"
+            *ngIf="selectedColorType"
+            [style.background-color]="getCurrentColorForType(selectedColorType.key)"
+          >
             <p>{{ selectedColorType.description }}</p>
           </div>
 
@@ -91,7 +93,6 @@
       <ion-label>Accesibilidad</ion-label>
     </ion-list-header>
     <ion-accordion-group expand="inset">
-      
       <!-- Tiempo de Presión -->
       <ion-accordion value="duration">
         <ion-item slot="header">
@@ -152,7 +153,6 @@
           </ion-segment>
         </div>
       </ion-accordion>
-
     </ion-accordion-group>
 
     <!-- SECCIÓN: INTERFAZ -->
@@ -160,7 +160,6 @@
       <ion-label>Interfaz</ion-label>
     </ion-list-header>
     <ion-accordion-group expand="inset">
-      
       <!-- Modo de Vista -->
       <ion-accordion value="viewMode">
         <ion-item slot="header">
@@ -183,7 +182,8 @@
             </ion-segment-button>
           </ion-segment>
           <p class="helper-text ion-padding-top">
-            {{ writeViewMode === 'panel' ? 'Muestra todas las frases en una cuadrícula.' : 'Muestra las frases una por una deslizándolas.' }}
+            {{ writeViewMode === 'panel' ? 'Muestra todas las frases en una cuadrícula.' : 'Muestra las frases una por
+            una deslizándolas.' }}
           </p>
         </div>
       </ion-accordion>
@@ -191,7 +191,11 @@
       <!-- Velocidad Carrusel (Solo si es carrusel) -->
       <ion-accordion value="carouselSpeed" [disabled]="writeViewMode !== 'carousel'">
         <ion-item slot="header">
-          <ion-icon slot="start" name="speedometer-outline" [color]="writeViewMode === 'carousel' ? 'primary' : 'medium'"></ion-icon>
+          <ion-icon
+            slot="start"
+            name="speedometer-outline"
+            [color]="writeViewMode === 'carousel' ? 'primary' : 'medium'"
+          ></ion-icon>
           <ion-label>
             <h2>Velocidad Carrusel</h2>
             <p>Tiempo de transición automática</p>
@@ -199,19 +203,19 @@
           <ion-note slot="end">{{ carouselDelayMs / 1000 }}s</ion-note>
         </ion-item>
         <div class="ion-padding" slot="content">
-           <ion-range
-              [min]="0.5"
-              [max]="5"
-              [step]="0.5"
-              [value]="carouselDelayMs / 1000"
-              [pin]="true"
-              [ticks]="true"
-              [snaps]="true"
-              (ionChange)="onCarouselDelayChange($event)"
-            >
-              <ion-icon slot="start" size="small" name="time-outline"></ion-icon>
-              <ion-icon slot="end" size="large" name="time-outline"></ion-icon>
-            </ion-range>
+          <ion-range
+            [min]="0.5"
+            [max]="5"
+            [step]="0.5"
+            [value]="carouselDelayMs / 1000"
+            [pin]="true"
+            [ticks]="true"
+            [snaps]="true"
+            (ionChange)="onCarouselDelayChange($event)"
+          >
+            <ion-icon slot="start" size="small" name="time-outline"></ion-icon>
+            <ion-icon slot="end" size="large" name="time-outline"></ion-icon>
+          </ion-range>
         </div>
       </ion-accordion>
 
@@ -226,8 +230,8 @@
           <ion-note slot="end">{{ buttonCount }}</ion-note>
         </ion-item>
         <div class="ion-padding" slot="content">
-          <ion-select 
-            [value]="buttonCount" 
+          <ion-select
+            [value]="buttonCount"
             (ionChange)="buttonCount = $event.detail.value; applyButtonConfig()"
             interface="action-sheet"
             placeholder="Seleccionar cantidad"
@@ -241,8 +245,6 @@
           </p>
         </div>
       </ion-accordion>
-
     </ion-accordion-group>
-
   </div>
 </ion-content>

@@ -21,7 +21,7 @@ import {
   IonButtons,
   IonHeader,
   IonToolbar,
-  IonTitle
+  IonTitle,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -37,7 +37,7 @@ import {
   textOutline,
   homeOutline,
   brushOutline,
-  arrowBackOutline
+  arrowBackOutline,
 } from 'ionicons/icons';
 import { NavController } from '@ionic/angular';
 import {
@@ -146,7 +146,7 @@ export class SettingsPage implements OnInit {
       textOutline,
       homeOutline,
       brushOutline,
-      arrowBackOutline
+      arrowBackOutline,
     });
   }
 
@@ -221,7 +221,7 @@ export class SettingsPage implements OnInit {
    */
   selectColorTypeByKey(event: any): void {
     const key = event.detail.value;
-    const type = this.colorTypes.find(c => c.key === key);
+    const type = this.colorTypes.find((c) => c.key === key);
     if (type) {
       this.selectColorType(type);
     }
@@ -457,4 +457,3 @@ export class SettingsPage implements OnInit {
     }
   }
 }
-
