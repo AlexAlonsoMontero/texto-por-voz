@@ -45,5 +45,21 @@
   - ![alt text](image-6.png)
   - En la vista slider aparecerá un sólo botón. En lugar de los 8, este botón pasados unos segundos o pulsando las flechas, pasa al siguiente, el botón es más grande, lo que permite a un usuario con problemas de visión ver mejor.
   - El tipo de vista es configurable en la sección de configuración así como el tiempo que transcurre para que el slider cambie el grupo de letras
-  - ![alt text](image-3.png)
-  - ![alt text](image-4.png)
+  - ![alt text](image-7.png)
+  - ![alt text](image-8.png)
+
+## FRASES GUARDADAS
+
+![alt text](image-9.png)
+
+- En esta sección tendremos frases guardadas en botones, la idea es podeer tener frases como necesito ir al baño, o me duele, frases rápidas de uso diario o frecuente.
+- En la página de configuración podemos configurar el número y el tamaño de los botones,
+  - ![alt text](image-10.png)
+  - ![alt text](image-11.png)
+
+## PANTALLA CONFIGURACIÓN
+
+- Esta sección esta pensada para que ua persona que acompañe al usuario: FAmiliar psicólogo... configure la aplicación de la forma que más convenga al usuario
+- Permite configurar todas las opciones vistas anteriormente más el tiempo de pulsación y los colores de los botones.
+- ![alt text](image-12.png)
+- ![alt text](image-13.png)

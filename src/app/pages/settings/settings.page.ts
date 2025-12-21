@@ -8,7 +8,37 @@ import {
   IonItem,
   IonSelect,
   IonSelectOption,
+  IonAccordionGroup,
+  IonAccordion,
+  IonList,
+  IonListHeader,
+  IonSegment,
+  IonSegmentButton,
+  IonIcon,
+  IonNote,
+  IonToggle,
+  IonButton,
+  IonButtons,
+  IonHeader,
+  IonToolbar,
+  IonTitle
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  colorPaletteOutline,
+  timeOutline,
+  resizeOutline,
+  layersOutline,
+  speedometerOutline,
+  gridOutline,
+  chevronDownOutline,
+  chevronUpOutline,
+  checkmarkCircleOutline,
+  textOutline,
+  homeOutline,
+  brushOutline,
+  arrowBackOutline
+} from 'ionicons/icons';
 import { NavController } from '@ionic/angular';
 import {
   THEME_SERVICE,
@@ -44,6 +74,20 @@ import { IPhraseStoreService } from '../../core/domain/interfaces/phrase-store.i
     IonItem,
     IonSelect,
     IonSelectOption,
+    IonAccordionGroup,
+    IonAccordion,
+    IonList,
+    IonListHeader,
+    IonSegment,
+    IonSegmentButton,
+    IonIcon,
+    IonNote,
+    IonToggle,
+    IonButton,
+    IonButtons,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
     PressHoldButtonComponent,
   ],
 })
@@ -88,7 +132,23 @@ export class SettingsPage implements OnInit {
     private readonly buttonConfigService: IPhraseButtonConfigService,
     @Inject(PHRASE_STORE_SERVICE)
     private readonly phraseStore: IPhraseStoreService,
-  ) {}
+  ) {
+    addIcons({
+      colorPaletteOutline,
+      timeOutline,
+      resizeOutline,
+      layersOutline,
+      speedometerOutline,
+      gridOutline,
+      chevronDownOutline,
+      chevronUpOutline,
+      checkmarkCircleOutline,
+      textOutline,
+      homeOutline,
+      brushOutline,
+      arrowBackOutline
+    });
+  }
 
   ngOnInit(): void {
     // Cargar duración desde el servicio
@@ -154,6 +214,17 @@ export class SettingsPage implements OnInit {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
     });
+  }
+
+  /**
+   * Selecciona el tipo de color por su key (para el segment)
+   */
+  selectColorTypeByKey(event: any): void {
+    const key = event.detail.value;
+    const type = this.colorTypes.find(c => c.key === key);
+    if (type) {
+      this.selectColorType(type);
+    }
   }
 
   /**

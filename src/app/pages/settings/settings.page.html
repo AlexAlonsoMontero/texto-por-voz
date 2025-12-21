@@ -1,94 +1,111 @@
-<ion-content [fullscreen]="true">
-  <ion-content [fullscreen]="true">
-    <div class="settings-container">
-      <!-- Selector de tipo de color -->
-      <section class="color-type-selector" aria-label="Seleccionar qué color modificar">
-        <h2 class="section-title">¿Qué color quieres cambiar?</h2>
-        <div class="color-type-grid">
-          <button
-            *ngFor="let colorType of colorTypes; trackBy: trackByColorType"
-            type="button"
-            class="color-type-button"
-            [class.selected]="selectedColorType?.key === colorType.key"
-            [attr.aria-label]="colorType.name + '. ' + colorType.description"
-            [attr.aria-pressed]="selectedColorType?.key === colorType.key"
-            (click)="selectColorType(colorType)"
-            (keydown)="onColorTypeKeyDown($event, colorType)"
-          >
-            <span class="color-type-icon">{{ colorType.icon }}</span>
-            <span class="color-type-name">{{ colorType.name }}</span>
-            <div
-              class="current-color-preview"
-              [style.background-color]="getCurrentColorForType(colorType.key)"
-              [attr.aria-label]="'Color actual: ' + getCurrentColorForType(colorType.key)"
-            ></div>
-          </button>
-        </div>
-      </section>
-
-      <!-- Paleta de colores integrada -->
-      <div
-        class="integrated-color-palette"
-        *ngIf="selectedColorType"
-        [attr.aria-label]="'Paleta de colores para ' + selectedColorType.name"
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-press-hold-button
+        (pressed)="onBackAction('back')"
+        label="Volver"
+        ariaLabel="Volver a la página principal"
+        customClass="header-back-button"
       >
-        <h3 class="palette-title">Selecciona {{ selectedColorType.name }}</h3>
-        <div class="predefined-colors-grid">
-          <button
-            *ngFor="let colorOption of predefinedColors; trackBy: trackByColorOption"
-            type="button"
-            class="color-button"
-            [class.selected]="isSelectedColor(colorOption.value)"
-            [style.background-color]="colorOption.value"
-            [attr.aria-label]="colorOption.name + '. ' + colorOption.description"
-            [attr.aria-pressed]="isSelectedColor(colorOption.value)"
-            (click)="onColorSelected({color: colorOption.value, name: colorOption.name})"
-            (keydown)="onColorKeyDown($event, colorOption)"
-          >
-            <span class="color-name">{{ colorOption.name }}</span>
-            <span class="color-value">{{ colorOption.value }}</span>
-          </button>
-        </div>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </app-press-hold-button>
+    </ion-buttons>
+    <ion-title>Configuración</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-        <!-- Botón para selector personalizado -->
-        <div class="custom-color-section">
-          <button
-            type="button"
-            class="toggle-custom-button"
-            [class.active]="showCustomInput"
-            aria-label="Alternar selector de color personalizado"
-            (click)="toggleCustomInput()"
-          >
-            {{ showCustomInput ? 'Ocultar' : 'Mostrar' }} Color Personalizado
-          </button>
+<ion-content>
+  <div class="settings-wrapper">
 
-          <div class="custom-input-container" [class.visible]="showCustomInput">
-            <input
-              type="color"
-              class="custom-color-input"
-              [value]="selectedColor"
-              [attr.aria-label]="selectedColorType.name + ' - Selector de color personalizado'"
-              (change)="onCustomColorChange($event)"
-            />
-            <span class="custom-color-label">Color personalizado</span>
+    <!-- SECCIÓN: APARIENCIA -->
+    <ion-list-header>
+      <ion-label>Apariencia</ion-label>
+    </ion-list-header>
+    <ion-accordion-group expand="inset">
+      <ion-accordion value="colors">
+        <ion-item slot="header">
+          <ion-icon slot="start" name="color-palette-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h2>Colores del Tema</h2>
+            <p>Personaliza los colores de la aplicación</p>
+          </ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          
+          <!-- Selector de Tipo de Color -->
+          <ion-segment 
+            [value]="selectedColorType?.key" 
+            scrollable="true" 
+            (ionChange)="selectColorTypeByKey($event)"
+            mode="ios"
+            class="color-type-segment"
+          >
+            <ion-segment-button *ngFor="let type of colorTypes" [value]="type.key">
+              <ion-label>{{ type.name }}</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+
+          <div class="current-color-indicator" *ngIf="selectedColorType" [style.background-color]="getCurrentColorForType(selectedColorType.key)">
+            <p>{{ selectedColorType.description }}</p>
           </div>
+
+          <!-- Paleta de Colores -->
+          <div class="palette-grid" *ngIf="selectedColorType">
+            <button
+              *ngFor="let colorOption of predefinedColors; trackBy: trackByColorOption"
+              type="button"
+              class="color-circle"
+              [class.selected]="isSelectedColor(colorOption.value)"
+              [style.background-color]="colorOption.value"
+              [attr.aria-label]="colorOption.name"
+              (click)="onColorSelected({color: colorOption.value, name: colorOption.name})"
+            >
+              <ion-icon name="checkmark-circle-outline" *ngIf="isSelectedColor(colorOption.value)"></ion-icon>
+            </button>
+          </div>
+
+          <!-- Color Personalizado -->
+          <div class="custom-color-row">
+            <ion-button fill="outline" size="small" (click)="toggleCustomInput()">
+              {{ showCustomInput ? 'Ocultar' : 'Usar' }} Color Personalizado
+            </ion-button>
+            <div class="custom-input-wrapper" *ngIf="showCustomInput">
+              <input
+                type="color"
+                [value]="selectedColor"
+                (change)="onCustomColorChange($event)"
+                aria-label="Selector de color personalizado"
+              />
+            </div>
+          </div>
+
+          <ion-button expand="block" fill="clear" color="medium" (click)="resetToDefault()">
+            Restaurar colores por defecto
+          </ion-button>
         </div>
-      </div>
+      </ion-accordion>
+    </ion-accordion-group>
 
-      <!-- Control de duración de presión de botones -->
-      <section class="button-duration-section" aria-label="Configuración de duración de presión de botones">
-        <h2 class="section-title">⏱️ Tiempo de Presión de Botones</h2>
-        <p class="section-description">
-          Ajusta cuántos segundos debes mantener presionado un botón antes de que se active
-        </p>
-
-        <div class="duration-controls">
-          <ion-item lines="full">
-            <ion-label position="stacked">
-              <strong>Duración actual: {{ pressHoldDuration / 1000 }} segundos</strong>
-            </ion-label>
+    <!-- SECCIÓN: ACCESIBILIDAD -->
+    <ion-list-header>
+      <ion-label>Accesibilidad</ion-label>
+    </ion-list-header>
+    <ion-accordion-group expand="inset">
+      
+      <!-- Tiempo de Presión -->
+      <ion-accordion value="duration">
+        <ion-item slot="header">
+          <ion-icon slot="start" name="time-outline" color="secondary"></ion-icon>
+          <ion-label>
+            <h2>Tiempo de Presión</h2>
+            <p>Ajusta la duración para activar botones</p>
+          </ion-label>
+          <ion-note slot="end">{{ pressHoldDuration / 1000 }}s</ion-note>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <div class="range-container">
             <ion-range
-              [min]="1"
+              [min]="0.5"
               [max]="5"
               [step]="0.5"
               [value]="pressHoldDuration / 1000"
@@ -96,190 +113,136 @@
               [snaps]="true"
               [ticks]="true"
               (ionChange)="onDurationChange($event)"
-              aria-label="Ajustar duración de presión de botones en segundos"
             >
-              <ion-label slot="start">1s</ion-label>
-              <ion-label slot="end">5s</ion-label>
+              <ion-icon slot="start" size="small" name="time-outline"></ion-icon>
+              <ion-icon slot="end" size="large" name="time-outline"></ion-icon>
             </ion-range>
-          </ion-item>
-
-          <!-- Botones de duración rápida -->
-          <div class="quick-duration-buttons">
-            <button
-              type="button"
-              class="quick-button"
-              [class.selected]="pressHoldDuration === 1000"
-              (click)="setQuickDuration(1000)"
-              aria-label="Establecer duración a 1 segundo"
-            >
-              1s
-            </button>
-            <button
-              type="button"
-              class="quick-button"
-              [class.selected]="pressHoldDuration === 2000"
-              (click)="setQuickDuration(2000)"
-              aria-label="Establecer duración a 2 segundos"
-            >
-              2s
-            </button>
-            <button
-              type="button"
-              class="quick-button"
-              [class.selected]="pressHoldDuration === 3000"
-              (click)="setQuickDuration(3000)"
-              aria-label="Establecer duración a 3 segundos"
-            >
-              3s
-            </button>
-            <button
-              type="button"
-              class="quick-button"
-              [class.selected]="pressHoldDuration === 4000"
-              (click)="setQuickDuration(4000)"
-              aria-label="Establecer duración a 4 segundos"
-            >
-              4s
-            </button>
+            <div class="range-labels">
+              <span>Rápido (0.5s)</span>
+              <span>Lento (5s)</span>
+            </div>
           </div>
         </div>
-      </section>
+      </ion-accordion>
 
-      <!-- Selector de Vista de Escritura -->
-      <section class="write-view-section" aria-label="Configuración de vista de escritura">
-        <h2 class="section-title">📝 Vista de Escritura</h2>
-        <p class="section-description">Elige cómo visualizar los grupos de letras en la página de escritura</p>
-
-        <ion-item>
-          <ion-label position="stacked">
-            <strong>Modo de visualización</strong>
+      <!-- Tamaño de Botones -->
+      <ion-accordion value="buttonSize">
+        <ion-item slot="header">
+          <ion-icon slot="start" name="resize-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h2>Tamaño de Botones</h2>
+            <p>Tamaño de los botones de frases</p>
           </ion-label>
-          <ion-select
-            [value]="writeViewMode"
-            (ionChange)="onWriteViewChange($event)"
-            interface="popover"
-            aria-label="Seleccionar modo de vista de escritura"
-          >
-            <ion-select-option value="panel">Panel (Rejilla 4×2)</ion-select-option>
-            <ion-select-option value="carousel">Carrusel (Deslizar)</ion-select-option>
-          </ion-select>
+          <ion-note slot="end">{{ getSizeLabel(buttonSize) }}</ion-note>
         </ion-item>
-
-        <div class="view-description">
-          <div *ngIf="writeViewMode === 'panel'" class="mode-info">
-            <p><strong>📊 Modo Panel:</strong> Todos los grupos visibles simultáneamente en rejilla 4×2</p>
-          </div>
-          <div *ngIf="writeViewMode === 'carousel'" class="mode-info">
-            <p><strong>🔄 Modo Carrusel:</strong> Un grupo por pantalla, desliza con las flechas</p>
-          </div>
+        <div class="ion-padding" slot="content">
+          <ion-segment [value]="buttonSize" (ionChange)="buttonSize = $any($event.detail.value); applyButtonConfig()">
+            <ion-segment-button value="small">
+              <ion-label>Peq</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="medium">
+              <ion-label>Med</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="large">
+              <ion-label>Gra</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="xlarge">
+              <ion-label>Xtra</ion-label>
+            </ion-segment-button>
+          </ion-segment>
         </div>
-      </section>
+      </ion-accordion>
 
-      <!-- Configuración de tiempo de transición del Carrusel -->
-      <section
-        *ngIf="writeViewMode === 'carousel'"
-        class="carousel-delay-section"
-        aria-label="Tiempo de transición del carrusel"
-      >
-        <h2 class="section-title">🌀 Transición del Carrusel</h2>
-        <p class="section-description">Ajusta cada cuánto cambia el botón automáticamente</p>
+    </ion-accordion-group>
 
-        <ion-item lines="full">
-          <ion-label position="stacked">
-            <strong>Tiempo actual: {{ (carouselDelayMs / 1000) | number:'1.1-1' }} s</strong>
+    <!-- SECCIÓN: INTERFAZ -->
+    <ion-list-header>
+      <ion-label>Interfaz</ion-label>
+    </ion-list-header>
+    <ion-accordion-group expand="inset">
+      
+      <!-- Modo de Vista -->
+      <ion-accordion value="viewMode">
+        <ion-item slot="header">
+          <ion-icon slot="start" name="layers-outline" color="secondary"></ion-icon>
+          <ion-label>
+            <h2>Modo de Vista</h2>
+            <p>Panel o Carrusel</p>
           </ion-label>
-          <ion-range
-            [min]="0.5"
-            [max]="5"
-            [step]="0.5"
-            [value]="carouselDelayMs / 1000"
-            [pin]="true"
-            [snaps]="true"
-            [ticks]="true"
-            (ionChange)="onCarouselDelayChange($event)"
-            aria-label="Ajustar tiempo de transición del carrusel en segundos"
-          >
-            <ion-label slot="start">0,5s</ion-label>
-            <ion-label slot="end">5s</ion-label>
-          </ion-range>
+          <ion-note slot="end">{{ writeViewMode === 'panel' ? 'Panel' : 'Carrusel' }}</ion-note>
         </ion-item>
-      </section>
-
-      <!-- 🆕 Configuración de Botones de Frases -->
-      <section class="phrase-buttons-section" aria-label="Configuración de botones de frases">
-        <h2 class="section-title">🔘 Botones de Frases Predefinidas</h2>
-        <p class="section-description">Configura el número y tamaño de los botones de frases</p>
-
-        <div class="button-config-info">
-          <p><strong>Configuración actual:</strong></p>
-          <p>📊 {{ buttonCount }} botones de tamaño {{ getSizeLabel(buttonSize) }}</p>
-          <p>📝 {{ currentPhraseCount }} frases guardadas</p>
+        <div class="ion-padding" slot="content">
+          <ion-segment [value]="writeViewMode" (ionChange)="onWriteViewChange($event)">
+            <ion-segment-button value="panel">
+              <ion-icon name="grid-outline"></ion-icon>
+              <ion-label>Panel</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="carousel">
+              <ion-icon name="layers-outline"></ion-icon>
+              <ion-label>Carrusel</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+          <p class="helper-text ion-padding-top">
+            {{ writeViewMode === 'panel' ? 'Muestra todas las frases en una cuadrícula.' : 'Muestra las frases una por una deslizándolas.' }}
+          </p>
         </div>
+      </ion-accordion>
 
-        <ion-item>
-          <ion-label position="stacked">
-            <strong>Número de botones</strong>
+      <!-- Velocidad Carrusel (Solo si es carrusel) -->
+      <ion-accordion value="carouselSpeed" [disabled]="writeViewMode !== 'carousel'">
+        <ion-item slot="header">
+          <ion-icon slot="start" name="speedometer-outline" [color]="writeViewMode === 'carousel' ? 'primary' : 'medium'"></ion-icon>
+          <ion-label>
+            <h2>Velocidad Carrusel</h2>
+            <p>Tiempo de transición automática</p>
           </ion-label>
-          <ion-select
-            [(ngModel)]="buttonCount"
-            interface="popover"
-            aria-label="Seleccionar número de botones"
+          <ion-note slot="end">{{ carouselDelayMs / 1000 }}s</ion-note>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+           <ion-range
+              [min]="0.5"
+              [max]="5"
+              [step]="0.5"
+              [value]="carouselDelayMs / 1000"
+              [pin]="true"
+              [ticks]="true"
+              [snaps]="true"
+              (ionChange)="onCarouselDelayChange($event)"
+            >
+              <ion-icon slot="start" size="small" name="time-outline"></ion-icon>
+              <ion-icon slot="end" size="large" name="time-outline"></ion-icon>
+            </ion-range>
+        </div>
+      </ion-accordion>
+
+      <!-- Cantidad de Botones -->
+      <ion-accordion value="buttonCount">
+        <ion-item slot="header">
+          <ion-icon slot="start" name="grid-outline" color="secondary"></ion-icon>
+          <ion-label>
+            <h2>Cantidad de Botones</h2>
+            <p>Número de frases visibles</p>
+          </ion-label>
+          <ion-note slot="end">{{ buttonCount }}</ion-note>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <ion-select 
+            [value]="buttonCount" 
+            (ionChange)="buttonCount = $event.detail.value; applyButtonConfig()"
+            interface="action-sheet"
+            placeholder="Seleccionar cantidad"
           >
             <ion-select-option *ngFor="let count of availableButtonCounts" [value]="count">
               {{ count }} botones
             </ion-select-option>
           </ion-select>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">
-            <strong>Tamaño de botones</strong>
-          </ion-label>
-          <ion-select
-            [(ngModel)]="buttonSize"
-            interface="popover"
-            aria-label="Seleccionar tamaño de botones"
-          >
-            <ion-select-option *ngFor="let size of buttonSizes" [value]="size.value">
-              {{ size.label }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <div class="apply-button-container">
-          <app-press-hold-button
-            buttonId="apply-button-config"
-            color="primary"
-            ariaLabel="Aplicar configuración de botones"
-            (actionExecuted)="applyButtonConfig()"
-          >
-            ✓ Aplicar Cambios
-          </app-press-hold-button>
+          <p class="helper-text ion-padding-top">
+            Define cuántos botones de frases se muestran en la pantalla de escritura.
+          </p>
         </div>
-      </section>
+      </ion-accordion>
 
-      <!-- Acciones -->
-      <section class="actions-section" aria-label="Acciones de configuración">
-        <div class="action-grid">
-          <app-press-hold-button
-            buttonId="reset-colors"
-            color="tertiary"
-            ariaLabel="Restablecer todos los colores a valores por defecto"
-            (actionExecuted)="resetToDefault()"
-          >
-            Restablecer por Defecto
-          </app-press-hold-button>
+    </ion-accordion-group>
 
-          <app-press-hold-button
-            buttonId="back-home"
-            color="primary"
-            ariaLabel="Volver a la página principal"
-            (actionExecuted)="goBack()"
-          >
-            Volver al Inicio
-          </app-press-hold-button>
-        </div>
-      </section>
-    </div>
-  </ion-content>
+  </div>
 </ion-content>
