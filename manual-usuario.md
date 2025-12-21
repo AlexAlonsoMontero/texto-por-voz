@@ -68,7 +68,7 @@ La aplicación ofrece dos formas de escribir, adaptables a la capacidad visual y
 
 #### A. Vista de Panel (Estándar)
 
-![Vista de Panel](image-2.png)
+![Vista de Panel](manual-assets/image-2.png)
 
 - **Descripción:** Muestra 8 botones grandes que agrupan letras y números.
 - **Funcionamiento:** Al seleccionar un grupo, se abre una sub-pantalla para elegir el carácter específico.

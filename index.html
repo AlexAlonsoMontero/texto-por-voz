@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Texto a Voz • Comunicación Accesible</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #0057b7;
+        --secondary: #003f88;
+        --accent: #ffd600;
+        --bg: #f4f6fb;
+        --card: #ffffff;
+        --dark: #0a1224;
+        --muted: #4b5563;
+        --border: rgba(9, 15, 30, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(0, 87, 183, 0.12), transparent 45%),
+          radial-gradient(circle at 80% 0%, rgba(255, 214, 0, 0.18), transparent 40%),
+          var(--bg);
+        color: var(--dark);
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .hero {
+        min-height: 60vh;
+        padding: clamp(2.5rem, 4vw, 3.5rem) clamp(1.5rem, 5vw, 5rem);
+        background:
+          linear-gradient(115deg, rgba(2, 22, 56, 0.88), rgba(0, 87, 183, 0.82)),
+          url('manual-assets/portada.jpg') center 40%/cover no-repeat;
+        background-attachment: scroll;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: '';
+        position: absolute;
+        inset: 5% -10% -10% -10%;
+        background: radial-gradient(circle at 25% 25%, rgba(255, 214, 0, 0.4), transparent 60%);
+        opacity: 0.8;
+        pointer-events: none;
+      }
+
+      .hero-content {
+        max-width: 620px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.2rem, 5vw, 3.4rem);
+        margin: 0 0 0.75rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 800;
+        line-height: 1.15;
+      }
+
+      .hero p {
+        font-size: 1.15rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 2rem;
+      }
+
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: rgba(255, 214, 0, 0.95);
+        margin-bottom: 0.75rem;
+        display: inline-block;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .btn-solid {
+        background: var(--accent);
+        color: #1a1a1a;
+        padding: 0.95rem 2.4rem;
+        border-radius: 999px;
+        font-weight: 700;
+        display: inline-flex;
+        gap: 0.75rem;
+        align-items: center;
+        box-shadow: 0 15px 35px rgba(255, 214, 0, 0.35);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .btn-solid:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(255, 214, 0, 0.45);
+      }
+
+      .btn-ghost {
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        color: #fff;
+        padding: 0.95rem 2rem;
+        border-radius: 999px;
+        font-weight: 600;
+        display: inline-flex;
+        gap: 0.75rem;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(6px);
+      }
+
+      main {
+        padding: clamp(3rem, 6vw, 4.5rem) clamp(1.5rem, 6vw, 4rem) 4.5rem;
+        max-width: 1280px;
+        margin: 0 auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(3rem, 5vw, 4rem);
+      }
+
+      h2.section-title {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        margin-bottom: 1rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+      }
+
+      p.section-subtitle {
+        color: var(--muted);
+        max-width: 720px;
+        margin-bottom: 2.5rem;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .feature-card {
+        padding: 1.75rem;
+        border-radius: 20px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: attr(data-label);
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(15, 23, 42, 0.35);
+      }
+
+      .feature-card h3 {
+        font-size: 1.35rem;
+        margin: 0 0 0.85rem;
+      }
+
+      .feature-card p {
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .config-panels {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .config-panel {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 25px 45px rgba(15, 23, 42, 0.08);
+        border: 1px solid var(--border);
+      }
+
+      .config-header {
+        padding: 1.25rem 1.5rem;
+        color: #fff;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .config-body {
+        background: var(--card);
+        padding: 1.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .config-body li {
+        color: var(--muted);
+      }
+
+      .flow-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      @media (min-width: 700px) {
+        .flow-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (min-width: 1100px) {
+        .flow-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      .flow-card {
+        background: var(--card);
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .flow-card img {
+        width: 100%;
+        border-radius: 18px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
+      }
+
+      .flow-card h4 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .flow-card p {
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .install-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 2rem;
+      }
+
+      .install-card {
+        border-radius: 24px;
+        padding: 2rem;
+        border: 1px solid var(--border);
+        background: var(--card);
+      }
+
+      footer {
+        padding: 3rem 1.5rem;
+        background: #0b1220;
+        color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        margin-top: 4rem;
+      }
+
+      footer a {
+        color: var(--secondary);
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          min-height: 70vh;
+          padding: 2.5rem 1.5rem 3rem;
+        }
+        .hero-actions {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">Versión 1.0.0 · Híbrido Web + Android</p>
+        <h1>Texto a Voz accesible para comunicar, personalizar y acompañar.</h1>
+        <p>
+          Una aplicación creada junto a personas con discapacidad visual, motora y verbal. Combina botones con presión
+          sostenida, lectura automática y paneles de configuración inspirados en tarjetas con alto contraste, tal como
+          la verás dentro de la app.
+        </p>
+        <div class="hero-actions">
+          <a class="btn-solid" href="downloads/TextoAVoz-v1.0.0.apk"> ⬇ Descargar APK v1.0.0 </a>
+          <a class="btn-ghost" href="manual-usuario.pdf"> 📘 Manual completo en PDF </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2 class="section-title">Lo que incluye la versión 1.0.0</h2>
+        <p class="section-subtitle">
+          Cada módulo replica el comportamiento de la aplicación real: colores alternos, bloques plegables y feedback
+          auditivo constante para que el usuario siempre sepa dónde está.
+        </p>
+        <div class="feature-grid">
+          <article class="feature-card" data-label="UX">
+            <h3>🗣️ Voz inmediata</h3>
+            <p>
+              Convierte texto en voz en web o Android. Explica qué pantalla se abre y confirma cada acción por audio.
+            </p>
+          </article>
+          <article class="feature-card" data-label="Motor">
+            <h3>⏱️ Presión sostenida</h3>
+            <p>Botones grandes con temporizador configurable (0.5s a 5s) para evitar pulsaciones por espasmos.</p>
+          </article>
+          <article class="feature-card" data-label="Visual">
+            <h3>👁️ Alto contraste</h3>
+            <p>
+              Temas claros/oscuro, cabeceras de color alterno y modo carrusel para personas con campo visual reducido.
+            </p>
+          </article>
+          <article class="feature-card" data-label="Familia">
+            <h3>🧩 Panel de configuración</h3>
+            <p>
+              Inspirado en tarjetas con cabeceras coloridas como en la app. Permite ajustar colores, tiempos y tamaños.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Panel interactivo (como la app)</h2>
+        <p class="section-subtitle">Tres bloques con cabecera alterna replicando la pantalla de configuración real.</p>
+        <div class="config-panels">
+          <article class="config-panel">
+            <div class="config-header" style="background: var(--primary)">🎨 Apariencia</div>
+            <div class="config-body">
+              <li>Color primario y secundario personalizables.</li>
+              <li>Vista previa inmediata de botones y títulos.</li>
+              <li>Contraste WCAG AA listo para oscurecer o aclarar.</li>
+            </div>
+          </article>
+          <article class="config-panel">
+            <div class="config-header" style="background: var(--secondary)">♿ Accesibilidad</div>
+            <div class="config-body">
+              <li>Tiempo de presión sostenida configurable.</li>
+              <li>Tamaños S / M / L / XL para botones de frases.</li>
+              <li>Recordatorios de voz automáticos al guardar cambios.</li>
+            </div>
+          </article>
+          <article class="config-panel">
+            <div class="config-header" style="background: var(--accent); color: #1a1a1a">🧭 Interfaz</div>
+            <div class="config-body">
+              <li>Cambiar entre panel completo o carrusel gigante.</li>
+              <li>Velocidad del carrusel entre 0.5s y 5s.</li>
+              <li>Cantidad de botones visibles (4 a 20) según visión.</li>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Recorrido visual</h2>
+        <p class="section-subtitle">Capturas reales de la app híbrida para entender el flujo completo.</p>
+        <div class="flow-grid">
+          <article class="flow-card">
+            <img src="manual-assets/image.png" alt="Página de inicio" />
+            <h4>Inicio: navegación guiada</h4>
+            <p>
+              Botones grandes para ir a Escritura, Frases o Configuración. El lector de voz anuncia cada movimiento.
+            </p>
+          </article>
+          <article class="flow-card">
+            <img src="manual-assets/image-2.png" alt="Escritura por grupos" />
+            <h4>Escritura asistida</h4>
+            <p>Grupos de letras o números. Cada grupo se abre con presión sostenida y permite escribir sin errores.</p>
+          </article>
+          <article class="flow-card">
+            <img src="manual-assets/image-9.png" alt="Frases rápidas" />
+            <h4>Frases rápidas con imágenes</h4>
+            <p>Botones personalizables con texto + imagen. Perfecto para frases frecuentes como “Tengo sed”.</p>
+          </article>
+          <article class="flow-card">
+            <img src="manual-assets/image-12.png" alt="Pantalla de configuración" />
+            <h4>Configuración modular</h4>
+            <p>
+              Tarjetas con color alterno, exactamente como ves más arriba. Familiares ajustan la experiencia sin riesgo.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Cómo empezar</h2>
+        <p class="section-subtitle">Descarga el APK, consulta el manual y prepara la tablet en minutos.</p>
+        <div class="install-grid">
+          <article class="install-card">
+            <h3>⬇ Descargar APK</h3>
+            <p>
+              Archivo independiente, listo para Android 5.0+. No requiere conexión permanente ni permisos invasivos.
+            </p>
+            <a class="btn-solid" style="margin-top: 1rem" href="downloads/TextoAVoz-v1.0.0.apk">Descargar ahora</a>
+          </article>
+          <article class="install-card">
+            <h3>🛠️ Instalación segura</h3>
+            <ol>
+              <li>Descarga y abre el .apk en la tablet.</li>
+              <li>Cuando Android avise, pulsa “Permitir desde esta fuente”.</li>
+              <li>Instala y concede acceso a audio para el TTS.</li>
+            </ol>
+            <p style="color: var(--muted); margin-top: 1rem">
+              Manual detallado en <a href="manual-usuario.pdf">manual-usuario.pdf</a>.
+            </p>
+          </article>
+          <article class="install-card">
+            <h3>📣 Lista para usarse</h3>
+            <p>
+              Configura colores, tiempos de pulsación y cantidad de frases junto al usuario. Cada paso se narra por voz
+              y vibra en Android.
+            </p>
+            <ul style="color: var(--muted); padding-left: 1.2rem">
+              <li>Modo panel o carrusel</li>
+              <li>Botones con imagen propia</li>
+              <li>Guardado de frases diarias</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Texto a Voz Accesible · Proyecto abierto v1.0.0</p>
+      <p>
+        Código fuente en
+        <a href="https://github.com/AlexAlonsoMontero/texto-voz">github.com/AlexAlonsoMontero/texto-voz</a>
+      </p>
+    </footer>
+  </body>
+</html>
