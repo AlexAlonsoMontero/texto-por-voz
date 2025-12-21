@@ -1,8 +1,10 @@
-# Aplicación de Texto por Voz Accesible
+# Aplicación de Comunicación Asistida (Texto a Voz) v1.0.0
 
-Una aplicación híbrida **Angular 20 + Ionic 8** orientada a accesibilidad para personas con discapacidad visual, con funcionalidad principal de **Texto a Voz (TTS)** para web y móvil.
+Una aplicación híbrida **Angular 20 + Ionic 8** diseñada específicamente para personas con limitaciones severas en comunicación verbal, motora y visual. Proporciona un sistema completo de escritura por voz, frases rápidas y configuración accesible.
 
-## ✨ Estado Actual del Proyecto
+## ✨ Versión 1.0.0 - Primera Release Completa
+
+**Estado:** ✅ MVP Completado y listo para producción
 
 ### 🏗️ Arquitectura Implementada
 
@@ -178,22 +180,18 @@ onPressStart(): void {
 }
 ```
 
-## 📋 Funcionalidades Pendientes
+## 📋 Roadmap Futuro (v2.0+)
 
-### ⏳ En Diseño (No Implementadas)
+### 🔮 Mejoras Planificadas
 
-- [ ] Página de configuración (`/settings`)
-- [ ] Gestión avanzada de configuración TTS
-- [ ] Múltiples páginas de navegación
-- [ ] Sistema de escritura/lectura de texto
-- [ ] Guardado de preferencias de usuario
-
-### � Mejoras Planificadas
-
-- [ ] Más opciones de configuración para presión sostenida
-- [ ] Soporte multiidioma
-- [ ] Temas de alto contraste adicionales
+- [ ] Exportación/importación de frases personalizadas
+- [ ] Soporte multiidioma (inglés, catalán, gallego)
+- [ ] Sincronización en la nube de configuración
+- [ ] Temas de alto contraste adicionales (WCAG AAA)
 - [ ] Integración con lectores de pantalla nativos
+- [ ] Modo de dictado por voz (Speech-to-Text)
+- [ ] Categorización de frases por contexto
+- [ ] Widgets de acceso rápido (Android/iOS)
 
 ## 🧪 Testing y Calidad
 
@@ -202,23 +200,54 @@ onPressStart(): void {
 - Tests unitarios para servicios principales
 - Configuración Karma + Jasmine
 - ESLint con TypeScript para calidad de código
+- Tests de accesibilidad (navegación por teclado, aria-labels)
 
-### Accesibilidad Validada
+### Accesibilidad Validada (v1.0.0)
 
-- ✅ Navegación por teclado completa
+- ✅ Navegación por teclado completa (Tab, Enter, Escape)
 - ✅ Síntesis de voz funcional (web + móvil)
-- ✅ Estados visuales claros
-- ✅ Feedback háptico en móvil
-- ✅ Contraste de colores WCAG AA
+- ✅ Sistema anti-espasmos (presión sostenida)
+- ✅ Estados visuales claros con feedback de progreso
+- ✅ Feedback háptico en móvil (vibración)
+- ✅ Contraste de colores WCAG AA (configurable a AAA)
+- ✅ Botones grandes (min 48px altura, configurables hasta XL)
+- ✅ Diseño alternado de colores para distinción visual
+- ✅ Modo carrusel para usuarios con campo visual reducido
+
+## 📦 Distribución
+
+### APK Android
+
+La aplicación está disponible como APK independiente:
+
+```bash
+# Compilar APK para distribución
+npm run build
+npx cap sync android
+cd android && ./gradlew assembleDebug
+```
+
+**Archivo generado:** `android/app/build/outputs/apk/debug/app-debug.apk`
+
+### Requisitos del Dispositivo
+
+- Android 5.0+ (API 21)
+- 20MB de espacio libre
+- Permiso de "Instalar de fuentes desconocidas" (para APK)
 
 ## 🎨 Guía de Desarrollo
 
 ### Crear Nuevo Servicio
 
-1. Definir interface en `core/domain/interfaces/`
-2. Crear token en `injection-tokens.ts`
-3. Implementar servicio híbrido en `core/infrastructure/services/`
-4. Registrar en `providers.ts`
+## 📖 Documentación Adicional
+
+- **Manual de Usuario**: Ver [`manual-usuario.md`](manual-usuario.md) para guía completa de uso
+- **Manual Técnico**: Ver [`manual.md`](manual.md) para detalles de implementación
+- **Contextos de Agentes**: Ver carpeta [`context/`](context/) para arquitectura y patrones
+
+---
+
+**🎯 Estado v1.0.0**: Aplicación completa y funcional lista para uso en producción. Todas las funcionalidades principales implementadas con arquitectura sólida y accesibilidad garantizada. Ideal para usuarios con necesidades de comunicación asistida por tecnología 3. Implementar servicio híbrido en `core/infrastructure/services/` 4. Registrar en `providers.ts`
 
 ### Crear Componente Accesible
 
