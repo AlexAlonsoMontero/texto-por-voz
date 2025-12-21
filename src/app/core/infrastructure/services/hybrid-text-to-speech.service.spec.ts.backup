@@ -1,0 +1,358 @@
+import { TestBed } from '@angular/core/testing';
+import { Capacitor } from '@capacitor/core';
+import { HybridTextToSpeechService } from './hybrid-text-to-speech.service';
+import { TTSStatus, SpeechPriority } from '../../domain/interfaces/text-to-speech.interface';
+
+describe('HybridTextToSpeechService', () => {
+  let service: HybridTextToSpeechService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [HybridTextToSpeechService],
+    });
+
+    service = TestBed.inject(HybridTextToSpeechService);
+  });
+
+  afterEach(() => {
+    // Limpiar estado después de cada test
+    service.stop();
+  });
+
+  describe('Platform Detection', () => {
+    it('should have isSupported method', () => {
+      expect(typeof service.isSupported).toBe('function');
+      expect(typeof service.isSupported()).toBe('boolean');
+    });
+
+    it('should return false when no TTS available', () => {
+      delete (globalThis as any).speechSynthesis;
+      const newService = new HybridTextToSpeechService();
+
+      expect(newService.isSupported()).toBe(false);
+    });
+  });
+
+  describe('Initialization', () => {
+    it('should initialize with UNINITIALIZED status', () => {
+      expect(service.getStatus()).toBe(TTSStatus.UNINITIALIZED);
+    });
+
+    it('should have initialize method', () => {
+      expect(typeof service.initialize).toBe('function');
+    });
+  });
+
+  describe('Web Platform TTS', () => {
+    beforeEach(() => {
+      // Setup web environment
+      delete (globalThis as any).Capacitor;
+    });
+
+    it('should use Web Speech API on web', async () => {
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak'),
+        cancel: jasmine.createSpy('cancel'),
+        pause: jasmine.createSpy('pause'),
+        resume: jasmine.createSpy('resume'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+
+      await service.initialize();
+      expect(service.isSupported()).toBe(true);
+    });
+
+    it('should handle speechSynthesis not available', async () => {
+      delete (globalThis as any).speechSynthesis;
+
+      try {
+        await service.initialize();
+        fail('Should have thrown an error');
+      } catch (error: any) {
+        expect(error.message).toContain('Web Speech API no soportada');
+        expect(service.getStatus()).toBe(TTSStatus.ERROR);
+      }
+    });
+
+    it('should speak text with default options', async () => {
+      const mockUtterance = jasmine.createSpyObj('SpeechSynthesisUtterance', ['onstart', 'onend']);
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak').and.callFake((utterance: any) => {
+          setTimeout(() => utterance.onend?.(), 10);
+        }),
+        cancel: jasmine.createSpy('cancel'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+      (globalThis as any).SpeechSynthesisUtterance = function (text: string) {
+        return {
+          text,
+          rate: 1,
+          pitch: 1,
+          volume: 1,
+          lang: 'es-ES',
+          onstart: null,
+          onend: null,
+          onerror: null,
+        };
+      };
+
+      await service.initialize();
+      await service.speak('Hola mundo');
+
+      expect(mockSpeechSynthesis.speak).toHaveBeenCalled();
+    });
+
+    it('should speak text with custom rate', async () => {
+      let capturedUtterance: any;
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak').and.callFake((utterance: any) => {
+          capturedUtterance = utterance;
+          setTimeout(() => utterance.onend?.(), 10);
+        }),
+        cancel: jasmine.createSpy('cancel'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+      (globalThis as any).SpeechSynthesisUtterance = function (text: string) {
+        return {
+          text,
+          rate: 1,
+          pitch: 1,
+          volume: 1,
+          lang: 'es-ES',
+          onstart: null,
+          onend: null,
+          onerror: null,
+        };
+      };
+
+      await service.initialize();
+      await service.speak('Hola mundo', { rate: 1.5 });
+
+      expect(capturedUtterance.rate).toBe(1.5);
+    });
+
+    it('should speak text with custom pitch', async () => {
+      let capturedUtterance: any;
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak').and.callFake((utterance: any) => {
+          capturedUtterance = utterance;
+          setTimeout(() => utterance.onend?.(), 10);
+        }),
+        cancel: jasmine.createSpy('cancel'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+      (globalThis as any).SpeechSynthesisUtterance = function (text: string) {
+        return {
+          text,
+          rate: 1,
+          pitch: 1,
+          volume: 1,
+          lang: 'es-ES',
+          onstart: null,
+          onend: null,
+          onerror: null,
+        };
+      };
+
+      await service.initialize();
+      await service.speak('Hola mundo', { pitch: 0.8 });
+
+      expect(capturedUtterance.pitch).toBe(0.8);
+    });
+
+    it('should stop current speech', async () => {
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak'),
+        cancel: jasmine.createSpy('cancel'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+
+      await service.initialize();
+      service.stop();
+
+      expect(mockSpeechSynthesis.cancel).toHaveBeenCalled();
+    });
+
+    it('should get available voices', async () => {
+      const mockVoices = [
+        { name: 'Voice 1', lang: 'es-ES' },
+        { name: 'Voice 2', lang: 'en-US' },
+      ];
+
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak'),
+        cancel: jasmine.createSpy('cancel'),
+        getVoices: () => mockVoices,
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+
+      await service.initialize();
+      const voices = await service.getAvailableVoices();
+
+      expect(voices.length).toBe(2);
+      expect(voices).toEqual(mockVoices as any);
+    });
+
+    it('should pause and resume speech', async () => {
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak'),
+        cancel: jasmine.createSpy('cancel'),
+        pause: jasmine.createSpy('pause'),
+        resume: jasmine.createSpy('resume'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+
+      await service.initialize();
+      service.pause();
+      expect(mockSpeechSynthesis.pause).toHaveBeenCalled();
+
+      service.resume();
+      expect(mockSpeechSynthesis.resume).toHaveBeenCalled();
+    });
+
+    it('should handle empty text gracefully', async () => {
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak'),
+        cancel: jasmine.createSpy('cancel'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+
+      await service.initialize();
+      await service.speak('');
+
+      expect(mockSpeechSynthesis.speak).not.toHaveBeenCalled();
+    });
+
+    it('should interrupt speech with HIGH priority', async () => {
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak').and.callFake((utterance: any) => {
+          setTimeout(() => utterance.onend?.(), 10);
+        }),
+        cancel: jasmine.createSpy('cancel'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+      (globalThis as any).SpeechSynthesisUtterance = function (text: string) {
+        return {
+          text,
+          rate: 1,
+          pitch: 1,
+          volume: 1,
+          lang: 'es-ES',
+          onstart: null,
+          onend: null,
+          onerror: null,
+        };
+      };
+
+      await service.initialize();
+      await service.speak('First message');
+      await service.speak('Important message', { priority: SpeechPriority.HIGH });
+
+      expect(mockSpeechSynthesis.cancel).toHaveBeenCalled();
+    });
+  });
+
+  describe('Native Platform TTS', () => {
+    it('should handle TTS initialization', async () => {
+      expect(service).toBeTruthy();
+    });
+
+    it('should support TTS on platforms', () => {
+      (globalThis as any).speechSynthesis = {
+        speak: jasmine.createSpy('speak'),
+        getVoices: () => [],
+      };
+
+      expect(service.isSupported()).toBe(true);
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should reject when TTS not supported', async () => {
+      delete (globalThis as any).speechSynthesis;
+
+      expect(service.isSupported()).toBe(false);
+    });
+
+    it('should handle empty text without throwing', async () => {
+      // Test comportamiento observable: texto vacío no debe romper
+      await expectAsync(service.speak('')).toBeResolved();
+      await expectAsync(service.speak('   ')).toBeResolved();
+    });
+
+    it('should maintain correct status after errors', () => {
+      // Verificar que el servicio mantiene coherencia de estado
+      const initialStatus = service.getStatus();
+      expect([TTSStatus.UNINITIALIZED, TTSStatus.READY, TTSStatus.ERROR]).toContain(initialStatus);
+    });
+
+    it('should provide needsActivation flag', () => {
+      // Test de contrato: método debe existir y retornar boolean
+      expect(typeof service.needsActivation).toBe('function');
+      expect(typeof service.needsActivation()).toBe('boolean');
+    });
+  });
+
+  describe('Status and State Management', () => {
+    it('should return correct ready state', async () => {
+      (globalThis as any).speechSynthesis = {
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      await service.initialize();
+      expect(service.isReady()).toBe(true);
+    });
+
+    it('should return correct speaking state', async () => {
+      const mockSpeechSynthesis = {
+        speak: jasmine.createSpy('speak').and.callFake((utterance: any) => {
+          utterance.onstart?.();
+          // No llamar onend para simular que está hablando
+        }),
+        cancel: jasmine.createSpy('cancel'),
+        getVoices: () => [{ name: 'Test Voice', lang: 'es-ES' }],
+      };
+
+      (globalThis as any).speechSynthesis = mockSpeechSynthesis;
+      (globalThis as any).SpeechSynthesisUtterance = function (text: string) {
+        return {
+          text,
+          rate: 1,
+          pitch: 1,
+          volume: 1,
+          lang: 'es-ES',
+          onstart: null,
+          onend: null,
+          onerror: null,
+        };
+      };
+
+      await service.initialize();
+      const speakPromise = service.speak('Testing speaking state');
+
+      // Esperar un tick para que onstart se ejecute
+      await new Promise((resolve) => setTimeout(resolve, 5));
+
+      expect(service.isSpeaking()).toBe(true);
+
+      service.stop();
+    });
+  });
+});

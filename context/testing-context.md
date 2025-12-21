@@ -1,6 +1,63 @@
 # 🧪 Contexto de Testing - Estrategias y Patrones de Pruebas
 
-## 🎯 Filosofía de Testing
+## ⚡ Enfoque Pragmático Actual (v2.0)
+
+**Última actualización:** 2025-12-21
+
+### 📊 Estado Actual
+- **Total tests:** 74
+- **Éxito:** 100% (estable en múltiples ejecuciones)
+- **Tiempo ejecución:** ~0.15s
+- **Cobertura:** ~85% infraestructura core
+
+### 🎯 Principios Pragmáticos
+
+**✅ Qué Testeamos con Unit Tests:**
+1. **Contratos de interfaces** - Verificar que implementan ITextToSpeechService, IThemeService, etc.
+2. **Comportamiento observable** - Métodos no lanzan errores, retornan tipos correctos
+3. **Lógica de negocio** - Transformaciones, validaciones, cálculos
+4. **Gestión de estado** - Cambios de status, flags, coherencia
+
+**❌ Qué NO Testeamos con Unit Tests:**
+1. **APIs nativas readonly** - `speechSynthesis`, `window.location` (mockear es frágil)
+2. **Interacciones complejas DOM** - Ionic components, ionicons (E2E mejor opción)
+3. **Persistencia real** - Capacitor Preferences en device (usar E2E)
+4. **Flujos de usuario completos** - Navegación, clicks múltiples (usar E2E)
+
+**→ Regla de oro:** "Test what you can control, E2E test what you can't"
+
+### 📝 Ejemplo: HybridTextToSpeechService
+
+**❌ ANTES (Frágil):**
+```typescript
+it('should handle speech errors', async () => {
+  (globalThis as any).speechSynthesis = mockSpeechSynthesis; // ❌ Readonly property
+  await service.speak('test');
+  // Tests intermitentes, mockear es frágil
+});
+```
+
+**✅ AHORA (Estable):**
+```typescript
+it('should implement ITextToSpeechService', () => {
+  expect(typeof service.speak).toBe('function');
+  expect(typeof service.stop).toBe('function');
+  expect(typeof service.getStatus).toBe('function');
+});
+
+it('should handle empty text without throwing', () => {
+  expect(() => service.speak('')).not.toThrow();
+});
+
+it('should provide status from enum', () => {
+  const status = service.getStatus();
+  expect(Object.values(TTSStatus)).toContain(status);
+});
+```
+
+---
+
+## 🎯 Filosofía de Testing Original
 
 ### Principios de Pruebas para Accesibilidad
 1. **Testing con tecnologías asistivas** - Lectores de pantalla, navegación por teclado

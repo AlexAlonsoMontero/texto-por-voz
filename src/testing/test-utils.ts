@@ -31,7 +31,7 @@ export function createMockTTSService(): jasmine.SpyObj<ITextToSpeechService> {
  * Mock para IThemeService
  */
 export function createMockThemeService(): jasmine.SpyObj<IThemeService> {
-  return jasmine.createSpyObj('IThemeService', [
+  const mock = jasmine.createSpyObj('IThemeService', [
     'initialize',
     'setThemeColors',
     'getThemeColors',
@@ -40,6 +40,18 @@ export function createMockThemeService(): jasmine.SpyObj<IThemeService> {
     'getPredefinedColors',
     'getColorByName',
   ]);
+  
+  // Configurar valores por defecto para los métodos que devuelven Promises
+  mock.initialize.and.returnValue(Promise.resolve());
+  mock.getThemeColors.and.returnValue({
+    primary: '#2196F3',
+    secondary: '#FF9800',
+    background: '#FFFFFF',
+    text: '#000000',
+  });
+  mock.getPredefinedColors.and.returnValue([]);
+  
+  return mock;
 }
 
 /**
@@ -62,13 +74,26 @@ export function createMockOrientationService(): jasmine.SpyObj<IOrientationServi
  * Mock para ISafeAreaService
  */
 export function createMockSafeAreaService(): jasmine.SpyObj<ISafeAreaService> {
-  return jasmine.createSpyObj('ISafeAreaService', [
+  const mock = jasmine.createSpyObj('ISafeAreaService', [
     'getSafeAreaInsets',
     'getAvailableHeight',
     'getAvailableWidth',
     'hasSystemBars',
     'debugSafeAreaInfo',
   ]);
+  
+  // Configurar valores por defecto
+  mock.getSafeAreaInsets.and.returnValue(Promise.resolve({
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  }));
+  mock.getAvailableHeight.and.returnValue(Promise.resolve(800));
+  mock.getAvailableWidth.and.returnValue(Promise.resolve(600));
+  mock.hasSystemBars.and.returnValue(Promise.resolve(false));
+  
+  return mock;
 }
 
 /**
