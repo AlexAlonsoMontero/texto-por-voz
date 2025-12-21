@@ -39,7 +39,7 @@ Para evitar pulsaciones accidentales debidas a movimientos involuntarios:
 
 ## 3. Navegación Principal (Inicio)
 
-![Pantalla de Inicio](image.png)
+![Pantalla de Inicio](manual-assets/image.png)
 
 La pantalla de inicio es el centro de control simplificado, con botones grandes y claros para acceder a las funciones principales:
 
@@ -55,7 +55,7 @@ Esta sección permite al usuario construir oraciones completas letra por letra o
 
 ### Zona Superior (Barra de Acción)
 
-![Barra de Escritura](image-1.png)
+![Barra de Escritura](manual-assets/image-1.png)
 En la parte superior de la pantalla encontrará siempre:
 
 - **Cuadro de Texto:** Muestra el mensaje que se está construyendo.
@@ -76,8 +76,8 @@ La aplicación ofrece dos formas de escribir, adaptables a la capacidad visual y
 
 #### B. Vista de Carrusel (Slider)
 
-![Vista Carrusel 1](image-5.png)
-![Vista Carrusel 2](image-6.png)
+![Vista Carrusel 1](manual-assets/image-5.png)
+![Vista Carrusel 2](manual-assets/image-6.png)
 
 - **Descripción:** Diseñada para usuarios con visión muy reducida. Muestra **un solo botón gigante** a la vez en pantalla.
 - **Funcionamiento:** El contenido del botón cambia automáticamente cada ciertos segundos (o manualmente mediante flechas), rotando entre los diferentes grupos de letras.
@@ -87,7 +87,7 @@ La aplicación ofrece dos formas de escribir, adaptables a la capacidad visual y
 
 ## 5. Frases Rápidas (Guardadas)
 
-![Frases Guardadas](image-9.png)
+![Frases Guardadas](manual-assets/image-9.png)
 
 Esta sección agiliza la comunicación diaria para necesidades inmediatas. Permite tener botones listos con expresiones vitales como _"Necesito ir al baño"_, _"Tengo sed"_ o _"Me duele"_.
 
@@ -95,15 +95,15 @@ Esta sección agiliza la comunicación diaria para necesidades inmediatas. Permi
   - _Pocos botones grandes_ para mayor facilidad motora.
   - _Muchos botones pequeños_ para tener más opciones a la vista.
 
-![Ejemplo Frases Grandes](image-10.png)
-![Ejemplo Frases Pequeñas](image-11.png)
+![Ejemplo Frases Grandes](manual-assets/image-10.png)
+![Ejemplo Frases Pequeñas](manual-assets/image-11.png)
 
 ---
 
 ## 6. Configuración (Para Familiares y Asistentes)
 
-![Pantalla de Configuración](image-12.png)
-![Opciones de Configuración](image-13.png)
+![Pantalla de Configuración](manual-assets/image-12.png)
+![Opciones de Configuración](manual-assets/image-13.png)
 
 Esta sección es fundamental para adaptar la experiencia al usuario. Recomendamos que sea configurada por un acompañante, familiar o terapeuta.
 

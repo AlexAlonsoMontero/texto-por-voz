@@ -19,7 +19,7 @@
 
 ## PÁGINA DE INICIO:
 
-![alt text](image.png)
+![alt text](manual-assets/image.png)
 
 - En esta página aparecen cinco botones que so para navegar:
   - Ir a home
@@ -33,33 +33,33 @@
 - ZONA SUPERIOR:
   -El input en el que se escribirá la frase, un botón para guardar la frase en la sección de frases habituales, y un altavoz para que la tablet reproduzca lo q ue hay escrito en el input.
 
-![alt text](image-1.png)
+![alt text](manual-assets/image-1.png)
 
 - VISTA POR DEFECTO:
   - En esta vista vemos 8 botones, con grupos de letras y numeros, cada uno de estos botones nos lleva hacia otra página donde se escribirá una letra o un número del grupo.
   - En la parte inferior 3 botoens ( espacio en blanco, borrado una letra borrado frase)
-  - ![alt text](image-2.png)
+  - ![alt text](manual-assets/image-2.png)
 
 - VISTA SLIDER
-  - ![alt text](image-5.png)
-  - ![alt text](image-6.png)
+  - ![alt text](manual-assets/image-5.png)
+  - ![alt text](manual-assets/image-6.png)
   - En la vista slider aparecerá un sólo botón. En lugar de los 8, este botón pasados unos segundos o pulsando las flechas, pasa al siguiente, el botón es más grande, lo que permite a un usuario con problemas de visión ver mejor.
   - El tipo de vista es configurable en la sección de configuración así como el tiempo que transcurre para que el slider cambie el grupo de letras
-  - ![alt text](image-7.png)
-  - ![alt text](image-8.png)
+  - ![alt text](manual-assets/image-7.png)
+  - ![alt text](manual-assets/image-8.png)
 
 ## FRASES GUARDADAS
 
-![alt text](image-9.png)
+![alt text](manual-assets/image-9.png)
 
 - En esta sección tendremos frases guardadas en botones, la idea es podeer tener frases como necesito ir al baño, o me duele, frases rápidas de uso diario o frecuente.
 - En la página de configuración podemos configurar el número y el tamaño de los botones,
-  - ![alt text](image-10.png)
-  - ![alt text](image-11.png)
+  - ![alt text](manual-assets/image-10.png)
+  - ![alt text](manual-assets/image-11.png)
 
 ## PANTALLA CONFIGURACIÓN
 
 - Esta sección esta pensada para que ua persona que acompañe al usuario: FAmiliar psicólogo... configure la aplicación de la forma que más convenga al usuario
 - Permite configurar todas las opciones vistas anteriormente más el tiempo de pulsación y los colores de los botones.
-- ![alt text](image-12.png)
-- ![alt text](image-13.png)
+- ![alt text](manual-assets/image-12.png)
+- ![alt text](manual-assets/image-13.png)
