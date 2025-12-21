@@ -127,7 +127,7 @@ export class AppComponent implements OnInit, ViewDidEnter {
   private async announceAppReady(): Promise<void> {
     try {
       await this.ttsService.speak(
-        'Aplicación de texto por voz accesible activada. Navegación horizontal disponible. Utiliza las teclas Tab para navegar entre opciones y Enter para seleccionar.',
+        'Texto por Voz activado',
         { priority: SpeechPriority.HIGH },
       );
     } catch (error) {

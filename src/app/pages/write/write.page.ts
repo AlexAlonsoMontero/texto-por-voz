@@ -117,7 +117,7 @@ export class WritePage implements OnInit, OnDestroy {
     void this.ensureViewModeLoaded();
 
     // Anuncio de bienvenida
-    void this.tts.speak('Página de escritura activada. Utiliza los botones alfabéticos para escribir texto.', {
+    void this.tts.speak('Página de escritura', {
       priority: SpeechPriority.HIGH,
       interrupt: true,
     });
@@ -229,7 +229,7 @@ export class WritePage implements OnInit, OnDestroy {
   onPickSlotHoldStart(index: number): void {
     const slot = this.slots[index];
     if (slot.value) {
-      void this.tts.speak(`Botón ${index + 1} ocupado. Mantén para sobrescribir.`);
+      void this.tts.speak(`Botón ${index + 1} ocupado. Mantén para reemplazar`);
     } else {
       void this.tts.speak(`Guardar en botón ${index + 1}`);
     }
@@ -247,7 +247,7 @@ export class WritePage implements OnInit, OnDestroy {
     // Si está ocupado, pedir confirmación
     this.confirmOverwriteIndex = index;
     this.showOverwriteModal = true;
-    void this.tts.speak(`El botón ${index + 1} ya tiene una frase. ¿Sobrescribir?`);
+    void this.tts.speak(`¿Reemplazar botón ${index + 1}?`);
   }
 
   async saveToSlot(index: number): Promise<void> {
@@ -317,7 +317,7 @@ export class WritePage implements OnInit, OnDestroy {
       });
     });
 
-    void this.tts.speak(`Grupo ${group} seleccionado. Elige una letra.`, {
+    void this.tts.speak(`Grupo ${group}`, {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
     });

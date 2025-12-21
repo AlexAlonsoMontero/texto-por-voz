@@ -95,15 +95,7 @@ export class HomePage implements OnInit, OnDestroy {
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
-      const welcomeMessage = `
-        Bienvenido a la página principal.
-        Aplicación de texto por voz en orientación horizontal.
-        Utiliza las teclas Tab para navegar entre elementos,
-        Enter para seleccionar, y Escape para salir de selectores.
-        Encontrarás botones disponibles para interactuar.
-      `
-        .replace(/\s+/g, ' ')
-        .trim();
+      const welcomeMessage = 'Bienvenido a Texto por Voz';
 
       await this.tts.speak(welcomeMessage, {
         priority: SpeechPriority.HIGH,
@@ -130,7 +122,7 @@ export class HomePage implements OnInit, OnDestroy {
    */
   async onExampleButtonClick(): Promise<void> {
     try {
-      await this.tts.speak('Botón de ejemplo presionado. Funcionalidad de prueba activada.', {
+      await this.tts.speak('Botón de prueba', {
         priority: SpeechPriority.NORMAL,
         interrupt: true,
       });
@@ -144,7 +136,7 @@ export class HomePage implements OnInit, OnDestroy {
    */
   async testHighPrioritySpeech(): Promise<void> {
     try {
-      await this.tts.speak('Mensaje de alta prioridad. Interrumpe cualquier síntesis anterior.', {
+      await this.tts.speak('Mensaje prioritario', {
         priority: SpeechPriority.HIGH,
         interrupt: true,
       });
@@ -209,7 +201,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async onReadTextAction(): Promise<void> {
-    await this.tts.speak('Leyendo texto de prueba para verificar funcionalidad.', {
+    await this.tts.speak('Prueba de voz', {
       priority: SpeechPriority.HIGH,
       interrupt: true,
     });

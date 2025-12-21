@@ -166,7 +166,7 @@ export class PhrasesPage implements OnInit {
   openDeleteConfirmModal(index: number): void {
     this.slotToDeleteIndex = index;
     this.showDeleteConfirmModal = true;
-    void this.tts.speak(`¿Borrar botón ${index + 1}? Mantén pulsado para confirmar`);
+    void this.tts.speak(`¿Borrar botón ${index + 1}? Mantén presionado`);
   }
 
   closeDeleteConfirmModal(): void {
@@ -194,7 +194,7 @@ export class PhrasesPage implements OnInit {
     if (slot?.value === '' || !slot) {
       void this.tts.speak(`Guardar en botón ${i + 1}`);
     } else {
-      void this.tts.speak(`Se reemplazará la frase del botón ${i + 1}. Mantenga pulsado de nuevo para confirmar`);
+      void this.tts.speak(`Reemplazar botón ${i + 1}. Mantén presionado`);
     }
   }
 
@@ -291,7 +291,7 @@ export class PhrasesPage implements OnInit {
 
   async removeImage(): Promise<void> {
     await this.store.removeImageAt(this.currentConfigIndex);
-    await this.tts.speak('Imagen eliminada. Se mostrará el número nuevamente');
+    await this.tts.speak('Imagen eliminada');
     this.closeImageConfig();
   }
 

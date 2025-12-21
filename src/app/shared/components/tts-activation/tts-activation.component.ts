@@ -144,7 +144,7 @@ export class TtsActivationComponent {
 
       // Anunciar que la activación fue exitosa
       await this.textToSpeechService.speak(
-        'Síntesis de voz activada correctamente. Ya puedes usar todas las funciones de la aplicación.',
+        '¡Voz lista!',
         { interrupt: true },
       );
 

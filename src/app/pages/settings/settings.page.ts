@@ -279,7 +279,7 @@ export class SettingsPage implements OnInit {
   async resetToDefault(): Promise<void> {
     this.themeService.resetToDefault();
 
-    await this.tts.speak('Colores restablecidos a los valores por defecto', {
+    await this.tts.speak('Colores restaurados', {
       priority: SpeechPriority.NORMAL,
       interrupt: true,
     });
@@ -374,7 +374,7 @@ export class SettingsPage implements OnInit {
       // Actualizar capacidad del store
       await this.phraseStore.updateCapacity(config.count, deleteSurplus);
 
-      await this.tts.speak('Configuración aplicada correctamente. Recargando aplicación');
+      await this.tts.speak('Aplicado. Recargando');
 
       // Recargar para aplicar cambios
       setTimeout(() => {
