@@ -98,6 +98,30 @@ Esta sección agiliza la comunicación diaria para necesidades inmediatas. Permi
 ![Ejemplo Frases Grandes](manual-assets/image-10.png)
 ![Ejemplo Frases Pequeñas](manual-assets/image-11.png)
 
+### Gestión de Frases e Imágenes
+
+Además de usar las frases, puedes personalizar los botones añadiendo imágenes o borrando los que ya no necesites.
+
+#### 📷 Añadir o Cambiar Imágenes
+
+Para facilitar el reconocimiento visual, puedes asignar una foto o imagen de tu galería a cualquier botón:
+
+1.  En la pantalla de **Frases**, busca el botón **"📷 Imagen"** en la parte inferior.
+2.  Mantén presionado el botón hasta que se active.
+3.  Se abrirá una pantalla con todos tus botones. Selecciona aquel que quieras modificar (manteniendo presionado).
+4.  Aparecerá un menú con dos opciones:
+    - **Seleccionar de Galería:** Abre las fotos de tu dispositivo para elegir una imagen.
+    - **Quitar Imagen:** Elimina la foto actual y vuelve a mostrar el número del botón.
+
+#### 🗑️ Borrar Frases
+
+Si quieres limpiar un botón para dejarlo vacío:
+
+1.  En la pantalla de **Frases**, busca el botón **"🗑️ Borrar"** en la parte inferior.
+2.  Mantén presionado el botón hasta que se active.
+3.  Selecciona el botón que deseas eliminar (manteniendo presionado).
+4.  Confirma la acción. El botón quedará vacío y disponible para nuevas frases.
+
 ---
 
 ## 6. Configuración (Para Familiares y Asistentes)
