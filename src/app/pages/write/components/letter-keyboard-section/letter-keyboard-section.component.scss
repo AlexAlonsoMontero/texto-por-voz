@@ -36,12 +36,16 @@
     height: 100%;
 
     ::ng-deep ion-button {
-      font-size: 48px;
+      font-size: clamp(56px, 8vw, 80px);
       font-weight: bold;
       height: 100%;
       width: 100%;
       margin: 0;
       letter-spacing: 2px;
+      --padding-start: 4px;
+      --padding-end: 4px;
+      --padding-top: 4px;
+      --padding-bottom: 4px;
     }
   }
 }
@@ -78,13 +82,17 @@
         max-height: 600px;
 
         ::ng-deep ion-button {
-          font-size: 100px !important; // Botón de grupo MUY grande en carrusel
+          font-size: clamp(100px, 12vw, 140px);
           font-weight: bold;
           height: 100%;
           width: 100%;
           margin: 0;
           letter-spacing: 4px;
           border-radius: 20px;
+          --padding-start: 4px;
+          --padding-end: 4px;
+          --padding-top: 4px;
+          --padding-bottom: 4px;
         }
       }
     }

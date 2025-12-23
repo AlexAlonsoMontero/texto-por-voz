@@ -15,7 +15,7 @@ import {
   PHRASE_BUTTON_CONFIG_SERVICE,
 } from '../../core/infrastructure/injection-tokens';
 import { IPhraseStoreService, PhraseStoreSlot } from '../../core/domain/interfaces/phrase-store.interface';
-import { ITextToSpeechService } from '../../core/domain/interfaces/text-to-speech.interface';
+import { ITextToSpeechService, SpeechPriority } from '../../core/domain/interfaces/text-to-speech.interface';
 import { IGalleryService } from '../../core/domain/interfaces/gallery.interface';
 import {
   IPhraseButtonConfigService,
@@ -77,6 +77,19 @@ export class PhrasesPage implements OnInit {
     void this.loadConfig();
     void this.store.getAll().then((all) => (this.slots = all));
     this.store.observeAll().subscribe((s) => (this.slots = s));
+
+    // Observar cambios de configuración en tiempo real
+    this.buttonConfig.observeConfig().subscribe(async (config) => {
+      this.sizeConfig = this.buttonConfig.getSizeConfig(config.size);
+      this.gridLayout = this.buttonConfig.getGridLayoutForSize(config.count, config.size);
+      this.applyDynamicStyles();
+    });
+
+    // Anuncio de bienvenida
+    void this.tts.speak('Página de frases guardadas', {
+      priority: SpeechPriority.HIGH,
+      interrupt: true,
+    });
   }
 
   private async loadConfig(): Promise<void> {

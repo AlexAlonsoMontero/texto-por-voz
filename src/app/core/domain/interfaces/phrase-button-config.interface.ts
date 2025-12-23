@@ -20,26 +20,26 @@ export interface GridLayout {
 export const BUTTON_SIZE_CONFIGS: Record<ButtonSize, ButtonSizeConfig> = {
   small: {
     height: 160,
-    numberSize: '2.5rem',
-    numberSizeTablet: '3.5rem',
+    numberSize: '3.5rem',
+    numberSizeTablet: '4.5rem',
     gap: 6,
   },
   medium: {
     height: 220,
-    numberSize: '3.5rem',
-    numberSizeTablet: '4.5rem',
+    numberSize: '4.5rem',
+    numberSizeTablet: '6rem',
     gap: 8,
   },
   large: {
     height: 280,
-    numberSize: '5rem',
-    numberSizeTablet: '6rem',
+    numberSize: '6.5rem',
+    numberSizeTablet: '8rem',
     gap: 12,
   },
   xlarge: {
     height: 450,
-    numberSize: '7rem',
-    numberSizeTablet: '9rem',
+    numberSize: '10rem',
+    numberSizeTablet: '12rem',
     gap: 16,
   },
 };
@@ -66,4 +66,5 @@ export interface IPhraseButtonConfigService {
   getSizeConfig(size: ButtonSize): ButtonSizeConfig;
   getGridLayout(count: number): GridLayout;
   getGridLayoutForSize(count: number, size: ButtonSize): GridLayout;
+  observeConfig(): import('rxjs').Observable<PhraseButtonConfig>;
 }

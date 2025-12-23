@@ -23,22 +23,23 @@ ion-content {
   gap: 6px;
 }
 
-/* Grid adaptativo para los 12 botones - SIN SCROLL */
+/* Grid adaptativo para los botones - CON SCROLL */
 .slots-grid-4x4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columnas en landscape */
-  grid-template-rows: repeat(3, 1fr); /* 3 filas en landscape */
-  gap: 6px;
+  grid-template-columns: repeat(var(--phrase-grid-landscape-cols, 3), 1fr);
+  gap: var(--phrase-button-gap, 8px);
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px;
+  grid-auto-rows: var(--phrase-button-height, 220px);
 }
 
-/* Portrait: 3 columnas x 4 filas */
+/* Portrait: usar columnas específicas por configuración */
 @media (orientation: portrait) {
   .slots-grid-4x4 {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(var(--phrase-grid-portrait-cols, 2), 1fr);
   }
 }
 

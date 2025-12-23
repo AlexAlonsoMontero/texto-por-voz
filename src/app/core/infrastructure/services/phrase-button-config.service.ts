@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {
   IPhraseButtonConfigService,
   PhraseButtonConfig,
@@ -15,6 +16,10 @@ import {
 export class PhraseButtonConfigService implements IPhraseButtonConfigService {
   private readonly STORAGE_KEY = 'phrase-button-config';
   private cachedConfig: PhraseButtonConfig | null = null;
+  private configSubject = new BehaviorSubject<PhraseButtonConfig>({
+    count: 12,
+    size: 'medium',
+  });
 
   async getConfig(): Promise<PhraseButtonConfig> {
     if (this.cachedConfig) {
@@ -26,6 +31,7 @@ export class PhraseButtonConfigService implements IPhraseButtonConfigService {
       if (value) {
         const parsed = JSON.parse(value) as PhraseButtonConfig;
         this.cachedConfig = parsed;
+        this.configSubject.next(parsed);
         return parsed;
       }
     } catch (error) {
@@ -38,6 +44,7 @@ export class PhraseButtonConfigService implements IPhraseButtonConfigService {
       size: 'medium',
     };
     this.cachedConfig = defaultConfig;
+    this.configSubject.next(defaultConfig);
     return defaultConfig;
   }
 
@@ -48,10 +55,15 @@ export class PhraseButtonConfigService implements IPhraseButtonConfigService {
         value: JSON.stringify(config),
       });
       this.cachedConfig = config;
+      this.configSubject.next(config);
     } catch (error) {
       console.error('[PhraseButtonConfig] Error saving config:', error);
       throw error;
     }
+  }
+
+  observeConfig(): Observable<PhraseButtonConfig> {
+    return this.configSubject.asObservable();
   }
 
   getSizeConfig(size: ButtonSize): ButtonSizeConfig {

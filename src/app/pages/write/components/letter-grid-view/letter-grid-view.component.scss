@@ -50,12 +50,16 @@
     min-height: 100px;
 
     ::ng-deep ion-button {
-      font-size: 64px; // Letras MUY grandes
+      font-size: clamp(72px, 10vw, 120px);
       font-weight: bold;
       height: 100%;
       width: 100%;
       margin: 0;
       letter-spacing: 3px;
+      --padding-start: 4px;
+      --padding-end: 4px;
+      --padding-top: 4px;
+      --padding-bottom: 4px;
     }
   }
 }
