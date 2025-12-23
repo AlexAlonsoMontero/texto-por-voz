@@ -10,7 +10,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class PressHoldConfigService {
   private readonly STORAGE_KEY = 'pressHoldDuration';
-  private readonly DEFAULT_DURATION = 2000; // 2 segundos por defecto
+  private readonly DEFAULT_DURATION = 500; // 0.5 segundos por defecto (mínimo permitido)
 
   private readonly durationSubject: BehaviorSubject<number>;
   public readonly duration$: Observable<number>;
@@ -44,8 +44,8 @@ export class PressHoldConfigService {
       const saved = localStorage.getItem(this.STORAGE_KEY);
       if (saved) {
         const duration = parseInt(saved, 10);
-        // Validar rango (1-5 segundos)
-        if (duration >= 1000 && duration <= 5000) {
+        // Validar rango (0.5-5 segundos)
+        if (duration >= 500 && duration <= 5000) {
           return duration;
         }
       }

@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { IPhraseStoreService, PhraseStoreSlot, SaveResult } from '../../domain/interfaces/phrase-store.interface';
 import { FileStorageService } from './file-storage.service';
 import { PhraseButtonConfigService } from './phrase-button-config.service';
+import { DefaultPhrasesService } from './default-phrases-initializer.service';
 
 @Injectable({ providedIn: 'root' })
 export class PhraseStoreService implements IPhraseStoreService {
@@ -17,6 +18,7 @@ export class PhraseStoreService implements IPhraseStoreService {
   constructor(
     private readonly fileStorage: FileStorageService,
     private readonly buttonConfig: PhraseButtonConfigService,
+    private readonly defaultPhrases: DefaultPhrasesService,
   ) {
     // Inicializar con capacidad por defecto
     this.slotsSubject = new BehaviorSubject<PhraseStoreSlot[]>(
@@ -65,11 +67,9 @@ export class PhraseStoreService implements IPhraseStoreService {
         }
       }
 
-      // Si no hay datos válidos, inicializar vacío
-      if (!loadedData || !Array.isArray(loadedData)) {
-        const arr = Array.from({ length: this._capacity }, (_, i) => ({ index: i, value: '' }));
-        this.slotsSubject.next(arr);
-        return;
+      // Si no hay datos válidos, inicializar con frases por defecto
+      if (!loadedData || !Array.isArray(loadedData) || loadedData.length === 0) {
+        loadedData = this.createDefaultSlots();
       }
 
       // Procesar datos - ajustar al tamaño actual
@@ -80,7 +80,7 @@ export class PhraseStoreService implements IPhraseStoreService {
           const item = loadedData[i];
           if (typeof item === 'string') {
             // Formato antiguo: array de strings
-            slots.push({ index: i, value: this.normalize(item) });
+            slots.push({ index: i, value: this.normalize(item), isReadOnly: false });
           } else if (typeof item === 'object' && item !== null) {
             // Formato nuevo: objeto PhraseStoreSlot
             slots.push({
@@ -88,24 +88,53 @@ export class PhraseStoreService implements IPhraseStoreService {
               value: this.normalize(item.value || ''),
               imageUri: item.imageUri,
               imageAltText: item.imageAltText,
+              isReadOnly: false,
             });
           } else {
-            slots.push({ index: i, value: '' });
+            slots.push({ index: i, value: '', isReadOnly: false });
           }
         } else {
-          slots.push({ index: i, value: '' });
+          slots.push({ index: i, value: '', isReadOnly: false });
         }
       }
 
       this.slotsSubject.next(slots);
     } catch {
-      const arr = Array.from({ length: this._capacity }, (_, i) => ({ index: i, value: '' }));
+      const arr = this.createDefaultSlots();
       this.slotsSubject.next(arr);
     }
   }
 
+  /**
+   * Crea slots iniciales con frases por defecto en los primeros 6
+   */
+  private createDefaultSlots(): PhraseStoreSlot[] {
+    const slots: PhraseStoreSlot[] = [];
+    
+    for (let i = 0; i < this._capacity; i++) {
+      if (this.defaultPhrases.isFixedSlot(i)) {
+        const defaultPhrase = this.defaultPhrases.getDefaultPhrase(i);
+        if (defaultPhrase) {
+          slots.push({
+            index: i,
+            value: defaultPhrase.text,
+            imageUri: defaultPhrase.iconPath,
+            imageAltText: defaultPhrase.altText,
+            isReadOnly: false, // Ahora son editables
+          });
+        } else {
+          slots.push({ index: i, value: '', isReadOnly: false });
+        }
+      } else {
+        slots.push({ index: i, value: '', isReadOnly: false });
+      }
+    }
+    
+    return slots;
+  }
+
   private async persist(): Promise<void> {
-    // Guardar el objeto completo para preservar imágenes
+    // Guardar todos los slots (ahora todos son editables)
     const slots = this.slotsSubject.value;
     const json = JSON.stringify(slots);
 
@@ -134,8 +163,9 @@ export class PhraseStoreService implements IPhraseStoreService {
     return this.slotsSubject.value.findIndex((s) => s.value && s.value.toLocaleLowerCase() === norm);
   }
 
-  async saveAt(index: number, phrase: string, opts?: { overwrite?: boolean }): Promise<SaveResult> {
+  async saveAt(index: number, phrase: string, opts?: { overwrite?: boolean; imageUri?: string; imageAltText?: string }): Promise<SaveResult> {
     await this.ensureLoaded();
+    
     if (index < 0 || index >= this.capacity) return { ok: false, error: 'INDEX_OUT_OF_RANGE' };
     const norm = this.normalize(phrase);
     if (!norm) return { ok: false, error: 'EMPTY' };
@@ -153,8 +183,14 @@ export class PhraseStoreService implements IPhraseStoreService {
       return { ok: false, error: 'DUPLICATE' };
     }
 
-    // Preservar imagen si existe
-    slots[index] = { ...slots[index], value: norm };
+    // Actualizar slot con texto e imagen si se proporciona
+    slots[index] = { 
+      ...slots[index], 
+      value: norm,
+      imageUri: opts?.imageUri ?? slots[index].imageUri,
+      imageAltText: opts?.imageAltText ?? slots[index].imageAltText,
+      isReadOnly: false,
+    };
     this.slotsSubject.next(slots);
     await this.persist();
     return { ok: true };
@@ -162,6 +198,7 @@ export class PhraseStoreService implements IPhraseStoreService {
 
   async removeAt(index: number): Promise<void> {
     await this.ensureLoaded();
+    
     if (index < 0 || index >= this.capacity) return;
     const slots = [...this.slotsSubject.value];
 
@@ -170,7 +207,7 @@ export class PhraseStoreService implements IPhraseStoreService {
       await this.fileStorage.deleteImage(slots[index].imageUri!);
     }
 
-    slots[index] = { index, value: '' };
+    slots[index] = { index, value: '', isReadOnly: false };
     this.slotsSubject.next(slots);
     await this.persist();
   }

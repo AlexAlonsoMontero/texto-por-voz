@@ -246,5 +246,92 @@
         </div>
       </ion-accordion>
     </ion-accordion-group>
+
+    <!-- SECCIÓN: FRASES GUARDADAS -->
+    <ion-list-header>
+      <ion-label>Frases Guardadas</ion-label>
+    </ion-list-header>
+    <ion-accordion-group expand="inset">
+      <ion-accordion value="phraseActions">
+        <ion-item slot="header">
+          <ion-icon slot="start" name="chatbox-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h2>Gestión de Frases</h2>
+            <p>Restaurar o borrar frases</p>
+          </ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            color="primary"
+            (click)="onRestoreDefaultPhrases()"
+          >
+            <ion-icon slot="start" name="refresh-outline"></ion-icon>
+            Restaurar botones predefinidos
+          </ion-button>
+          <p class="helper-text">Vuelve a crear los 6 botones con iconos (SI, NO, hambre, baño, etc.)</p>
+
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            color="warning"
+            (click)="onClearAllPhrases()"
+          >
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+            Borrar todas las frases
+          </ion-button>
+          <p class="helper-text">Elimina TODAS las frases guardadas (slots vacíos)</p>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+
+    <!-- SECCIÓN: SISTEMA -->
+    <ion-list-header>
+      <ion-label>Sistema</ion-label>
+    </ion-list-header>
+    <ion-accordion-group expand="inset">
+      <ion-accordion value="systemReset">
+        <ion-item slot="header">
+          <ion-icon slot="start" name="settings-outline" color="danger"></ion-icon>
+          <ion-label>
+            <h2>Restaurar Configuración</h2>
+            <p>Opciones de reseteo</p>
+          </ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            color="medium"
+            (click)="onRestoreColors()"
+          >
+            <ion-icon slot="start" name="color-palette-outline"></ion-icon>
+            Restaurar colores por defecto
+          </ion-button>
+
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            color="medium"
+            (click)="onRestorePressTime()"
+          >
+            <ion-icon slot="start" name="time-outline"></ion-icon>
+            Restaurar tiempo de pulsado
+          </ion-button>
+
+          <ion-button 
+            expand="block" 
+            fill="solid" 
+            color="danger"
+            (click)="onRestoreAll()"
+          >
+            <ion-icon slot="start" name="reload-outline"></ion-icon>
+            Restaurar TODO por defecto
+          </ion-button>
+          <p class="helper-text">⚠️ Resetea TODA la configuración (colores, tiempo, frases, etc.)</p>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
   </div>
 </ion-content>

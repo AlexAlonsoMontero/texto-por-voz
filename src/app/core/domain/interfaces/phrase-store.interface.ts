@@ -3,6 +3,7 @@ export interface PhraseStoreSlot {
   value: string; // '' si vacío
   imageUri?: string; // URI local de imagen opcional (undefined = mostrar número)
   imageAltText?: string; // Descripción accesible de la imagen para TTS
+  isReadOnly?: boolean; // true = no se puede editar ni borrar
 }
 
 export interface SaveResult {
@@ -15,7 +16,7 @@ export interface IPhraseStoreService {
   readonly capacity: number; // Dinámico según configuración
   getAll(): Promise<PhraseStoreSlot[]>;
   observeAll(): import('rxjs').Observable<PhraseStoreSlot[]>;
-  saveAt(index: number, phrase: string, opts?: { overwrite?: boolean }): Promise<SaveResult>;
+  saveAt(index: number, phrase: string, opts?: { overwrite?: boolean; imageUri?: string; imageAltText?: string }): Promise<SaveResult>;
   removeAt(index: number): Promise<void>;
   clearAll(): Promise<void>;
   findDuplicateIndex(phrase: string): Promise<number>; // -1 si no hay duplicado

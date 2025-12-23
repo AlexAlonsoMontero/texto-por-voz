@@ -38,6 +38,11 @@ import {
   homeOutline,
   brushOutline,
   arrowBackOutline,
+  refreshOutline,
+  trashOutline,
+  chatboxOutline,
+  settingsOutline,
+  reloadOutline,
 } from 'ionicons/icons';
 import { NavController } from '@ionic/angular';
 import {
@@ -60,6 +65,7 @@ import {
   PhraseButtonConfig,
 } from '../../core/domain/interfaces/phrase-button-config.interface';
 import { IPhraseStoreService } from '../../core/domain/interfaces/phrase-store.interface';
+import { DefaultPhrasesService } from '../../core/infrastructure/services/default-phrases-initializer.service';
 
 @Component({
   selector: 'app-settings',
@@ -132,6 +138,7 @@ export class SettingsPage implements OnInit {
     private readonly buttonConfigService: IPhraseButtonConfigService,
     @Inject(PHRASE_STORE_SERVICE)
     private readonly phraseStore: IPhraseStoreService,
+    private readonly defaultPhrases: DefaultPhrasesService,
   ) {
     addIcons({
       colorPaletteOutline,
@@ -147,6 +154,11 @@ export class SettingsPage implements OnInit {
       homeOutline,
       brushOutline,
       arrowBackOutline,
+      refreshOutline,
+      trashOutline,
+      chatboxOutline,
+      settingsOutline,
+      reloadOutline,
     });
   }
 
@@ -454,6 +466,117 @@ export class SettingsPage implements OnInit {
     } catch (error) {
       console.error('Error aplicando configuración:', error);
       await this.tts.speak('Error al aplicar configuración');
+    }
+  }
+
+  /**
+   * Restaura solo los colores por defecto
+   */
+  async onRestoreColors(): Promise<void> {
+    const confirmed = confirm('¿Restaurar los colores a sus valores por defecto?');
+    if (!confirmed) return;
+
+    await this.themeService.resetToDefault();
+    const defaultColors = this.themeService.getThemeColors();
+    this.themeService.applyTheme(defaultColors);
+    await this.ngOnInit();
+    await this.tts.speak('Colores restaurados');
+  }
+
+  /**
+   * Restaura solo el tiempo de pulsado por defecto
+   */
+  async onRestorePressTime(): Promise<void> {
+    const confirmed = confirm('¿Restaurar el tiempo de pulsado a 0.5 segundos (mínimo)?');
+    if (!confirmed) return;
+
+    const defaultDuration = 500;
+    await this.pressHoldConfig.setDuration(defaultDuration);
+    this.pressHoldDuration = defaultDuration;
+    await this.tts.speak('Tiempo de pulsado restaurado a 0.5 segundos');
+  }
+
+  /**
+   * Restaura los botones predefinidos (6 primeros con iconos)
+   */
+  async onRestoreDefaultPhrases(): Promise<void> {
+    const confirmed = confirm(
+      '¿Restaurar los 6 botones predefinidos (SI, NO, hambre, baño, etc.)?\n\nEsto sobrescribirá los primeros 6 botones.',
+    );
+    if (!confirmed) return;
+
+    try {
+      await this.tts.speak('Restaurando botones predefinidos');
+      
+      // Restaurar los 6 botones predefinidos usando el servicio
+      await this.defaultPhrases.restoreDefaults(this.phraseStore);
+      
+      await this.tts.speak('Botones predefinidos restaurados');
+    } catch (error) {
+      console.error('Error restaurando botones:', error);
+      await this.tts.speak('Error al restaurar botones');
+    }
+  }
+
+  /**
+   * Borra TODAS las frases guardadas
+   */
+  async onClearAllPhrases(): Promise<void> {
+    const confirmed = confirm('⚠️ ¿Eliminar TODAS las frases guardadas?\n\nEsta acción NO se puede deshacer.');
+    if (!confirmed) return;
+
+    try {
+      await this.tts.speak('Borrando todas las frases');
+      await this.phraseStore.clearAll();
+      this.currentPhraseCount = 0;
+      await this.tts.speak('Todas las frases eliminadas');
+    } catch (error) {
+      console.error('Error borrando frases:', error);
+      await this.tts.speak('Error al borrar frases');
+    }
+  }
+
+  /**
+   * Restaura TODA la configuración por defecto
+   */
+  async onRestoreAll(): Promise<void> {
+    const confirmed = confirm(
+      '⚠️ ¿Restaurar TODA la configuración por defecto?\n\nEsto incluye:\n- Colores\n- Tiempo de pulsado (0.5s)\n- Botones predefinidos (SI, NO, hambre, etc.)\n- Tamaño y cantidad de botones\n- Modo de vista\n\n¿Estás seguro?',
+    );
+    if (!confirmed) return;
+
+    try {
+      await this.tts.speak('Restaurando toda la configuración');
+
+      // 1. Restaurar tema
+      await this.themeService.resetToDefault();
+
+      // 2. Restaurar tiempo de pulsado (mínimo: 0.5s)
+      await this.pressHoldConfig.setDuration(500);
+
+      // 3. Restaurar modo de vista
+      await this.writeViewConfig.setViewMode('panel');
+
+      // 4. Restaurar velocidad carrusel
+      await this.carouselConfig.setDelayMs(1000);
+
+      // 5. Restaurar configuración de botones
+      await this.buttonConfigService.setConfig({ count: 12, size: 'medium' });
+
+      // 6. Borrar todas las frases actuales
+      await this.phraseStore.clearAll();
+
+      // 7. Restaurar los 6 botones predefinidos con iconos
+      await this.defaultPhrases.restoreDefaults(this.phraseStore);
+
+      await this.tts.speak('Configuración restaurada. Recargando aplicación');
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      console.error('Error restaurando configuración:', error);
+      await this.tts.speak('Error al restaurar configuración');
     }
   }
 }
