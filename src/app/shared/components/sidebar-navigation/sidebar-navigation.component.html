@@ -1,22 +1,9 @@
 <aside class="sidebar-nav" aria-label="Barra de navegación principal">
-  <!-- Botón Home con icono -->
-  <app-press-hold-button
-    buttonId="sidebar-home-btn"
-    actionId="home-action"
-    color="primary"
-    [holdDuration]="(holdDuration$ | async) || 2000"
-    ariaLabel="Botón de inicio. Mantener presionado 2 segundos para ir a la página principal"
-    (actionExecuted)="onHomeAction($event)"
-    class="sidebar-btn"
-  >
-    <ion-icon name="home" class="sidebar-btn-icon"></ion-icon>
-  </app-press-hold-button>
-
   <!-- Botón Write con icono -->
   <app-press-hold-button
     buttonId="sidebar-write-btn"
     actionId="write-action"
-    color="secondary"
+    color="primary"
     [holdDuration]="(holdDuration$ | async) || 2000"
     ariaLabel="Botón de escritura. Mantener presionado 2 segundos para ir a la página de escribir texto"
     (actionExecuted)="onWriteAction($event)"
@@ -29,7 +16,7 @@
   <app-press-hold-button
     buttonId="sidebar-phrases-btn"
     actionId="phrases-action"
-    color="primary"
+    color="secondary"
     [holdDuration]="(holdDuration$ | async) || 2000"
     ariaLabel="Botón de frases. Mantener presionado 2 segundos para ir a frases guardadas"
     (actionExecuted)="onPhrasesAction($event)"
@@ -42,7 +29,7 @@
   <app-press-hold-button
     buttonId="sidebar-settings-btn"
     actionId="settings-action"
-    color="secondary"
+    color="primary"
     [holdDuration]="(holdDuration$ | async) || 2000"
     ariaLabel="Botón de configuración. Mantener presionado 2 segundos para ir a ajustes"
     (actionExecuted)="onSettingsAction($event)"
@@ -55,7 +42,7 @@
   <app-press-hold-button
     buttonId="sidebar-back-btn"
     actionId="back-action"
-    color="primary"
+    color="secondary"
     [holdDuration]="(holdDuration$ | async) || 2000"
     ariaLabel="Botón de volver. Mantener presionado 2 segundos para regresar a la página anterior"
     (actionExecuted)="onBackAction($event)"

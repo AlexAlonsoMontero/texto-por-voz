@@ -24,10 +24,6 @@ export class SidebarNavigationComponent {
     private readonly backNavService: BackNavigationService,
   ) {}
 
-  onButtonHomeClick(): void {
-    this.navCtrl.navigateRoot('/home');
-  }
-
   onButtonWriteClick(): void {
     this.navCtrl.navigateRoot('/write');
   }
@@ -38,14 +34,6 @@ export class SidebarNavigationComponent {
 
   onButtonPhrasesClick(): void {
     this.navCtrl.navigateRoot('/phrases');
-  }
-
-  /**
-   * Maneja la acción del botón Home (press-hold)
-   */
-  onHomeAction(actionId: string): void {
-    console.log(`🏠 [Sidebar] Acción Home ejecutada: ${actionId}`);
-    this.onButtonHomeClick();
   }
 
   /**
@@ -84,9 +72,9 @@ export class SidebarNavigationComponent {
     }
 
     const currentUrl = this.router.url;
-    // Si estamos en una página raíz distinta de home, volvemos a home
-    if (currentUrl.includes('/write') || currentUrl.includes('/phrases') || currentUrl.includes('/settings')) {
-      this.navCtrl.navigateRoot('/home');
+    // Si estamos en una página raíz distinta de write, volvemos a write
+    if (currentUrl.includes('/phrases') || currentUrl.includes('/settings')) {
+      this.navCtrl.navigateRoot('/write');
     } else {
       // En otros casos (subpáginas o historial válido), intentamos volver atrás
       this.navCtrl.back();
