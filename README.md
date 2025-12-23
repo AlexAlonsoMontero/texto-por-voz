@@ -1,10 +1,19 @@
-# Aplicación de Comunicación Asistida (Texto a Voz) v1.0.0
+# Aplicación de Comunicación Asistida (Texto a Voz) v1.1.0
 
 Una aplicación híbrida **Angular 20 + Ionic 8** diseñada específicamente para personas con limitaciones severas en comunicación verbal, motora y visual. Proporciona un sistema completo de escritura por voz, frases rápidas y configuración accesible.
 
-## ✨ Versión 1.0.0 - Primera Release Completa
+## ✨ Versión 1.1.0 - Actualización Diciembre 2024
 
-**Estado:** ✅ MVP Completado y listo para producción
+**Estado:** ✅ Versión mejorada con nuevas funcionalidades
+
+### 🆕 Novedades v1.1.0
+
+- **🎯 Botones Predefinidos**: 6 botones con iconos listos para usar (SI, NO, hambre, baño, salud, batería)
+- **🔄 Sistema de Restauración Completo**: Restaura configuración completa, colores, tiempos o botones desde Settings
+- **⚡ Tiempo de Pulsado Optimizado**: Reducido a 0.5s por defecto (configurable 0.5s-5s)
+- **🎨 Responsividad Mejorada**: Mejor adaptación de botones a diferentes tamaños de pantalla
+- **🚀 Acceso Directo**: Eliminada página Home, acceso directo a escritura
+- **📄 Scroll en Frases**: Permite ver todos los botones con scroll vertical
 
 ### 🏗️ Arquitectura Implementada
 
@@ -19,20 +28,9 @@ Una aplicación híbrida **Angular 20 + Ionic 8** diseñada específicamente par
 - **Ionic 8.0.0**: UI Components y navegación híbrida
 - **Capacitor 7.4.3**: Bridge para funcionalidades nativas
 - **TypeScript 5.8.0**: Tipado estricto con configuración ES2021
-- **RxJS 7.8.0**: Programación reactivaxto por Voz Accesible
+- **RxJS 7.8.0**: Programación reactiva
 
-Una aplicación híbrida **Angular 20 + Ionic 8** orientada a accesibilidad para personas con discapacidad visual, con funcionalidad principal de **Texto a Voz (TTS)** para web y móvil.
-
-## ✨ Estado Actual del Proyecto
-
-### �️ Arquitectura Implementada
-
-- **Arquitectura Hexagonal + DDD**: Separación clara entre `domain`, `application` e `infrastructure`
-- **Standalone Components**: Sin NgModules, componentes auto-contenidos
-- **Inyección por InjectionTokens**: Desacoplamiento completo entre capas
-- **Servicios híbridos**: Implementaciones que funcionan en web y móvil nativo
-
-### 🛠️ Stack Tecnológico
+### 🎯 Funcionalidades Implementadas
 
 - **Angular 20.0.0**: Framework principal con componentes standalone
 - **Ionic 8.0.0**: UI Components y navegación híbrida

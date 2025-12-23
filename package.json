@@ -1,6 +1,6 @@
 {
   "name": "texto-voz",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -67,6 +67,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "markdown-pdf": "^11.0.0",
     "prettier": "^3.6.2",
     "typescript": "~5.8.0"
   },

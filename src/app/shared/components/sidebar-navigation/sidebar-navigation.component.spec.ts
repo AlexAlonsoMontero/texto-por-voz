@@ -29,14 +29,12 @@ describe('SidebarNavigationComponent', () => {
     });
 
     it('should have navigation methods', () => {
-      expect(typeof component.onButtonHomeClick).toBe('function');
       expect(typeof component.onButtonWriteClick).toBe('function');
       expect(typeof component.onButtonPhrasesClick).toBe('function');
       expect(typeof component.onButtonSettingsClick).toBe('function');
     });
 
     it('should have press-hold action handlers', () => {
-      expect(typeof component.onHomeAction).toBe('function');
       expect(typeof component.onWriteAction).toBe('function');
       expect(typeof component.onPhrasesAction).toBe('function');
       expect(typeof component.onSettingsAction).toBe('function');
@@ -49,10 +47,6 @@ describe('SidebarNavigationComponent', () => {
   });
 
   describe('Navigation Actions', () => {
-    it('should handle home navigation', () => {
-      expect(() => component.onButtonHomeClick()).not.toThrow();
-    });
-
     it('should handle write navigation', () => {
       expect(() => component.onButtonWriteClick()).not.toThrow();
     });
@@ -67,10 +61,6 @@ describe('SidebarNavigationComponent', () => {
   });
 
   describe('Press-Hold Action Handlers', () => {
-    it('should handle home action', () => {
-      expect(() => component.onHomeAction('home-action')).not.toThrow();
-    });
-
     it('should handle write action', () => {
       expect(() => component.onWriteAction('write-action')).not.toThrow();
     });

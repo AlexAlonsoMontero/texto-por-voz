@@ -3,6 +3,7 @@ import { Preferences } from '@capacitor/preferences';
 import { PhraseStoreService } from './phrase-store.service';
 import { FileStorageService } from './file-storage.service';
 import { PhraseButtonConfigService } from './phrase-button-config.service';
+import { DefaultPhrasesService } from './default-phrases-initializer.service';
 
 /**
  * Tests de PhraseStoreService
@@ -12,6 +13,7 @@ describe('PhraseStoreService', () => {
   let service: PhraseStoreService;
   let mockFileStorage: jasmine.SpyObj<FileStorageService>;
   let mockButtonConfig: jasmine.SpyObj<PhraseButtonConfigService>;
+  let mockDefaultPhrases: jasmine.SpyObj<DefaultPhrasesService>;
 
   beforeEach(() => {
     // Mock FileStorageService
@@ -20,6 +22,7 @@ describe('PhraseStoreService', () => {
       'readTextFile',
       'deleteFile',
       'fileExists',
+      'deleteImage',
     ]);
 
     // Mock PhraseButtonConfigService
@@ -27,10 +30,21 @@ describe('PhraseStoreService', () => {
     mockButtonConfig.getConfig.and.returnValue(
       Promise.resolve({
         count: 12,
-        layout: 'grid',
         size: 'medium',
       })
     );
+
+    // Mock DefaultPhrasesService
+    mockDefaultPhrases = jasmine.createSpyObj('DefaultPhrasesService', [
+      'isFixedSlot',
+      'getDefaultPhrase',
+      'getAllDefaultPhrases',
+      'restoreDefaults',
+    ]);
+    mockDefaultPhrases.isFixedSlot.and.returnValue(false); // Por defecto, ningún slot es fijo
+    mockDefaultPhrases.getDefaultPhrase.and.returnValue(undefined);
+    mockDefaultPhrases.getAllDefaultPhrases.and.returnValue([]);
+    mockDefaultPhrases.restoreDefaults.and.returnValue(Promise.resolve());
 
     // Mock Preferences
     spyOn(Preferences, 'set').and.returnValue(Promise.resolve());
@@ -41,6 +55,7 @@ describe('PhraseStoreService', () => {
         PhraseStoreService,
         { provide: FileStorageService, useValue: mockFileStorage },
         { provide: PhraseButtonConfigService, useValue: mockButtonConfig },
+        { provide: DefaultPhrasesService, useValue: mockDefaultPhrases },
       ],
     });
 
