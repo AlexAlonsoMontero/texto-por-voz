@@ -27,7 +27,7 @@ ion-toolbar {
   padding: 5px;
   /* Padding seguro arriba y abajo */
   padding-top: calc(5px + var(--safe-area-top, 0px));
-  padding-bottom: calc(5px + var(--safe-area-bottom, 20px));
+  padding-bottom: calc(5px + var(--safe-area-bottom, 60px));
   gap: 5px;
   box-sizing: border-box;
   background: var(--ion-background-color);
