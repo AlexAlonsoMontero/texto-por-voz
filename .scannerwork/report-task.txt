@@ -1,0 +1,6 @@
+projectKey=AlexAlonsoMontero_texto-por-voz_6a296159-c1b7-422c-91b9-99e8e28de3d6
+serverUrl=http://192.168.1.100:9000
+serverVersion=25.12.0.117093
+dashboardUrl=http://192.168.1.100:9000/dashboard?id=AlexAlonsoMontero_texto-por-voz_6a296159-c1b7-422c-91b9-99e8e28de3d6
+ceTaskId=a2f19b11-a2d0-4d09-8652-67434d69aab6
+ceTaskUrl=http://192.168.1.100:9000/api/ce/task?id=a2f19b11-a2d0-4d09-8652-67434d69aab6

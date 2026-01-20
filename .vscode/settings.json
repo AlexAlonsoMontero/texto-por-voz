@@ -19,5 +19,9 @@
     "android": true,
     "ios": true,
     "dist": true
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "http-192-168-1-100-9000",
+    "projectKey": "AlexAlonsoMontero_texto-por-voz_6a296159-c1b7-422c-91b9-99e8e28de3d6"
   }
 }
